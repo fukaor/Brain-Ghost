@@ -1,0 +1,20 @@
+# Brain Boost — Cloudflare Pages Headers
+# https://developers.cloudflare.com/pages/platform/headers/
+#
+# Cloudflare Pages の _headers 構文はインデントベースで、パスパターンの後に
+# ヘッダー行を 2 スペースインデントで書く（閉じブレースは不要）。
+#
+# Godot 4 の Web Export は SharedArrayBuffer を必要とするため、
+# Cross-Origin Isolation を有効にする必要がある。
+# COOP/COEP を外すとアプリが起動時にクラッシュするので絶対に削除しない。
+# 詳細: docs/architecture.md 「Web版の COOP/COEP 要件」
+
+# すべてのパスに適用される共通ヘッダー
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  Cross-Origin-Resource-Policy: same-origin
+  Permissions-Policy: interest-cohort=()
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
