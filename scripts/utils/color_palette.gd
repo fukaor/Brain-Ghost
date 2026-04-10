@@ -1,4 +1,4 @@
-## ColorPalette
+## ColorPaletteUtil
 ##
 ## Brain Boost の色定数。色はすべてここから引く。
 ## ハードコードされた Color() / #xxxxxx はレビューで必ず指摘すること。
@@ -7,7 +7,11 @@
 ## GDD §6 および development-guidelines.md §色の使用 の通り、負け表示にも
 ## ネガティブ色を使わない設計のため、[code]RED[/code] 定数は意図的に定義しない。
 ## どうしても必要な箇所が発生したら PR で議論すること。
-class_name ColorPalette
+##
+## [b]命名について:[/b] Godot 4.6 でネイティブクラス [code]ColorPalette[/code] が
+## 追加されたため衝突回避として [code]ColorPaletteUtil[/code] とする。他の util 群
+## ([code]DateUtil[/code], [code]JsonUtil[/code], [code]UuidUtil[/code]) と同じ [code]*Util[/code] 接尾辞で統一。
+class_name ColorPaletteUtil
 extends RefCounted
 
 # --- ポジティブ系（勝利・ベスト更新・スコア上昇）---

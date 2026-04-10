@@ -36,6 +36,10 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
 
+[gui]
+
+theme/custom="res://assets/themes/default_theme.tres"
+
 [input]
 
 ; MVP ではタップのみ。マルチタッチ・スワイプは使わない（GDD §4 の絶対ルール）
@@ -51,3 +55,8 @@ tap={
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.973, 0.98, 0.988, 1)
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")

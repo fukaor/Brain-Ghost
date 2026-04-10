@@ -1,0 +1,9 @@
+version: 9.6.0
+source: https://github.com/bitwes/Gut
+release_url: https://github.com/bitwes/Gut/releases/tag/v9.6.0
+tarball_url: https://github.com/bitwes/Gut/archive/refs/tags/v9.6.0.tar.gz
+published_at: 2026-02-24
+installed_at: 2026-04-10
+installed_by: .steering/20260411-gut-plugin-setup
+godot_compat: "4.6 (explicitly noted in release notes: 'Compatibility changes for Godot 4.6.')"
+license: MIT (see addons/gut/LICENSE.md)

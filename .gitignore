@@ -11,6 +11,9 @@
 export.cfg
 .DS_Store
 
+# addons 配下（サードパーティプラグイン）の .import はコミット対象
+!addons/**/*.import
+
 # --- エクスポート成果物 ---
 web/dist/
 android/build/

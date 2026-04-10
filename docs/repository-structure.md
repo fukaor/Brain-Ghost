@@ -71,7 +71,8 @@ brain-boost/
 │   │   ├── individual_result.tscn  # 個別ゲーム結果
 │   │   ├── overall_result.tscn     # 総合結果画面（2層構成）
 │   │   ├── share_screen.tscn       # シェア画面（Web版）
-│   │   ├── ghost_bar.tscn          # ゴーストプログレスバー
+│   │   ├── ghost_bar.tscn          # ゴーストプログレスバー（タイム系ゲームのバー）
+│   │   ├── ghost_character.tscn    # ★ ゴースト生霊キャラクタ（FR-14、全画面共通）
 │   │   ├── radar_chart.tscn        # レーダーチャート
 │   │   ├── stamp_calendar.tscn     # ハンコカレンダー
 │   │   └── dialog_common.tscn      # 汎用ダイアログ
@@ -118,6 +119,7 @@ brain-boost/
 │   │   ├── overall_result_controller.gd
 │   │   ├── share_screen_controller.gd
 │   │   ├── ghost_bar_controller.gd
+│   │   ├── ghost_character.gd       # ★ GhostCharacter クラス（FR-14、生霊キャラ再利用コンポ）
 │   │   ├── radar_chart_controller.gd
 │   │   └── stamp_calendar_controller.gd
 │   └── utils/                      # 汎用ユーティリティ
@@ -128,14 +130,21 @@ brain-boost/
 │
 ├── assets/                         # アート・音・フォント
 │   ├── fonts/
+│   │   ├── NotoSansJP-Bold.otf         # 本文フォント（SIL OFL 1.1）
+│   │   ├── MaterialSymbolsRounded.ttf  # 汎用アイコンフォント（Apache 2.0）
+│   │   └── OFL.txt                     # Noto Sans JP ライセンス本文
 │   ├── sounds/
 │   │   ├── bgm/
 │   │   └── se/
 │   ├── icons/
 │   ├── images/
 │   │   └── games/                  # 各ゲーム用画像
+│   ├── characters/                 # ★ キャラクタアセット
+│   │   └── ghost_placeholder.svg   # ★ ゴースト生霊のダミー SVG（v1.1 で本番差し替え）
+│   ├── textures/
+│   │   └── gradients/              # ★ StyleBoxTexture 用の事前生成グラデ PNG
 │   ├── themes/                     # Godot UI テーマリソース
-│   │   └── default_theme.tres
+│   │   └── default_theme.tres      # build_theme.gd で生成、ext_resource 参照
 │   └── CREDITS.md                  # フリー素材ライセンス表記
 │
 ├── addons/                         # Godot プラグイン
@@ -175,9 +184,24 @@ brain-boost/
 │   └── build.gradle.snippets       # gradle 追記用のメモ
 │
 └── scripts_build/                  # ビルド・デプロイ補助スクリプト（ルート汚染回避）
+    ├── run_unit_tests.sh           # GUT 実行ラッパー
+    ├── build_theme.gd              # ★ default_theme.tres 生成（Godot --script で実行）
+    ├── build_gradients.gd          # ★ グラデテクスチャ PNG 生成
     ├── export_web.sh               # Godot CLI で Web Export → web/dist/
     ├── export_android.sh           # Godot CLI で Android Export
     └── deploy_web.sh               # Cloudflare Pages へのデプロイ手順
+```
+
+### docs/design/ (デザインシステム)
+
+UI 実装時の参照ドキュメント群。`docs/design/manifest.md` が北極星、`docs/design/patterns.md` が実装テンプレート集。
+
+```
+docs/design/
+├── manifest.md                     # カラートークン・タイポ・余白・禁則（Single Source of Truth）
+├── patterns.md                     # ボイラープレート・Theme variation・ゴースト使用法・アンチパターン
+└── references/
+    └── competitor-research.md      # 競合 7 アプリの UI/UX リサーチ
 ```
 
 ---

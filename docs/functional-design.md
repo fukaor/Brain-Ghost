@@ -511,6 +511,92 @@ func record_event(event_type: String, value = null) -> void
 
 **責務**: 各画面の UI ロジック。詳細は「画面遷移図」「ユースケース図」参照。
 
+### ui/GhostCharacter（第 3 の独自要素: ゴースト生霊キャラクタ / FR-14）
+
+**責務**:
+- ゴースト対戦システム（FR-02）のデータを、視覚・対話層として全画面で表示する
+- ユーザの精度 / 脳年齢 / ストリークを、生霊キャラクタの **不透明度 / 見た目年齢 / オーラ** として視覚化する
+- 画面文脈に応じたセリフを吹き出しで表示する
+
+**ファイル**:
+- `scenes/ui/ghost_character.tscn`
+- `scripts/ui/ghost_character.gd` (`class_name GhostCharacter`)
+- アセット: `assets/characters/ghost_placeholder.svg`（v1.0 ダミー、v1.1 で本番アセット差し替え）
+
+**ノード構造**:
+```
+GhostCharacter (HBoxContainer, class_name GhostCharacter)
+ ├─ Portrait (TextureRect, ghost_placeholder.svg)
+ └─ SpeechBubble (PanelContainer, theme_type_variation="speech_bubble")
+     └─ BubbleVBox (VBoxContainer)
+         └─ BubbleText (Label)
+```
+
+**API（v1.0 / v1.1 境界）**:
+
+```gdscript
+class_name GhostCharacter
+extends HBoxContainer
+
+# v1.0 MVP 実装範囲
+func set_accuracy(accuracy: float) -> void
+    # 精度 (0.0〜1.0) を Portrait.modulate.a に反映
+    # alpha = 0.25 + accuracy * 0.75 (最低 25% は確保して存在感を残す)
+
+func set_dialogue(text: String) -> void
+    # 吹き出しのテキストを即時更新 (将来はタイプライタ演出予定)
+
+# v1.1 予約（現状 no-op）
+func set_brain_age(age: int) -> void  # TODO v1.1: 見た目年齢反映（要カスタムアセット）
+func set_streak(days: int) -> void    # TODO v1.1: オーラ強度反映（要シェーダ）
+func set_mood(mood: String) -> void   # TODO v1.1: 表情変化（idle/happy/tired/surprised/celebrating）
+```
+
+**使用パターン（各画面コントローラから）**:
+
+```gdscript
+# 画面シーンに ghost_character.tscn をインスタンスとして配置
+@onready var _ghost: GhostCharacter = $SafeAreaMargin/MainColumn/GhostCharacter
+
+func _ready() -> void:
+    # DataStore から現在の状態を取得
+    _ghost.set_accuracy(DataStore.get_accuracy())   # 0.0〜1.0
+    _ghost.set_brain_age(DataStore.get_brain_age()) # v1.1 で機能
+    _ghost.set_streak(DataStore.get_streak())       # v1.1 で機能
+    _ghost.set_dialogue(_compose_greeting_text())   # 画面文脈のセリフ
+```
+
+**登場画面**（v1.0 MVP）:
+- `scenes/main/home.tscn`（ログイン時の挨拶）
+- `scenes/main/onboarding.tscn`（初回自己紹介）
+- `scenes/ui/individual_result.tscn`（勝敗のセリフ）
+- `scenes/ui/overall_result.tscn`（ベスト更新時の祝福）
+
+**登場画面**（v1.1 以降）:
+- ルール説明画面
+- カウントダウン演出
+- ゲームプレイ中（小アバター化）
+- ストリーク復帰演出
+
+**セリフ管理**:
+- v1.0 MVP: 各画面コントローラが文字列を直接渡す（`_ghost.set_dialogue("おかえり！...")`）
+- v1.1+: `assets/dialogues/ghost_lines.json` のようなデータドリブン化を検討
+
+**データモデルとの関係**:
+- 本コンポーネントは **どのエンティティも直接参照しない**。呼び出し側（各画面コントローラ）が `DataStore` から値を取得し `set_*` 経由で渡す
+- `GhostData`（既存、A-03 参照）はゴースト対戦の **データ層** であり、本コンポーネントの **表示層** とは独立
+
+**制約事項**:
+- 色・フォント・サイズへの GDScript アクセスは禁止（Theme 一任。`docs/design/manifest.md` §9 準拠）
+- 例外: `Portrait.modulate.a` への書き込みは **データ駆動の不透明度制御** として正当化されている（`docs/design/patterns.md` §7）。色タプルは `(1, 1, 1, alpha)` 固定
+- セリフは赤色禁止ルール (GDD §6) と整合する **ポジティブ口調** のみ。敗北時も励ましに変換
+
+**詳細仕様**:
+- PRD: `docs/product-requirements.md` FR-14
+- GDD: `docs/ideas/brain_training_gdd.md` §5e
+- UI パターン: `docs/design/patterns.md` §5（画面への組み込み方）
+- Memory: `memory/project_ghost_character.md`（ナラティブとステート対応の完全版）
+
 ---
 
 ## ユースケース図

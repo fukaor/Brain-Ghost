@@ -1,0 +1,6 @@
+# iteration_*.png は履歴として価値はあるが差分が大きいのでコミット対象外
+iteration_*.png
+# umamusume_reference は著作物なのでコミット禁止
+umamusume_reference.*
+# final.png は承認済みスクショとしてコミット対象
+!final.png

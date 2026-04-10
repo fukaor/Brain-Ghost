@@ -8,12 +8,12 @@
 
 | 名前 | 用途 | ライセンス | 出典 |
 |---|---|---|---|
-| （未定） | UI テキスト全般 | — | — |
+| Noto Sans JP Bold | UI テキスト全般（本文・見出し・数値） | SIL Open Font License 1.1 | https://github.com/notofonts/noto-cjk (`Sans/SubsetOTF/JP/NotoSansJP-Bold.otf`) |
+| Material Symbols Rounded (variable) | UI アイコン全般（ナビゲーション・ステータス・アクション） | Apache License 2.0 | https://github.com/google/material-design-icons (`variablefont/MaterialSymbolsRounded[FILL,GRAD,opsz,wght].ttf`) |
 
-<!-- 例:
-| Noto Sans JP | UI テキスト（本文・数字） | SIL Open Font License 1.1 | https://fonts.google.com/noto/specimen/Noto+Sans+JP |
-| M PLUS 1p | 見出し・スコア表示 | SIL Open Font License 1.1 | https://fonts.google.com/specimen/M+PLUS+1p |
--->
+- 配置: `assets/fonts/NotoSansJP-Bold.otf`、`assets/fonts/MaterialSymbolsRounded.ttf`
+- Noto Sans JP ライセンス本文: `assets/fonts/OFL.txt` に同梱
+- Material Symbols ライセンス: Apache 2.0 は帰属表示不要だが上記で明記
 
 ## 効果音 (SE)
 
@@ -38,7 +38,7 @@
 | プラグイン | 用途 | ライセンス | 出典 |
 |---|---|---|---|
 | godot-admob-plugin (godot-sdk-integrations版) | Android 広告 | MIT | https://github.com/godot-sdk-integrations/godot-admob |
-| Godot GUT | ユニットテスト | MIT | https://github.com/bitwes/Gut |
+| Godot GUT v9.6.0 | ユニットテスト | MIT | https://github.com/bitwes/Gut (addons/gut/VERSION.txt 参照) |
 
 ## 謝辞
 

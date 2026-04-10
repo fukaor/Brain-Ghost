@@ -396,11 +396,12 @@ if OS.get_name() == "Android":
 
 - 色は `scripts/utils/color_palette.gd` の定数から引く
 - ハードコードされた `Color(1, 0, 0)` や `#EF4444` は**PRで必ず指摘**する
-- `ColorPalette.RED` は定義しない（そもそも使わないため存在しない）。`color_palette.gd` の冒頭 DOC コメントにも「赤系は意図的に定義しない — 詳細は development-guidelines.md §色の使用」と明記する
+- `ColorPaletteUtil.RED` は定義しない（そもそも使わないため存在しない）。`color_palette.gd` の冒頭 DOC コメントにも「赤系は意図的に定義しない — 詳細は development-guidelines.md §色の使用」と明記する
+- クラス名は `ColorPaletteUtil`（Godot 4.6 のネイティブ `ColorPalette` との衝突回避。他の util 群と同じ `*Util` 接尾辞で統一）
 
 ```gdscript
 # ✅ 良い例
-$ScoreLabel.modulate = ColorPalette.POSITIVE_GREEN
+$ScoreLabel.modulate = ColorPaletteUtil.POSITIVE_GREEN
 
 # ❌ 悪い例
 $ScoreLabel.modulate = Color(0.13, 0.77, 0.37)  # 直接指定
