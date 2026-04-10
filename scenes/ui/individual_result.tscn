@@ -1,0 +1,112 @@
+[gd_scene load_steps=4 format=3 uid="uid://b0indresult001"]
+
+[ext_resource type="Script" path="res://scripts/ui/individual_result_controller.gd" id="1_ctrl"]
+[ext_resource type="Texture2D" path="res://assets/textures/gradients/page_bg.png" id="2_pagebg"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ghost_character.tscn" id="3_ghost"]
+
+[node name="IndividualResult" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ctrl")
+
+[node name="PageBackground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_pagebg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SafeAreaMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 24
+
+[node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+theme_type_variation = &"h1"
+text = "結果"
+horizontal_alignment = 1
+
+[node name="ResultCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+theme_type_variation = &"hero_card"
+
+[node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/ResultCard"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ScoreLabel" type="Label" parent="SafeAreaMargin/MainColumn/ResultCard/CardVBox"]
+layout_mode = 2
+theme_type_variation = &"display"
+text = "—"
+horizontal_alignment = 1
+
+[node name="DiffLabel" type="Label" parent="SafeAreaMargin/MainColumn/ResultCard/CardVBox"]
+layout_mode = 2
+theme_type_variation = &"caption"
+text = "—"
+horizontal_alignment = 1
+
+[node name="AvgReactionLabel" type="Label" parent="SafeAreaMargin/MainColumn/ResultCard/CardVBox"]
+layout_mode = 2
+text = "—"
+horizontal_alignment = 1
+
+[node name="BestBadge" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ResultCard/CardVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+visible = false
+
+[node name="BestIcon" type="Label" parent="SafeAreaMargin/MainColumn/ResultCard/CardVBox/BestBadge"]
+layout_mode = 2
+theme_type_variation = &"icon_hero"
+text = "auto_awesome"
+
+[node name="BestLabel" type="Label" parent="SafeAreaMargin/MainColumn/ResultCard/CardVBox/BestBadge"]
+layout_mode = 2
+theme_type_variation = &"h2"
+text = "ベスト更新！"
+
+[node name="GhostCharacter" parent="SafeAreaMargin/MainColumn" instance=ExtResource("3_ghost")]
+layout_mode = 2
+
+[node name="FlexSpacer" type="Control" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ButtonRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ReplayButton" type="Button" parent="SafeAreaMargin/MainColumn/ButtonRow"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "もう一度"
+
+[node name="HomeButton" type="Button" parent="SafeAreaMargin/MainColumn/ButtonRow"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ホームへ"

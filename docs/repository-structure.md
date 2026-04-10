@@ -66,9 +66,9 @@ brain-ghost/
 │   │   ├── sequence_memory.tscn
 │   │   └── card_match.tscn
 │   ├── ui/
-│   │   ├── rule_explain.tscn       # ルール説明画面
-│   │   ├── countdown.tscn          # カウントダウン演出
-│   │   ├── individual_result.tscn  # 個別ゲーム結果
+│   │   ├── rule_explain.tscn       # ルール説明画面（ゴーストがルールを説明、データドリブン）
+│   │   ├── countdown.tscn          # カウントダウン演出（3-2-1、ゴーストセリフ同期）
+│   │   ├── individual_result.tscn  # 個別ゲーム結果（スコア大表示 + ゴースト反応セリフ）
 │   │   ├── overall_result.tscn     # 総合結果画面（2層構成）
 │   │   ├── share_screen.tscn       # シェア画面（Web版）
 │   │   ├── ghost_bar.tscn          # ゴーストプログレスバー（タイム系ゲームのバー）
@@ -120,6 +120,7 @@ brain-ghost/
 │   │   ├── share_screen_controller.gd
 │   │   ├── ghost_bar_controller.gd
 │   │   ├── ghost_character.gd       # ★ GhostCharacter クラス（FR-14、生霊キャラ再利用コンポ）
+│   │   ├── reflex_tap_view.gd       # ★ 反射タップシーンスクリプト（ReflexTap ロジックを駆動）
 │   │   ├── radar_chart_controller.gd
 │   │   └── stamp_calendar_controller.gd
 │   └── utils/                      # 汎用ユーティリティ

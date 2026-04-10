@@ -74,5 +74,10 @@ func _configure_platform_visibility() -> void:
 
 func _on_start_button_pressed() -> void:
     # ゴーストのセリフを更新して体験の連続性を出す
-    _ghost.set_dialogue("よーし！3 種類、約 2 分だよ。\n一緒にがんばろう！")
-    print("[Home] StartButton pressed (TODO: 次ステアリングで GameManager.start_daily_challenge() を呼ぶ)")
+    _ghost.set_dialogue("よーし！一緒にがんばろう！")
+    # Week 1 では反射タップ単体起動。デイリーチャレンジ統合は次タスク
+    var gm := get_node_or_null("/root/GameManager")
+    if gm != null and gm.has_method("start_reflex_tap"):
+        gm.start_reflex_tap("free")
+    else:
+        push_warning("[Home] GameManager.start_reflex_tap not found")

@@ -281,6 +281,48 @@ func _build_premium_variations(theme: Theme) -> void:
     theme.set_font_size("font_size", "card_title", 18)
     theme.set_color("font_color", "card_title", BG_DARK)
 
+    # --- Button: target_circle variation（反射タップゲームの丸いターゲット）---
+    # 強いシャドウ + pill 形状 + ゴールド bg でタップしたくなる誘目を作る
+    theme.set_type_variation("target_circle", "Button")
+    theme.set_color("font_color", "target_circle", BG_DARK)
+    theme.set_color("font_hover_color", "target_circle", BG_DARK)
+    theme.set_color("font_pressed_color", "target_circle", BG_DARK)
+    theme.set_font_size("font_size", "target_circle", SIZE_CAPTION)
+    theme.set_stylebox("normal", "target_circle", _target_stylebox(POSITIVE_GOLD, true))
+    theme.set_stylebox("hover", "target_circle", _target_stylebox(POSITIVE_GOLD, true))
+    theme.set_stylebox("pressed", "target_circle", _target_stylebox(_darken(POSITIVE_GOLD, 0.80), true))
+    theme.set_stylebox("disabled", "target_circle", _target_stylebox(NEUTRAL_LIGHT_GRAY, true))
+
+    # --- Button: target_circle_fake variation（フェイクターゲット、グレー bg）---
+    theme.set_type_variation("target_circle_fake", "Button")
+    theme.set_color("font_color", "target_circle_fake", NEUTRAL_GRAY)
+    theme.set_color("font_hover_color", "target_circle_fake", NEUTRAL_GRAY)
+    theme.set_color("font_pressed_color", "target_circle_fake", NEUTRAL_GRAY)
+    theme.set_font_size("font_size", "target_circle_fake", SIZE_CAPTION)
+    theme.set_stylebox("normal", "target_circle_fake", _target_stylebox(NEUTRAL_LIGHT_GRAY, true))
+    theme.set_stylebox("hover", "target_circle_fake", _target_stylebox(NEUTRAL_LIGHT_GRAY, true))
+    theme.set_stylebox("pressed", "target_circle_fake", _target_stylebox(_darken(NEUTRAL_LIGHT_GRAY, 0.85), true))
+    theme.set_stylebox("disabled", "target_circle_fake", _target_stylebox(NEUTRAL_LIGHT_GRAY, true))
+
+
+func _target_stylebox(bg: Color, pill: bool) -> StyleBoxFlat:
+    var sb := StyleBoxFlat.new()
+    sb.bg_color = bg
+    # 大きな角丸でほぼ円形に見せる
+    var r: int = 9999 if pill else 16
+    sb.corner_radius_top_left = r
+    sb.corner_radius_top_right = r
+    sb.corner_radius_bottom_left = r
+    sb.corner_radius_bottom_right = r
+    sb.content_margin_left = 0
+    sb.content_margin_right = 0
+    sb.content_margin_top = 0
+    sb.content_margin_bottom = 0
+    sb.shadow_color = Color(0, 0, 0, 0.18)
+    sb.shadow_offset = Vector2(0, 4)
+    sb.shadow_size = 12
+    return sb
+
 
 ## Material Symbols Rounded によるアイコン variation 群。
 ## Label に `theme_type_variation = "icon_nav"` 等を設定し、text に Material Symbols の

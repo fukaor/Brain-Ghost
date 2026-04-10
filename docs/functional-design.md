@@ -834,7 +834,7 @@ https://brain.reigals.com/daily?d={date}&s={score}
 | **フラッシュ暗算** | `score = correctCount * 100 + remainingSec * 10` | 0 〜 4,000 |
 | **順番記憶** | `score = maxReachedLevel * 150` | 0 〜 3,000 |
 | **ストループ** | `score = correctCount * 100 - incorrectCount * 50`（下限 0） | 0 〜 3,000 |
-| **反射タップ** | `score = (1000 / averageReactionMs) * 300`（上限 1,500） | 0 〜 1,500 |
+| **反射タップ** | `score = (1000 / averageReactionMs) * 300`（上限 1,500）。`averageReactionMs` は **正規タップの反応時間平均 + フェイクタップ数 × 50ms ペナルティ**。フェイクは 3-5 回に 1 回出現 | 0 〜 1,500 |
 | **神経衰弱** | `score = (pairCount / totalTapCount) * 1000 + max(0, timeBonus)` | 0 〜 2,500 |
 | **数字さがし** | `score = max(0, 3000 - clearTimeSec * 100)` | 0 〜 3,000 |
 

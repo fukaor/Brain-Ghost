@@ -244,7 +244,100 @@ manifest.md §9 では **GDScript 内で `modulate = Color(...)` を書くこと
 
 ---
 
-## 9. 参照ドキュメント
+## 9. ミニゲーム実装のテンプレ
+
+新しいミニゲームを追加するときは、反射タップ (`scripts/games/reflex_tap.gd` + `scenes/games/reflex_tap.tscn` + `scripts/ui/reflex_tap_view.gd`) を下敷きにする。
+
+### 9-1. ロジッククラス (`scripts/games/<game>.gd`)
+
+```gdscript
+class_name <PascalCaseGame>
+extends BaseGame
+
+# 定数（ゲーム固有の上限・範囲）
+const TARGET_COUNT: int = 20
+
+# 状態（_ プレフィックスで private）
+var _tapped_count: int = 0
+
+# BaseGame ライフサイクルフック
+func _on_setup(_seed_value: int) -> void:
+    game_type = "<game>"
+    is_time_based = true  # or false
+    _tapped_count = 0
+    # rng は既に setup() で初期化済み
+
+func _on_start() -> void:
+    pass  # シーン側 (view) が初期描画を担当
+
+func _on_user_input(input: Dictionary) -> void:
+    # input.type で分岐
+    pass
+
+func _on_finish() -> PlayLog:
+    var log := super._on_finish()
+    log.game_type = "<game>"
+    return log
+    # score は GameManager が ScoreSystem 経由で埋める設計
+```
+
+### 9-2. シーン (`scenes/games/<game>.tscn` + `scripts/ui/<game>_view.gd`)
+
+- ルート: Control + PageBackground + SafeAreaMargin + MainColumn (§1 ボイラープレート準拠)
+- TopHudRow: 3 ピル (進捗 / 経過時間 / その他) で情報表示
+- GameArea: Control + size_flags_vertical=3 + clip_contents=true でゲーム固有のプレイ領域
+- view スクリプトが BaseGame 派生クラスを `add_child` してロジックを駆動
+- view は `_process(delta)` で HUD 更新、`Timer` で次イベントスケジュール
+
+### 9-3. ScoreSystem への登録
+
+`scripts/core/score_system.gd` の `calculate_score()` の `match game_type:` に新ゲームの算出式を追加する。GDD §6 のスコア計算式に準拠。
+
+### 9-4. GameManager フローへの組み込み
+
+`scripts/autoload/game_manager.gd` に以下のメソッドを追加 (反射タップを参考):
+- `start_<game>(mode)` — シーン遷移開始
+- `on_<game>_finished(log)` — ゲーム終了時のフィルイン + ScoreSystem 呼び出し + DataStore 保存 + 結果画面遷移
+
+### 9-5. 共有ルール説明データ
+
+`scripts/ui/rule_explain_controller.gd` の `RULES` Dictionary に新ゲームのエントリを追加するだけで、同じルール説明シーンで新ゲームをサポートできる:
+
+```gdscript
+const RULES: Dictionary = {
+    "reflex_tap": {...},
+    "<new_game>": {
+        "title": "<ゲーム名>",
+        "dialogue": "<ゴーストが説明するルール文>",
+    },
+}
+```
+
+### 9-6. ユニットテスト
+
+`tests/unit/games/test_<game>.gd` に以下を最低限カバー:
+- 決定論性 (同じ seed で同じ結果)
+- 範囲チェック (生成値がパラメータ内)
+- スコア境界 (0、上限値、不正入力)
+- エッジケース (空、極端な値)
+
+GUT の `before_each` でゲームインスタンスを seed 付きで setup する。
+
+### 9-7. 反射タップを写経するときのチェックリスト
+
+- [ ] BaseGame 継承
+- [ ] `class_name` を新規追加 (Godot 4 ネイティブクラスと衝突しない名前)
+- [ ] `Array.shuffle()` を使っていない (`rng.randi_range` のみ)
+- [ ] `ScoreSystem.calculate_score("<game>", play_data)` の呼び出しが GameManager 側
+- [ ] `RULES` Dictionary に新ゲーム追加
+- [ ] `GameManager.start_<game>` メソッド追加
+- [ ] view スクリプトが ScoreSystem / DataStore を直接呼んでいない (GameManager 経由)
+- [ ] 新規シーンで生 hex / 絶対配置 / theme_override がゼロ
+- [ ] GUT テスト追加
+
+---
+
+## 10. 参照ドキュメント
 
 - `docs/design/manifest.md` — カラートークン・タイポ・スペーシング仕様
 - `docs/design/references/competitor-research.md` — 競合 7 アプリ UI リサーチ

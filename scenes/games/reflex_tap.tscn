@@ -1,0 +1,114 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0reflextap0001"]
+
+[ext_resource type="Script" path="res://scripts/ui/reflex_tap_view.gd" id="1_view"]
+[ext_resource type="Texture2D" path="res://assets/textures/gradients/page_bg.png" id="2_pagebg"]
+
+[node name="ReflexTap" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_view")
+
+[node name="PageBackground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_pagebg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SafeAreaMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TopHudRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ProgressPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"pill_chip"
+
+[node name="HBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressPill"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="ProgressIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"icon_pill"
+text = "radio_button_checked"
+
+[node name="ProgressValue" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"value"
+text = "0 / 20"
+
+[node name="ElapsedPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"pill_chip"
+
+[node name="HBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/ElapsedPill"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="ElapsedIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ElapsedPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"icon_pill"
+text = "schedule"
+
+[node name="ElapsedValue" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ElapsedPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"value"
+text = "0.0s"
+
+[node name="SpeedPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"pill_chip"
+
+[node name="HBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/SpeedPill"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="SpeedIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/SpeedPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"icon_pill"
+text = "bolt"
+
+[node name="SpeedValue" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/SpeedPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"value"
+text = "— ms"
+
+[node name="GameArea" type="Control" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+clip_contents = true
+
+[node name="SpawnTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]
