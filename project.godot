@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Brain Boost"
-config/description="毎日2分、昨日の自分に挑め — ミニゲーム詰め合わせ型の脳トレアプリ"
+config/name="ブレインゴースト - 脳トレ × 自分対戦"
+config/description="脳トレ × 自分対戦。毎日2分、昨日の自分に挑め — ミニゲーム詰め合わせ型の脳トレアプリ"
 config/version="0.1.0"
 run/main_scene="res://scenes/main/launch.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")

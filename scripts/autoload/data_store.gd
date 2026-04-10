@@ -23,7 +23,7 @@ func _get_native_path(key: StoreKey) -> String:
     return "user://%s.json" % _key_name(key).to_lower()
 
 func _get_web_key(key: StoreKey) -> String:
-    return "brainboost_%s" % _key_name(key).to_lower()
+    return "brainghost_%s" % _key_name(key).to_lower()
 
 func _key_name(key: StoreKey) -> String:
     return StoreKey.keys()[key]

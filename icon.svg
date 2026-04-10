@@ -1,5 +1,5 @@
 <svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-  <!-- Brain Boost 暫定アイコン: 正式デザインは Week 4 で差し替え -->
+  <!-- ブレインゴースト 暫定アイコン: 正式デザインは Week 4 で差し替え -->
   <rect width="128" height="128" rx="24" fill="#22C55E"/>
-  <text x="64" y="80" font-family="sans-serif" font-size="56" font-weight="bold" text-anchor="middle" fill="#0F172A">BB</text>
+  <text x="64" y="80" font-family="sans-serif" font-size="56" font-weight="bold" text-anchor="middle" fill="#0F172A">BG</text>
 </svg>

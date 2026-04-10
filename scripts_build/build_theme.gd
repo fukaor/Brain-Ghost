@@ -1,6 +1,6 @@
 ## build_theme.gd
 ##
-## Brain Boost の共通 Theme Resource を生成するビルダスクリプト。
+## ブレインゴースト の共通 Theme Resource を生成するビルダスクリプト。
 ## `docs/design/manifest.md` の仕様に従って `assets/themes/default_theme.tres` を組み立てる。
 ##
 ## 実行方法:

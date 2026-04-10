@@ -1,11 +1,11 @@
 # 開発ガイドライン (Development Guidelines)
 
-> **プロダクト**: Brain Boost
+> **プロダクト**: ブレインゴースト
 > **バージョン**: v1.0 (MVP)
 > **最終更新**: 2026-04-10
 > **参照**: `docs/architecture.md`, `docs/repository-structure.md`, `CLAUDE.md`
 
-Godot 4 / GDScript プロジェクトとしての Brain Boost のコーディング規約、Git 運用、テスト戦略、コードレビューの基準を定義する。**個人開発（ねこぽ/ReigalLabs）+ Claude Code アシスト**という開発体制を前提とする。
+Godot 4 / GDScript プロジェクトとしての ブレインゴースト のコーディング規約、Git 運用、テスト戦略、コードレビューの基準を定義する。**個人開発（ねこぽ/ReigalLabs）+ Claude Code アシスト**という開発体制を前提とする。
 
 ---
 
@@ -470,7 +470,7 @@ main            ← 常にリリース可能な状態
 | `chore` | ビルド、補助ツール、依存関係更新 |
 | `perf` | パフォーマンス改善 |
 
-#### Scope の例（Brain Boost 固有）
+#### Scope の例（ブレインゴースト 固有）
 
 - `game/reflex_tap`, `game/flash_calc`, etc.
 - `core/score`, `core/ghost`, `core/daily_seed`, `core/streak`
@@ -789,8 +789,8 @@ func test_update_streak_8_day_gap_resets():
 
 ```bash
 # 1. リポジトリのクローン
-git clone https://github.com/<user>/brain-boost.git
-cd brain-boost
+git clone https://github.com/<user>/brain-ghost.git
+cd brain-ghost
 
 # 2. Godot Editor で open
 # Godot を起動 → Import → project.godot を選択

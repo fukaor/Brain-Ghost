@@ -1,6 +1,6 @@
 ## build_gradients.gd
 ##
-## Brain Boost の UI グラデーションテクスチャを生成する。
+## ブレインゴースト の UI グラデーションテクスチャを生成する。
 ## `assets/textures/gradients/` に PNG を保存し、Theme の StyleBoxTexture から参照する。
 ##
 ## ウマ娘のような "豪華さ" のベースはグラデーションとハイライト。Godot の StyleBoxFlat

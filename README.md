@@ -1,6 +1,6 @@
-# Brain Boost
+# ブレインゴースト
 
-> **毎日2分、昨日の自分に挑め**
+> **脳トレ × 自分対戦** — 毎日2分、昨日の自分に挑め
 >
 > ミニゲーム詰め合わせ型の脳トレアプリ（Godot 4 / Web + Android）
 
@@ -51,8 +51,8 @@
 
 ```bash
 # 1. リポジトリのクローン
-git clone https://github.com/<user>/brain-boost.git
-cd brain-boost
+git clone https://github.com/<user>/brain-ghost.git
+cd brain-ghost
 
 # 2. Godot Engine 4.6.2 以降をインストール
 #    https://godotengine.org/download から取得
@@ -123,12 +123,12 @@ godot --headless --script scripts_build/build_gradients.gd
 
 ### ゴーストキャラクタ (生霊システム)
 
-Brain Boost の独自 UX コンポーネント。**ゴースト = ユーザの生霊** という設定で、精度 % → 不透明度、セリフで状態を案内します。全画面共通の `scenes/ui/ghost_character.tscn` としてインスタンス化し、コントローラから `set_accuracy()` / `set_dialogue()` を呼び出します。詳細は `docs/design/patterns.md` §5 を参照。
+ブレインゴースト の独自 UX コンポーネント。**ゴースト = ユーザの生霊** という設定で、精度 % → 不透明度、セリフで状態を案内します。全画面共通の `scenes/ui/ghost_character.tscn` としてインスタンス化し、コントローラから `set_accuracy()` / `set_dialogue()` を呼び出します。詳細は `docs/design/patterns.md` §5 を参照。
 
 ## プロジェクト構造
 
 ```
-brain-boost/
+brain-ghost/
 ├── project.godot           # Godot プロジェクト設定
 ├── scenes/                 # Godot シーン (.tscn)
 ├── scripts/

@@ -1,6 +1,6 @@
 # 技術仕様書 (Architecture Design Document)
 
-> **プロダクト**: Brain Boost
+> **プロダクト**: ブレインゴースト
 > **バージョン**: v1.0 (MVP)
 > **最終更新**: 2026-04-10
 > **参照**: `docs/product-requirements.md`, `docs/functional-design.md`
@@ -62,7 +62,7 @@ PRD と機能設計書の内容を技術的に実現するための、システ�
 
 ### 全体構造: サーバレス・シングルバイナリクライアント
 
-Brain Boost は**バックエンドを持たない**。単一の Godot プロジェクトから Web/Android にエクスポートされ、すべてのロジックとデータがクライアント側で完結する。
+ブレインゴースト は**バックエンドを持たない**。単一の Godot プロジェクトから Web/Android にエクスポートされ、すべてのロジックとデータがクライアント側で完結する。
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -192,11 +192,11 @@ static func storage_strategy() -> String:
 
 | データ種別 | ストレージ（Web） | ストレージ（Android） | フォーマット | 理由 |
 |---|---|---|---|---|
-| UserConfig | `localStorage["brainboost_user_config"]` | `user://user_config.json` | JSON | 小容量・シンプルな key-value |
-| PlayLogs | `localStorage["brainboost_play_logs"]` | `user://play_logs.json` | JSON | 時系列配列、最大 360 件 |
-| GameBests | `localStorage["brainboost_game_bests"]` | `user://game_bests.json` | JSON | 6 件のみ |
-| StreakState | `localStorage["brainboost_streak_state"]` | `user://streak_state.json` | JSON | 軽量、ハンコ日付配列含む |
-| GhostCache | `localStorage["brainboost_ghost_cache"]` | `user://ghost_cache.json` | JSON | 再計算可能なキャッシュ |
+| UserConfig | `localStorage["brainghost_user_config"]` | `user://user_config.json` | JSON | 小容量・シンプルな key-value |
+| PlayLogs | `localStorage["brainghost_play_logs"]` | `user://play_logs.json` | JSON | 時系列配列、最大 360 件 |
+| GameBests | `localStorage["brainghost_game_bests"]` | `user://game_bests.json` | JSON | 6 件のみ |
+| StreakState | `localStorage["brainghost_streak_state"]` | `user://streak_state.json` | JSON | 軽量、ハンコ日付配列含む |
+| GhostCache | `localStorage["brainghost_ghost_cache"]` | `user://ghost_cache.json` | JSON | 再計算可能なキャッシュ |
 
 **保存の粒度**: ファイル1つ = エンティティ1種類。ファイル境界を超える整合性はトランザクションではなく、**エンティティごとの全上書き**で保つ。
 

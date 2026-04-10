@@ -1,11 +1,11 @@
 # リポジトリ構造定義書 (Repository Structure Document)
 
-> **プロダクト**: Brain Boost
+> **プロダクト**: ブレインゴースト
 > **バージョン**: v1.0 (MVP)
 > **最終更新**: 2026-04-10
 > **参照**: `docs/product-requirements.md`, `docs/functional-design.md`, `docs/architecture.md`
 
-Godot 4 プロジェクトとして Brain Boost のファイル配置規則を定義する。レイヤー責務は `architecture.md` の「アーキテクチャパターン」に従う。
+Godot 4 プロジェクトとして ブレインゴースト のファイル配置規則を定義する。レイヤー責務は `architecture.md` の「アーキテクチャパターン」に従う。
 
 > **本ドキュメントが正**: `CLAUDE.md` のディレクトリ構造は本ドキュメントを正として書かれている。差異があった場合は本ドキュメントに合わせて `CLAUDE.md` を更新すること。
 
@@ -14,7 +14,7 @@ Godot 4 プロジェクトとして Brain Boost のファイル配置規則を�
 ## プロジェクト構造
 
 ```
-brain-boost/
+brain-ghost/
 ├── CLAUDE.md                       # プロジェクトメモリ（Claude Code 用）
 ├── AGENTS.md                       # エージェント向けガイダンス（自動生成）
 ├── README.md                       # プロジェクト概要

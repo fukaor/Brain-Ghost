@@ -1,4 +1,4 @@
-## Brain Boost — Smoke Test Runner
+## ブレインゴースト — Smoke Test Runner
 ##
 ## GUT が配置されていない状況でも、環境構築の健全性を即座に検証するためのスモークテスト。
 ##
@@ -13,7 +13,7 @@ var _failed: int = 0
 var _failures: Array[String] = []
 
 func _init() -> void:
-    print("=== Brain Boost Smoke Test ===")
+    print("=== ブレインゴースト Smoke Test ===")
     _run_all()
     print("---")
     print("Passed: %d, Failed: %d" % [_passed, _failed])

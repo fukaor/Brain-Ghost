@@ -1,6 +1,6 @@
 # 機能設計書 (Functional Design Document)
 
-> **プロダクト**: Brain Boost
+> **プロダクト**: ブレインゴースト
 > **バージョン**: v1.0 (MVP)
 > **最終更新**: 2026-04-10
 > **出典PRD**: `docs/product-requirements.md`
@@ -11,7 +11,7 @@ PRDで定義された機能要件（FR-01 〜 FR-13）を、Godot 4 / GDScript �
 
 ## システム構成図
 
-Brain Boost は**サーバレスのクライアント単体アプリ**として構成される。Web版と Android版 は単一の Godot 4 プロジェクトから同時エクスポートされ、プラットフォーム固有の処理（広告・データ保存）のみ `OS.get_name()` で分岐する。
+ブレインゴースト は**サーバレスのクライアント単体アプリ**として構成される。Web版と Android版 は単一の Godot 4 プロジェクトから同時エクスポートされ、プラットフォーム固有の処理（広告・データ保存）のみ `OS.get_name()` で分岐する。
 
 ```mermaid
 graph TB
@@ -424,7 +424,7 @@ func _get_native_path(key: StoreKey) -> String:
     return "user://%s.json" % StoreKey.keys()[key].to_lower()
 
 func _get_web_key(key: StoreKey) -> String:
-    return "brainboost_%s" % StoreKey.keys()[key].to_lower()
+    return "brainghost_%s" % StoreKey.keys()[key].to_lower()
 
 func save(key: StoreKey, data: Dictionary) -> bool:
     var json_text: String = JSON.stringify(data)
@@ -453,7 +453,7 @@ func _save_native(key: StoreKey, json_text: String) -> bool:
 func _save_web(key: StoreKey, json_text: String) -> bool:
     # JavaScriptBridge.eval の文字列埋め込みは脆弱なため、
     # JavaScript オブジェクト経由で localStorage.setItem を呼ぶ。
-    # window.brainboostBridge に Godot 側から Variant を渡して JS 側でアクセスする。
+    # window.brainghostBridge に Godot 側から Variant を渡して JS 側でアクセスする。
     var js_key: String = _get_web_key(key)
     # Godot 4: create_object / set_value を使って安全に値を渡す
     JavaScriptBridge.eval("""
@@ -699,7 +699,7 @@ sequenceDiagram
     participant Visitor as 訪問ユーザー
     participant Browser as ブラウザ
     participant Web as brain.reigals.com
-    participant App as Brain Boost (Web版)
+    participant App as ブレインゴースト (Web版)
     participant DSeed as DailySeed
 
     Friend->>Web: 総合結果で [シェア] タップ
@@ -787,7 +787,7 @@ stateDiagram-v2
 
 ## API設計（該当する場合）
 
-Brain Boost はサーバ API を持たない。唯一の外部インターフェースは **Web版シェアURL**。
+ブレインゴースト はサーバ API を持たない。唯一の外部インターフェースは **Web版シェアURL**。
 
 ### Web版シェア URL スキーマ
 
@@ -816,7 +816,7 @@ https://brain.reigals.com/daily?d={date}&s={score}
 **OGPメタタグ**:
 ```html
 <meta property="og:title" content="今日の脳トレ: {score}pts - 勝てる？">
-<meta property="og:description" content="Brain Boost デイリーチャレンジ {YYYY/MM/DD}">
+<meta property="og:description" content="ブレインゴースト デイリーチャレンジ {YYYY/MM/DD}">
 <meta property="og:image" content="https://brain.reigals.com/ogp/default.png">
 <!-- v1.1 で動的生成: /ogp/daily/{date}/{score}.png -->
 ```
@@ -1143,11 +1143,11 @@ user://
 
 **Web版の保存先**: localStorage に同じキーで JSON 文字列として保存
 ```
-brainboost_user_config
-brainboost_play_logs
-brainboost_game_bests
-brainboost_streak_state
-brainboost_ghost_cache
+brainghost_user_config
+brainghost_play_logs
+brainghost_game_bests
+brainghost_streak_state
+brainghost_ghost_cache
 ```
 
 **ファイル内容例**（`user_config.json`）:

@@ -1,4 +1,4 @@
-# Brain Boost — Third-Party Assets Credits
+# ブレインゴースト — Third-Party Assets Credits
 
 このプロジェクトは以下のフリー素材・オープンソースアセットを使用しています。ライセンスに従い、必要な帰属表示を以下にまとめます。
 
