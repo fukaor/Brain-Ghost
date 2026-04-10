@@ -299,9 +299,17 @@ const GAME_TO_ABILITY = {
 }
 
 func calculate_score(game_type: String, play_data: Dictionary) -> int
-func calculate_brain_age(total_score: int, age_group: String) -> int
-func calculate_accuracy(played_game_types: Array[String]) -> float  # 0.0 - 1.0
-func calculate_radar(logs: Array[PlayLog]) -> Dictionary  # 6能力のスコア
+
+## 初回補正（`is_first_play` の場合に甘め）とシード付き RNG 注入をサポート
+func calculate_brain_age(
+    total_score: int,
+    age_group: String,
+    is_first_play: bool = false,
+    rng: RandomNumberGenerator = null
+) -> int
+
+func calculate_accuracy(played_game_types: Array) -> float  # 0.0 - 1.0
+func get_ability(game_type: String) -> String  # 能力軸マッピング
 ```
 
 **脳年齢アルゴリズム詳細は「アルゴリズム設計」セクション参照。**
@@ -320,11 +328,20 @@ class_name GhostSystem
 extends Node
 
 func is_feature_unlocked(accuracy: float) -> bool  # 第1段階: 精度 100% 判定
-func is_ready_for_game(game_type: String) -> bool  # 第2段階: そのゲームで5件以上 PlayLog があるか
-func get_ghost_for_game(game_type: String) -> GhostData
+
+## 第2段階: そのゲームの PlayLog 件数が 5 以上か
+## 注: 引数はカウント（int）を直接渡す設計にしている。
+## DataStore への逆依存を避けるため、呼び出し側（GameManager）でカウント済みの値を渡す
+func is_ready_for_game(play_log_count: int) -> bool
+
+## 「あと○回でゴーストが生まれます」用の残り回数（同上、カウントを渡す設計）
+func get_plays_until_ready(play_log_count: int) -> int
+
+## 直近 5 件の PlayLog からゴーストデータを生成する
+func compute_ghost(game_type: String, recent_logs: Array) -> GhostData
+
 func simulate_ghost_progress(ghost: GhostData, elapsed_ms: int) -> Dictionary
-func judge_result(game_type: String, self_value: float, ghost: GhostData) -> GhostResult
-func get_plays_until_ready(game_type: String) -> int  # 育成メッセージ用
+func judge_result(game_type: String, self_value: float, ghost: GhostData) -> Dictionary  # GhostResult
 ```
 
 ### core/DailySeed（日付シード生成）

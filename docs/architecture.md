@@ -15,8 +15,8 @@ PRD と機能設計書の内容を技術的に実現するための、システ�
 
 | 技術 | バージョン | 備考 |
 |---|---|---|
-| **Godot Engine** | 4.3 以降（LTS候補） | Web/Android同時エクスポート可能な最新安定版 |
-| **GDScript** | Godot 4.3 同梱 | プロジェクトの主言語 |
+| **Godot Engine** | **4.6.2 stable**（固定） | MVP 開発で確定したバージョン。`.godot-version` ファイルに記載。バージョンアップは独立 PR で。Web/Android 同時エクスポート可能 |
+| **GDScript** | Godot 4.6 同梱 | プロジェクトの主言語 |
 | **HTML5 / JavaScript** | ES2020 以降 | Web版の `JavaScriptBridge` 連携用 |
 | **Node.js（開発補助）** | 20.x LTS | デプロイスクリプト、`_headers` 生成等の補助スクリプト用。実行環境には含まない |
 
@@ -38,7 +38,7 @@ PRD と機能設計書の内容を技術的に実現するための、システ�
 
 | 技術 | バージョン | 用途 | 選定理由 |
 |---|---|---|---|
-| **Godot Editor** | プロジェクトと同じ 4.3+ | 開発・デバッグ・エクスポート | 唯一の開発 IDE |
+| **Godot Editor** | 4.6.2 以降（`.godot-version` と一致） | 開発・デバッグ・エクスポート | 唯一の開発 IDE |
 | **Git** | 2.x | バージョン管理 | 標準 |
 | **GitHub**（private repo） | — | リモートリポジトリ、Issue管理 | 個人開発者の標準 |
 | **Cloudflare Pages** | — | Web版の静的ホスティング | 既存 ReigalLabs インフラ流用、無料枠で十分 |
