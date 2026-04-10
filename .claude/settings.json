@@ -1,0 +1,181 @@
+{
+  "env": {
+    "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "1"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/protect-files.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/protect-files.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/external-action-gate.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|Bash|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/governance.js",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/post-edit.js",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/organize-enforce.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/circuit-breaker.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/cost-tracker.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/circuit-breaker.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/pre-compact.js",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/quality-gate.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/init-project.js",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/restore-compact.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/intake-scanner.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/session-end.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/godot/.claude/plugins/cache/citadel-local/citadel/1.1.0/hooks_src/subagent-stop.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "citadel@citadel-local": true,
+    "firecrawl@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "context7@claude-plugins-official": true
+  }
+}

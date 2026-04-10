@@ -1,0 +1,93 @@
+{
+  "name": "${localWorkspaceFolderBasename}",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+
+  // --- Workspace ---
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace",
+
+  // --- Volumes ---
+  "mounts": [
+    // Claude Code config / session persistence
+    "source=${localWorkspaceFolderBasename}-claude-config-${devcontainerId},target=/home/godot/.claude,type=volume",
+    // Claude plugins persistence (Citadel etc.)
+    "source=${localWorkspaceFolderBasename}-claude-plugins-${devcontainerId},target=/home/godot/.claude-plugins,type=volume",
+    // GitHub CLI auth persistence
+    "source=${localWorkspaceFolderBasename}-gh-config-${devcontainerId},target=/home/godot/.config/gh,type=volume",
+    // git credential persistence
+    "source=${localWorkspaceFolderBasename}-git-credentials-${devcontainerId},target=/home/godot/.git-credentials-vol,type=volume",
+    // Godot config persistence (editor settings, export presets cache)
+    "source=${localWorkspaceFolderBasename}-godot-config-${devcontainerId},target=/home/godot/.config/godot,type=volume",
+    // Godot data persistence (export templates, imported assets cache)
+    "source=${localWorkspaceFolderBasename}-godot-data-${devcontainerId},target=/home/godot/.local/share/godot,type=volume",
+    // Shell history persistence
+    "source=${localWorkspaceFolderBasename}-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
+    // Godot .godot cache isolation (imported resources, shader cache)
+    "source=${localWorkspaceFolderBasename}-godot-cache-${devcontainerId},target=/workspace/.godot,type=volume"
+  ],
+
+  // --- Environment ---
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/godot/.claude",
+    "HISTFILE": "/commandhistory/.bash_history",
+    "TZ": "Asia/Tokyo",
+    "ANDROID_HOME": "/opt/android-sdk",
+    "ANDROID_SDK_ROOT": "/opt/android-sdk",
+    "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-amd64"
+  },
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
+    // Set your Firecrawl API key in host env or .env
+    "FIRECRAWL_API_KEY": "${localEnv:FIRECRAWL_API_KEY}",
+    // GitHub token (optional — gh auth login is preferred)
+    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
+    // Android keystore password (for release builds)
+    "ANDROID_KEYSTORE_PASSWORD": "${localEnv:ANDROID_KEYSTORE_PASSWORD}"
+  },
+
+  // --- User ---
+  "remoteUser": "godot",
+
+  // --- Lifecycle Commands ---
+  "postCreateCommand": "bash .devcontainer/setup-claude.sh --install-plugins",
+  "postStartCommand": "bash .devcontainer/setup-claude.sh",
+
+  // --- VS Code Customizations ---
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "files.associations": {
+          "*.gd": "gdscript",
+          "*.tscn": "ini",
+          "*.tres": "ini",
+          "*.cfg": "ini",
+          "*.godot": "ini"
+        }
+      },
+      "extensions": [
+        // Claude Code
+        "anthropic.claude-code",
+        // GDScript
+        "geequlim.godot-tools",
+        // Git
+        "eamodio.gitlens",
+        // Utilities
+        "streetsidesoftware.code-spell-checker",
+        // Markdown
+        "yzhang.markdown-all-in-one"
+      ]
+    }
+  },
+
+  // --- Features ---
+  "features": {
+    // GitHub CLI
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  }
+}
