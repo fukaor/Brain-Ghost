@@ -5,7 +5,7 @@
 **Brain Boost** — ミニゲーム詰め合わせ型の脳トレアプリ
 - コンセプト: 「毎日2分、昨日の自分に挑め」
 - 開発者名義: ねこぽ / ReigalLabs
-- GDD: `docs/gdd.md`（設計判断の根拠はすべてここにある。実装前に必ず該当セクションを読むこと）
+- GDD: `docs/ideas/brain_training_gdd.md`（設計判断の根拠はすべてここにある。実装前に必ず該当セクションを読むこと）
 
 ## 技術スタック
 
@@ -70,15 +70,18 @@
 
 ### Godotプロジェクト構造（想定）
 
+> **最新のディレクトリ構造は `docs/repository-structure.md` を正とする**。本セクションは概要の抜粋。
+
 ```
 brain-boost/
 ├── CLAUDE.md                    # このファイル
 ├── docs/
-│   ├── gdd.md                   # GDD v1.0（設計の北極星）
+│   ├── ideas/
+│   │   └── brain_training_gdd.md # GDD v1.0（設計の北極星）
 │   ├── product-requirements.md  # PRD（GDDから抽出）
 │   ├── functional-design.md     # 機能設計書
 │   ├── architecture.md          # 技術仕様書
-│   ├── repository-structure.md  # リポジトリ構造定義書
+│   ├── repository-structure.md  # リポジトリ構造定義書（詳細はこちら）
 │   ├── development-guidelines.md # 開発ガイドライン
 │   └── glossary.md              # ユビキタス言語定義
 ├── .steering/                   # 作業単位のドキュメント
@@ -86,9 +89,10 @@ brain-boost/
 ├── export_presets.cfg           # Web/Androidエクスポート設定
 ├── scenes/
 │   ├── main/
+│   │   ├── launch.tscn          # スプラッシュ/初期ルーター
 │   │   ├── home.tscn            # ホーム画面
 │   │   ├── onboarding.tscn      # 初回オンボーディング
-│   │   └── result.tscn          # 総合結果画面
+│   │   └── settings.tscn        # 設定画面
 │   ├── games/
 │   │   ├── reflex_tap.tscn      # 反射タップ
 │   │   ├── flash_calc.tscn      # フラッシュ暗算
@@ -98,17 +102,35 @@ brain-boost/
 │   │   └── card_match.tscn      # 神経衰弱
 │   ├── ui/
 │   │   ├── rule_explain.tscn    # ルール説明画面
-│   │   ├── game_result.tscn     # 個別結果画面
-│   │   └── ghost_bar.tscn       # ゴーストインジケーター
+│   │   ├── countdown.tscn       # カウントダウン演出
+│   │   ├── individual_result.tscn # 個別ゲーム結果
+│   │   ├── overall_result.tscn  # 総合結果画面（2層構成）
+│   │   ├── share_screen.tscn    # シェア画面（Web版）
+│   │   ├── ghost_bar.tscn       # ゴーストインジケーター
+│   │   ├── radar_chart.tscn     # レーダーチャート
+│   │   └── stamp_calendar.tscn  # ハンコカレンダー
 │   └── shared/
-│       └── countdown.tscn       # カウントダウン演出
+│       └── audio_controller.tscn # AudioStreamPlayer まとめ
 ├── scripts/
-│   ├── core/
+│   ├── autoload/                # Autoload（Singleton）
 │   │   ├── game_manager.gd      # ゲーム全体の状態管理
+│   │   ├── data_store.gd        # データ保存（Web/Android分岐）
+│   │   ├── audio_service.gd     # BGM/SE 管理
+│   │   ├── ad_service.gd        # 広告表示（Android のみ実体）
+│   │   ├── billing_service.gd   # 課金（Android のみ）
+│   │   └── platform.gd          # プラットフォーム判定の集約
+│   ├── core/                    # サービスレイヤー（Autoload しない）
 │   │   ├── score_system.gd      # スコア算出・脳年齢変換
 │   │   ├── ghost_system.gd      # ゴースト対戦（直近5回平均）
 │   │   ├── daily_seed.gd        # 日付シード生成
-│   │   └── data_store.gd        # データ保存（Web/Android分岐）
+│   │   ├── streak_service.gd    # ストリーク更新
+│   │   └── schema_migrator.gd   # JSON スキーママイグレーション
+│   ├── models/                  # データモデル（純粋な型）
+│   │   ├── user_config.gd
+│   │   ├── play_log.gd
+│   │   ├── game_best.gd
+│   │   ├── streak_state.gd
+│   │   └── ghost_data.gd
 │   ├── games/
 │   │   ├── base_game.gd         # ミニゲーム基底クラス
 │   │   ├── reflex_tap.gd
@@ -117,18 +139,27 @@ brain-boost/
 │   │   ├── stroop.gd
 │   │   ├── sequence_memory.gd
 │   │   └── card_match.gd
-│   └── ui/
-│       ├── home_screen.gd
-│       ├── onboarding.gd
-│       ├── result_screen.gd
-│       └── share_url.gd         # シェアURL生成
+│   ├── ui/                      # UIコントローラ
+│   │   └── *_controller.gd
+│   └── utils/                   # 汎用ユーティリティ
+│       ├── uuid.gd
+│       ├── date_util.gd
+│       ├── json_util.gd
+│       └── color_palette.gd
 ├── assets/
 │   ├── fonts/
 │   ├── sounds/
 │   ├── icons/
-│   └── themes/
+│   ├── images/
+│   ├── themes/
+│   └── CREDITS.md
 ├── addons/
-│   └── admob/                   # AdMobプラグイン（Android版のみ）
+│   ├── admob/                   # AdMobプラグイン（Android版のみ）
+│   └── gut/                     # Godot Unit Test
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
 └── web/
     ├── _headers                 # Cloudflare Pages COOP/COEP設定
     └── ogp/                     # OGPテンプレート
@@ -138,7 +169,7 @@ brain-boost/
 
 | ファイル | 内容 | GDDとの対応 |
 |---------|------|-----------|
-| gdd.md | GDD v1.0原文 | 全体 |
+| ideas/brain_training_gdd.md | GDD v1.0原文 | 全体 |
 | product-requirements.md | プロダクト要求定義 | GDD §1-2（コンセプト・ペルソナ） |
 | functional-design.md | 機能設計 | GDD §4-6（ゲーム・UX・スコアリング） |
 | architecture.md | 技術仕様 | GDD §3（プラットフォーム・技術スタック） |
@@ -191,9 +222,10 @@ brain-boost/
 
 ### 脳年齢チューニング
 
-- 初回は実年齢 -3〜5歳（やや甘め）
-- 最低でも実年齢 +10歳キャップ
-- スコアが上がれば若返る
+- 基準年齢は年代選択で決定（デフォルト30歳、設定画面で変更可。10代/20代/30代/40代/50代+の5段階）
+- 初回プレイは基準年齢から **ランダムに 3〜5 歳若返る補正**（甘め）
+- 最低でも基準年齢 +10歳 を超えないキャップ（下限は基準年齢 -15歳 でクランプ）
+- スコアが上がれば若返る（詳細: `docs/functional-design.md` A-02）
 
 ### 精度システム
 
@@ -218,16 +250,20 @@ brain-boost/
 
 ### Web版 vs Android版
 
+**プラットフォーム判定は `scripts/autoload/platform.gd`（Autoload 名 `Platform`）に集約する**。`OS.get_name()` をコード内に散らさない。
+
 ```gdscript
-# プラットフォーム判定パターン
-if OS.get_name() == "Web":
-    # localStorage経由で保存
-    # 広告なし
-    # シェアURL生成可能
-elif OS.get_name() == "Android":
-    # user:// にJSON保存
-    # AdMob表示
-    # 買い切り課金あり
+# ✅ 良い例: Platform Autoload 経由
+if Platform.supports_admob():
+    AdService.show_banner()
+
+if Platform.storage_strategy() == "localStorage":
+    # Web版: JavaScriptBridge 経由で保存
+    ...
+
+# ❌ 悪い例: OS.get_name() を散らす
+if OS.get_name() == "Android":
+    AdService.show_banner()
 ```
 
 ### Web版の技術的注意
@@ -240,7 +276,7 @@ elif OS.get_name() == "Android":
 
 ### 初回セットアップ
 
-1. このCLAUDE.mdとdocs/gdd.mdをリポジトリに配置
+1. このCLAUDE.mdと`docs/ideas/brain_training_gdd.md`をリポジトリに配置
 2. `/setup-project` で永続的ドキュメント作成（GDDから抽出して6つ作成）
 3. `.steering/20260410-環境構築/` でGodot環境セットアップ
 4. Week 1のタスクから `/add-feature` で実装開始
