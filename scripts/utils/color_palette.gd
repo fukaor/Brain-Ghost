@@ -14,7 +14,34 @@
 class_name ColorPaletteUtil
 extends RefCounted
 
-# --- ポジティブ系（勝利・ベスト更新・スコア上昇）---
+# ============================================================
+# --- v2: Animated Intellectual パレット (DESIGN.md 準拠) ---
+# ============================================================
+# 2026-04-13 DESIGN.md 追加により導入。既存のゴールド系は
+# アチーブメント/ベスト更新など「勝利演出」専用に降格し、
+# プライマリは Primary Blue に移行。
+
+# Primary Blue — CTA、アクティブ状態、3D ボタン主色
+const PRIMARY_BLUE := Color(0.0, 0.345, 0.729)         # #0058ba
+const PRIMARY_DIM := Color(0.0, 0.302, 0.643)          # #004da4 — 3D ボタン下辺ストローク
+const PRIMARY_CONTAINER := Color(0.424, 0.624, 1.0)    # #6c9fff — グラデ終端・アクセント
+const PRIMARY_FIXED_DIM := Color(0.314, 0.569, 1.0)    # #5091ff — ホバー/中間トーン
+const ON_PRIMARY := Color(0.941, 0.949, 1.0)           # #f0f2ff — ボタン上の文字色
+
+# Surface Container (階層深度用、ボーダー禁止ルールの代替)
+const BACKGROUND_V2 := Color(0.969, 0.961, 1.0)              # #f7f5ff — Level 0 キャンバス
+const SURFACE_CONTAINER_LOWEST := Color(1, 1, 1)              # #ffffff — Level 2 アクティブカード
+const SURFACE_CONTAINER_LOW := Color(0.937, 0.937, 1.0)       # #efefff — Level 1 サブセクション
+const SURFACE_CONTAINER := Color(0.894, 0.906, 1.0)           # #e4e7ff
+const SURFACE_CONTAINER_HIGH := Color(0.867, 0.882, 1.0)      # #dde1ff
+
+# Text Colors
+const ON_SURFACE := Color(0.137, 0.173, 0.318)         # #232c51 — 重要テキスト
+const ON_SURFACE_VARIANT := Color(0.314, 0.353, 0.506) # #505a81 — 本文
+const OUTLINE_VARIANT := Color(0.635, 0.671, 0.843)    # #a2abd7 — かろうじて境界
+
+# --- ポジティブ系（アチーブメント・勝利演出・ベスト更新）---
+# v1 のゴールドはプライマリから降格し、アチーブメント専用に
 const POSITIVE_GREEN := Color(0.133, 0.773, 0.369)  # #22C55E
 const POSITIVE_GOLD := Color(0.980, 0.800, 0.082)   # #FACC15
 

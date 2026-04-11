@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://b0home0000001"]
+[gd_scene load_steps=5 format=3 uid="uid://b0home0000001"]
 
 [ext_resource type="Script" path="res://scripts/ui/home_controller.gd" id="1_home"]
-[ext_resource type="Texture2D" path="res://assets/textures/gradients/page_bg.png" id="2_pagebg"]
-[ext_resource type="PackedScene" path="res://scenes/ui/ghost_character.tscn" id="3_ghost"]
+[ext_resource type="Texture2D" path="res://assets/textures/gradients/page_bg_v2.png" id="2_pagebg"]
+[ext_resource type="Texture2D" path="res://assets/characters/ghost_placeholder.svg" id="3_ghostsvg"]
+[ext_resource type="Texture2D" path="res://assets/textures/gradients/ability_circle_blue.png" id="4_abilitybg"]
 
 [node name="Home" type="Control"]
 layout_mode = 3
@@ -24,6 +25,23 @@ texture = ExtResource("2_pagebg")
 expand_mode = 1
 stretch_mode = 6
 
+[node name="GhostMascotBg" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 0.0
+offset_left = -360.0
+offset_top = 140.0
+offset_right = 360.0
+offset_bottom = 920.0
+grow_horizontal = 2
+modulate = Color(1, 1, 1, 0.32)
+texture = ExtResource("3_ghostsvg")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="SafeAreaMargin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -31,390 +49,597 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 32
-theme_override_constants/margin_right = 16
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 36
+theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 16
 
 [node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
 layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="HeaderRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="TopHudRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="StreakPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
+[node name="BrainAgePanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/HeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_type_variation = &"pill_chip"
+theme_type_variation = &"header_pill"
 
-[node name="StreakHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/StreakPill"]
+[node name="BrainAgeVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/BrainAgePanel"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 2
+
+[node name="BrainAgeCaption" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/BrainAgePanel/BrainAgeVBox"]
+layout_mode = 2
+theme_type_variation = &"caption_v2"
+text = "現在の脳年齢"
+horizontal_alignment = 1
+
+[node name="BrainAgeRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/BrainAgePanel/BrainAgeVBox"]
+layout_mode = 2
+theme_override_constants/separation = 3
 alignment = 1
 
-[node name="StreakIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/StreakPill/StreakHBox"]
+[node name="BrainAgeValue" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/BrainAgePanel/BrainAgeVBox/BrainAgeRow"]
 layout_mode = 2
-theme_type_variation = &"icon_pill"
-text = "local_fire_department"
+theme_type_variation = &"display_primary"
+text = "28"
 
-[node name="StreakLabel" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/StreakPill/StreakHBox"]
+[node name="BrainAgeUnit" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/BrainAgePanel/BrainAgeVBox/BrainAgeRow"]
 layout_mode = 2
-theme_type_variation = &"value"
-text = "5 日"
+size_flags_vertical = 8
+theme_type_variation = &"caption_v2"
+text = "歳"
 
-[node name="BrainAgePill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"pill_chip"
-
-[node name="BrainAgeHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/BrainAgePill"]
-layout_mode = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="BrainAgeIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/BrainAgePill/BrainAgeHBox"]
-layout_mode = 2
-theme_type_variation = &"icon_pill"
-text = "psychology"
-
-[node name="BrainAgeLabel" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/BrainAgePill/BrainAgeHBox"]
-layout_mode = 2
-theme_type_variation = &"value"
-text = "28 歳"
-
-[node name="PrecisionPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
+[node name="GhostBattlePanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/HeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_type_variation = &"pill_chip"
+theme_type_variation = &"header_pill"
 
-[node name="PrecisionHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/PrecisionPill"]
-layout_mode = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="PrecisionIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/PrecisionPill/PrecisionHBox"]
-layout_mode = 2
-theme_type_variation = &"icon_pill"
-text = "speed"
-
-[node name="PrecisionLabel" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/PrecisionPill/PrecisionHBox"]
-layout_mode = 2
-theme_type_variation = &"value"
-text = "67 %"
-
-[node name="GhostCharacter" parent="SafeAreaMargin/MainColumn" instance=ExtResource("3_ghost")]
-layout_mode = 2
-
-[node name="HeroSection" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
-layout_mode = 2
-theme_type_variation = &"hero_card"
-
-[node name="HeroVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/HeroSection"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="HeroMetaRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/HeroSection/HeroVBox"]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="HeroMetaIcon" type="Label" parent="SafeAreaMargin/MainColumn/HeroSection/HeroVBox/HeroMetaRow"]
-layout_mode = 2
-theme_type_variation = &"icon_hero"
-text = "schedule"
-
-[node name="HeroSubLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeroSection/HeroVBox/HeroMetaRow"]
-layout_mode = 2
-theme_type_variation = &"caption"
-text = "3 種類  /  約 2 分"
-
-[node name="StartButton" type="Button" parent="SafeAreaMargin/MainColumn/HeroSection/HeroVBox"]
-custom_minimum_size = Vector2(0, 96)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"cta_gradient"
-icon_alignment = 0
-text = "  今日のチャレンジを始める"
-
-[node name="ActionGrid" type="GridContainer" parent="SafeAreaMargin/MainColumn"]
-layout_mode = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 10
-columns = 2
-
-[node name="AllGamesCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn/ActionGrid"]
-custom_minimum_size = Vector2(0, 84)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"action_card"
-
-[node name="AllGamesHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ActionGrid/AllGamesCard"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="AllGamesIcon" type="Label" parent="SafeAreaMargin/MainColumn/ActionGrid/AllGamesCard/AllGamesHBox"]
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"icon_card"
-text = "grid_view"
-
-[node name="AllGamesTitle" type="Label" parent="SafeAreaMargin/MainColumn/ActionGrid/AllGamesCard/AllGamesHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_type_variation = &"card_title"
-text = "全ゲーム"
-
-[node name="CalendarCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn/ActionGrid"]
-custom_minimum_size = Vector2(0, 84)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"action_card"
-
-[node name="CalendarHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ActionGrid/CalendarCard"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="CalendarIcon" type="Label" parent="SafeAreaMargin/MainColumn/ActionGrid/CalendarCard/CalendarHBox"]
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"icon_card"
-text = "event_available"
-
-[node name="CalendarTitle" type="Label" parent="SafeAreaMargin/MainColumn/ActionGrid/CalendarCard/CalendarHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_type_variation = &"card_title"
-text = "カレンダー"
-
-[node name="ChartCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn/ActionGrid"]
-custom_minimum_size = Vector2(0, 84)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"action_card"
-
-[node name="ChartHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ActionGrid/ChartCard"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="ChartIcon" type="Label" parent="SafeAreaMargin/MainColumn/ActionGrid/ChartCard/ChartHBox"]
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"icon_card"
-text = "radar"
-
-[node name="ChartTitle" type="Label" parent="SafeAreaMargin/MainColumn/ActionGrid/ChartCard/ChartHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_type_variation = &"card_title"
-text = "能力チャート"
-
-[node name="HistoryCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn/ActionGrid"]
-custom_minimum_size = Vector2(0, 84)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"action_card"
-
-[node name="HistoryHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ActionGrid/HistoryCard"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="HistoryIcon" type="Label" parent="SafeAreaMargin/MainColumn/ActionGrid/HistoryCard/HistoryHBox"]
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"icon_card"
-text = "history"
-
-[node name="HistoryTitle" type="Label" parent="SafeAreaMargin/MainColumn/ActionGrid/HistoryCard/HistoryHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_type_variation = &"card_title"
-text = "記録"
-
-[node name="StampPreviewCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
-layout_mode = 2
-theme_type_variation = &"action_card"
-
-[node name="StampVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/StampPreviewCard"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="StampHeaderRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox"]
+[node name="BattleVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel"]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="StampIcon" type="Label" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox/StampHeaderRow"]
+[node name="BattleHeaderRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox"]
 layout_mode = 2
-theme_type_variation = &"icon_hero"
-text = "auto_awesome"
-
-[node name="StampTitle" type="Label" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox/StampHeaderRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"card_title"
-text = "今週のハンコ"
-
-[node name="StampCount" type="Label" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox/StampHeaderRow"]
-layout_mode = 2
-theme_type_variation = &"caption"
-text = "5 / 7 日"
-
-[node name="StampHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox"]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="Day1" type="Label" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox/StampHBox"]
-layout_mode = 2
-theme_type_variation = &"icon_card"
-text = "stars"
-
-[node name="Day2" type="Label" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox/StampHBox"]
-layout_mode = 2
-theme_type_variation = &"icon_card"
-text = "stars"
-
-[node name="Day3" type="Label" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox/StampHBox"]
-layout_mode = 2
-theme_type_variation = &"icon_card"
-text = "stars"
-
-[node name="Day4" type="Label" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox/StampHBox"]
-layout_mode = 2
-theme_type_variation = &"icon_card"
-text = "radio_button_unchecked"
-
-[node name="Day5" type="Label" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox/StampHBox"]
-layout_mode = 2
-theme_type_variation = &"icon_card"
-text = "stars"
-
-[node name="Day6" type="Label" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox/StampHBox"]
-layout_mode = 2
-theme_type_variation = &"icon_card"
-text = "stars"
-
-[node name="Day7" type="Label" parent="SafeAreaMargin/MainColumn/StampPreviewCard/StampVBox/StampHBox"]
-layout_mode = 2
-theme_type_variation = &"icon_card"
-text = "radio_button_unchecked"
-
-[node name="TipCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
-layout_mode = 2
-theme_type_variation = &"action_card"
-
-[node name="TipHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TipCard"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="TipIcon" type="Label" parent="SafeAreaMargin/MainColumn/TipCard/TipHBox"]
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"icon_tip"
-text = "lightbulb"
-
-[node name="TipVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/TipCard/TipHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 5
 theme_override_constants/separation = 4
+alignment = 1
 
-[node name="TipTitle" type="Label" parent="SafeAreaMargin/MainColumn/TipCard/TipHBox/TipVBox"]
+[node name="BattleIcon" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleHeaderRow"]
 layout_mode = 2
-theme_type_variation = &"card_title"
-text = "ゴーストからのヒント"
+theme_type_variation = &"icon_nav_v2"
+text = "swords"
 
-[node name="TipBody" type="Label" parent="SafeAreaMargin/MainColumn/TipCard/TipHBox/TipVBox"]
+[node name="BattleCaption" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleHeaderRow"]
 layout_mode = 2
-theme_type_variation = &"caption"
-text = "反射タップは指先より視線先行。目で追ってから押すと速いよ。"
+theme_type_variation = &"caption_v2"
+text = "ゴーストバトル"
+
+[node name="BattleBarRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="WinSide" type="PanelContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleBarRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 15.0
+theme_type_variation = &"bar_win_v2"
+
+[node name="WinLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleBarRow/WinSide"]
+layout_mode = 2
+theme_type_variation = &"bar_text_win_v2"
+text = "15勝"
+horizontal_alignment = 1
+
+[node name="LossSide" type="PanelContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleBarRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 8.0
+theme_type_variation = &"bar_loss_v2"
+
+[node name="LossLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleBarRow/LossSide"]
+layout_mode = 2
+theme_type_variation = &"bar_text_loss_v2"
+text = "8敗"
+horizontal_alignment = 1
+
+[node name="SpeechBubblePanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+theme_type_variation = &"glass_bubble"
+
+[node name="SpeechText" type="Label" parent="SafeAreaMargin/MainColumn/SpeechBubblePanel"]
+layout_mode = 2
+theme_type_variation = &"headline_v2"
+text = "昨日のあなたより計算力が上がってるよ！"
+horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="FlexSpacer" type="Control" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="BottomNavBar" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
+[node name="AbilityCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
-theme_type_variation = &"card"
+theme_type_variation = &"ability_container"
 
-[node name="NavHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/BottomNavBar"]
+[node name="AbilityVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="AbilityHeaderRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="AbilityIcon" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityHeaderRow"]
+layout_mode = 2
+theme_type_variation = &"icon_nav_v2"
+text = "analytics"
+
+[node name="AbilityTitle" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityHeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"headline_v2"
+text = "あなたの脳の得意分野"
+
+[node name="AbilityGrid" type="GridContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 6
+
+[node name="CellCalculation" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+
+[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellCalculation"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellCalculation/CellVBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("4_abilitybg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellCalculation/CellVBox/IconRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"icon_ability_white"
+text = "calculate"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellCalculation/CellVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"ability_label"
+text = "計算"
+horizontal_alignment = 1
+
+[node name="CellMemory" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+
+[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellMemory"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellMemory/CellVBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("4_abilitybg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellMemory/CellVBox/IconRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"icon_ability_white"
+text = "psychology"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellMemory/CellVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"ability_label"
+text = "記憶"
+horizontal_alignment = 1
+
+[node name="CellAttention" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+
+[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellAttention"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellAttention/CellVBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("4_abilitybg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellAttention/CellVBox/IconRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"icon_ability_white"
+text = "visibility"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellAttention/CellVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"ability_label"
+text = "注意"
+horizontal_alignment = 1
+
+[node name="CellReflex" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+
+[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellReflex"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellReflex/CellVBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("4_abilitybg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellReflex/CellVBox/IconRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"icon_ability_white"
+text = "bolt"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellReflex/CellVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"ability_label"
+text = "反応"
+horizontal_alignment = 1
+
+[node name="CellObservation" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+
+[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellObservation"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellObservation/CellVBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("4_abilitybg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellObservation/CellVBox/IconRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"icon_ability_white"
+text = "search"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellObservation/CellVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"ability_label"
+text = "観察"
+horizontal_alignment = 1
+
+[node name="CellJudgment" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+
+[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellJudgment"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellJudgment/CellVBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("4_abilitybg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellJudgment/CellVBox/IconRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"icon_ability_white"
+text = "task_alt"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellJudgment/CellVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"ability_label"
+text = "判断"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="SafeAreaMargin/MainColumn"]
+custom_minimum_size = Vector2(0, 88)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"cta_blue"
+text = "   脳トレを開始する"
+
+[node name="BottomNavBar" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
+custom_minimum_size = Vector2(0, 68)
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="HomeTabButton" type="Button" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavHBox"]
-custom_minimum_size = Vector2(0, 48)
+[node name="NavTrainButton" type="Button" parent="SafeAreaMargin/MainColumn/BottomNavBar"]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 size_flags_horizontal = 3
 flat = true
 
-[node name="HomeTabIcon" type="Label" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavHBox/HomeTabButton"]
+[node name="VBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavTrainButton"]
 layout_mode = 2
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -14.0
-offset_top = -14.0
-offset_right = 14.0
-offset_bottom = 14.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_type_variation = &"icon_nav"
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavTrainButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"icon_nav_v2"
+text = "psychology"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavTrainButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"nav_label_v2"
+text = "脳トレ"
+horizontal_alignment = 1
+
+[node name="NavHomeActive" type="PanelContainer" parent="SafeAreaMargin/MainColumn/BottomNavBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"nav_tab_active"
+
+[node name="NavHomeButton" type="Button" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavHomeActive"]
+layout_mode = 2
+flat = true
+
+[node name="VBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavHomeActive/NavHomeButton"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavHomeActive/NavHomeButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"icon_nav_active_v2"
 text = "home"
+horizontal_alignment = 1
 
-[node name="CalendarTabButton" type="Button" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavHBox"]
-custom_minimum_size = Vector2(0, 48)
+[node name="Text" type="Label" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavHomeActive/NavHomeButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"nav_label_active_v2"
+text = "ホーム"
+horizontal_alignment = 1
+
+[node name="NavAwardButton" type="Button" parent="SafeAreaMargin/MainColumn/BottomNavBar"]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 size_flags_horizontal = 3
 flat = true
 
-[node name="CalendarTabIcon" type="Label" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavHBox/CalendarTabButton"]
+[node name="VBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavAwardButton"]
 layout_mode = 2
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -14.0
-offset_top = -14.0
-offset_right = 14.0
-offset_bottom = 14.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_type_variation = &"icon_nav"
-text = "calendar_month"
+theme_override_constants/separation = 2
+alignment = 1
 
-[node name="SettingsTabButton" type="Button" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavHBox"]
-custom_minimum_size = Vector2(0, 48)
+[node name="Icon" type="Label" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavAwardButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"icon_nav_v2"
+text = "emoji_events"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavAwardButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"nav_label_v2"
+text = "アワード"
+horizontal_alignment = 1
+
+[node name="NavSettingsButton" type="Button" parent="SafeAreaMargin/MainColumn/BottomNavBar"]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 size_flags_horizontal = 3
 flat = true
 
-[node name="SettingsTabIcon" type="Label" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavHBox/SettingsTabButton"]
+[node name="VBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavSettingsButton"]
 layout_mode = 2
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -14.0
-offset_top = -14.0
-offset_right = 14.0
-offset_bottom = 14.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_type_variation = &"icon_nav"
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavSettingsButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"icon_nav_v2"
 text = "settings"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="SafeAreaMargin/MainColumn/BottomNavBar/NavSettingsButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"nav_label_v2"
+text = "設定"
+horizontal_alignment = 1
 
 [node name="AdBannerArea" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -429,7 +654,7 @@ visible = false
 
 [node name="AdPlaceholder" type="Label" parent="AdBannerArea"]
 layout_mode = 2
-theme_type_variation = &"caption"
+theme_type_variation = &"caption_v2"
 text = "[ Ad Banner (Android only) ]"
 horizontal_alignment = 1
 vertical_alignment = 1

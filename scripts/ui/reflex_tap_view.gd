@@ -15,6 +15,8 @@
 extends Control
 
 const GAME_AREA_MIN_SIZE: Vector2i = Vector2i(720, 900)  # GameArea の論理サイズ（位置計算用）
+## ターゲット消滅アニメ (縮んでフェードアウト) の所要時間
+const DISMISS_ANIM_SEC: float = 0.18
 
 @onready var _progress_label: Label = $SafeAreaMargin/MainColumn/TopHudRow/ProgressPill/HBox/ProgressValue
 @onready var _elapsed_label: Label = $SafeAreaMargin/MainColumn/TopHudRow/ElapsedPill/HBox/ElapsedValue
@@ -108,7 +110,7 @@ func _on_target_pressed(is_fake: bool) -> void:
     _fake_dismiss_timer.stop()
 
     if _current_target != null:
-        _current_target.queue_free()
+        _dismiss_target(_current_target)
         _current_target = null
     _current_is_fake = false
 
@@ -119,7 +121,7 @@ func _on_target_pressed(is_fake: bool) -> void:
         var last_reaction: int = _game._reaction_times_ms[-1] if _game._reaction_times_ms.size() > 0 else 0
         _speed_label.text = "%d ms" % last_reaction
 
-    # ゲームがまだアクティブなら次のターゲットをスケジュール
+    # ゲームがまだアクティブなら次のターゲットをスケジュール (アニメ中に並行して次の Timer を回す)
     if _game._is_active:
         _schedule_next_target()
 
@@ -129,11 +131,33 @@ func _on_fake_dismiss_timer_timeout() -> void:
     # ペナルティなし、record_event なし。ただ消して次へ進む
     if _current_target == null or not _current_is_fake:
         return
-    _current_target.queue_free()
+    _dismiss_target(_current_target)
     _current_target = null
     _current_is_fake = false
     if _game != null and _game._is_active:
         _schedule_next_target()
+
+
+## 渡された Button を「縮んでフェードアウト」アニメで消す。
+## アニメ終了後に queue_free を呼ぶので、呼び出し側は _current_target = null だけすれば良い。
+## アニメ中の二重タップを防ぐため mouse_filter = IGNORE にしておく。
+func _dismiss_target(btn: Button) -> void:
+    if btn == null:
+        return
+    # 多重タップ防止
+    btn.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    # スケールの中心を Button の中央に
+    btn.pivot_offset = btn.size * 0.5
+    var tween := create_tween()
+    tween.set_parallel(true)
+    tween.set_ease(Tween.EASE_OUT)
+    tween.set_trans(Tween.TRANS_QUAD)
+    tween.tween_property(btn, "scale", Vector2(0.1, 0.1), DISMISS_ANIM_SEC)
+    tween.tween_property(btn, "modulate:a", 0.0, DISMISS_ANIM_SEC)
+    tween.chain().tween_callback(func():
+        if is_instance_valid(btn):
+            btn.queue_free()
+    )
 
 
 func _on_game_finished(log: PlayLog) -> void:

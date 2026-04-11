@@ -21,6 +21,26 @@ const TEX_HERO_CARD_BG     := "res://assets/textures/gradients/hero_card_bg.png"
 const TEX_PILL_NEUTRAL     := "res://assets/textures/gradients/pill_neutral.png"
 const TEX_ACTION_CARD_BG   := "res://assets/textures/gradients/action_card_bg.png"
 
+# v2 Animated Intellectual (DESIGN.md)
+const TEX_CTA_BLUE         := "res://assets/textures/gradients/cta_blue.png"
+const TEX_CTA_BLUE_PRESSED := "res://assets/textures/gradients/cta_blue_pressed.png"
+const TEX_ABILITY_CIRCLE   := "res://assets/textures/gradients/ability_circle_blue.png"
+
+# v2 Blue palette (DESIGN.md)
+const PRIMARY_BLUE      := Color(0.0, 0.345, 0.729)        # #0058ba
+const PRIMARY_DIM       := Color(0.0, 0.302, 0.643)        # #004da4
+const PRIMARY_CONTAINER := Color(0.424, 0.624, 1.0)        # #6c9fff
+const PRIMARY_FIXED_DIM := Color(0.314, 0.569, 1.0)        # #5091ff
+const ON_PRIMARY        := Color(0.941, 0.949, 1.0)        # #f0f2ff
+const SURFACE_BG_V2     := Color(0.969, 0.961, 1.0)        # #f7f5ff
+const SURFACE_LOWEST    := Color(1, 1, 1)                  # #ffffff
+const SURFACE_LOW_V2    := Color(0.937, 0.937, 1.0)        # #efefff
+const SURFACE_CONT_V2   := Color(0.894, 0.906, 1.0)        # #e4e7ff
+const SURFACE_HIGH_V2   := Color(0.867, 0.882, 1.0)        # #dde1ff
+const ON_SURFACE_V2     := Color(0.137, 0.173, 0.318)      # #232c51
+const ON_SURFACE_VAR_V2 := Color(0.314, 0.353, 0.506)      # #505a81
+const OUTLINE_VARIANT_V2 := Color(0.635, 0.671, 0.843)     # #a2abd7
+
 # Font リソースの UID パス（ThemeResource 側から参照させるためのパス）
 # `load()` は .import が無いと失敗するため、FontFile.load_dynamic_font() で直接ロードして
 # Theme に埋め込む。ResourceSaver.save() 時に Theme 内部で外部リソース参照として書き出される。
@@ -87,6 +107,7 @@ func _init() -> void:
     _build_premium_variations(theme)
     _build_icon_variations(theme)
     _build_speech_bubble(theme)
+    _build_v2_animated_intellectual(theme)
 
     var err := ResourceSaver.save(theme, THEME_OUT)
     if err != OK:
@@ -281,6 +302,52 @@ func _build_premium_variations(theme: Theme) -> void:
     theme.set_font_size("font_size", "card_title", 18)
     theme.set_color("font_color", "card_title", BG_DARK)
 
+    # --- ホーム画面ゴーストバトル勝敗バー (win 側) ---
+    theme.set_type_variation("win_bar", "PanelContainer")
+    var win_sb := StyleBoxFlat.new()
+    win_sb.bg_color = POSITIVE_GOLD
+    win_sb.corner_radius_top_left = 10
+    win_sb.corner_radius_bottom_left = 10
+    win_sb.content_margin_left = 10
+    win_sb.content_margin_right = 6
+    win_sb.content_margin_top = 4
+    win_sb.content_margin_bottom = 4
+    theme.set_stylebox("panel", "win_bar", win_sb)
+
+    # --- ホーム画面ゴーストバトル勝敗バー (loss 側) ---
+    theme.set_type_variation("loss_bar", "PanelContainer")
+    var loss_sb := StyleBoxFlat.new()
+    loss_sb.bg_color = NEUTRAL_SLATE
+    loss_sb.corner_radius_top_right = 10
+    loss_sb.corner_radius_bottom_right = 10
+    loss_sb.content_margin_left = 6
+    loss_sb.content_margin_right = 10
+    loss_sb.content_margin_top = 4
+    loss_sb.content_margin_bottom = 4
+    theme.set_stylebox("panel", "loss_bar", loss_sb)
+
+    # --- 勝敗バー内テキスト ---
+    theme.set_type_variation("bar_text", "Label")
+    theme.set_font_size("font_size", "bar_text", 11)
+    theme.set_color("font_color", "bar_text", BG_DARK)
+
+    # --- ボトムナビのアイコン: アクティブ状態 (ホームタブ) ---
+    var icon_font2 := load(ICON_FONT_PATH) as Font
+    if icon_font2 != null:
+        theme.set_type_variation("icon_nav_active", "Label")
+        theme.set_font("font", "icon_nav_active", icon_font2)
+        theme.set_font_size("font_size", "icon_nav_active", 28)
+        theme.set_color("font_color", "icon_nav_active", POSITIVE_GOLD)
+
+    # --- ボトムナビのラベル ---
+    theme.set_type_variation("nav_label", "Label")
+    theme.set_font_size("font_size", "nav_label", 11)
+    theme.set_color("font_color", "nav_label", NEUTRAL_SLATE)
+
+    theme.set_type_variation("nav_label_active", "Label")
+    theme.set_font_size("font_size", "nav_label_active", 11)
+    theme.set_color("font_color", "nav_label_active", POSITIVE_GOLD)
+
     # --- Button: target_circle variation（反射タップゲームの丸いターゲット）---
     # 強いシャドウ + pill 形状 + ゴールド bg でタップしたくなる誘目を作る
     theme.set_type_variation("target_circle", "Button")
@@ -303,6 +370,202 @@ func _build_premium_variations(theme: Theme) -> void:
     theme.set_stylebox("hover", "target_circle_fake", _target_stylebox(NEUTRAL_LIGHT_GRAY, true))
     theme.set_stylebox("pressed", "target_circle_fake", _target_stylebox(_darken(NEUTRAL_LIGHT_GRAY, 0.85), true))
     theme.set_stylebox("disabled", "target_circle_fake", _target_stylebox(NEUTRAL_LIGHT_GRAY, true))
+
+
+## v2: Animated Intellectual 用の variation 群。
+## DESIGN.md ("The Playful Polymath") に準拠し、blue primary + 3D button +
+## glassmorphism + circular ability icon を提供する。
+##
+## 既存の gold 系 variation (cta_gradient, hero_card, pill_chip など) は
+## 後方互換のため残置。v2 を使う scene は v2 variation 名を指定する。
+func _build_v2_animated_intellectual(theme: Theme) -> void:
+    var icon_font := load(ICON_FONT_PATH) as Font
+
+    # --- v2: 3D CTA Button (cta_blue) ---
+    # 青グラデ + 下辺 6px の濃い青ストロークで物理的な押下感を演出
+    theme.set_type_variation("cta_blue", "Button")
+    theme.set_color("font_color", "cta_blue", ON_PRIMARY)
+    theme.set_color("font_hover_color", "cta_blue", ON_PRIMARY)
+    theme.set_color("font_pressed_color", "cta_blue", ON_PRIMARY)
+    theme.set_font_size("font_size", "cta_blue", SIZE_H2)
+
+    var cta_normal := StyleBoxTexture.new()
+    var cta_tex := load(TEX_CTA_BLUE) as Texture2D
+    if cta_tex != null:
+        cta_normal.texture = cta_tex
+    cta_normal.content_margin_left = 32
+    cta_normal.content_margin_right = 32
+    cta_normal.content_margin_top = 22
+    cta_normal.content_margin_bottom = 26  # 下に少し厚みを持たせ 3D 感
+    theme.set_stylebox("normal", "cta_blue", cta_normal)
+
+    var cta_pressed := StyleBoxTexture.new()
+    var cta_p_tex := load(TEX_CTA_BLUE_PRESSED) as Texture2D
+    if cta_p_tex != null:
+        cta_pressed.texture = cta_p_tex
+    cta_pressed.content_margin_left = 32
+    cta_pressed.content_margin_right = 32
+    cta_pressed.content_margin_top = 26
+    cta_pressed.content_margin_bottom = 22
+    theme.set_stylebox("pressed", "cta_blue", cta_pressed)
+    theme.set_stylebox("hover", "cta_blue", cta_normal)
+    theme.set_stylebox("disabled", "cta_blue", cta_normal)
+
+    # --- v2: glass_bubble (speech bubble) ---
+    # Glassmorphism 代替: 高 alpha の白 + 広い角丸 + 柔らかい影
+    theme.set_type_variation("glass_bubble", "PanelContainer")
+    var glass_sb := StyleBoxFlat.new()
+    glass_sb.bg_color = Color(1, 1, 1, 0.85)  # ほぼ白 + 透過
+    _set_corner_radius(glass_sb, 24)
+    glass_sb.content_margin_left = 24
+    glass_sb.content_margin_right = 24
+    glass_sb.content_margin_top = 18
+    glass_sb.content_margin_bottom = 18
+    glass_sb.shadow_color = Color(0.137, 0.173, 0.318, 0.10)  # on_surface 10%
+    glass_sb.shadow_offset = Vector2(0, 10)
+    glass_sb.shadow_size = 28
+    theme.set_stylebox("panel", "glass_bubble", glass_sb)
+
+    # --- v2: header_pill (脳年齢/ゴーストバトルの丸っこいカード) ---
+    # No-Line rule: ボーダーなし、surface container tier で境界を作る
+    theme.set_type_variation("header_pill", "PanelContainer")
+    var hp_sb := StyleBoxFlat.new()
+    hp_sb.bg_color = Color(1, 1, 1, 0.78)
+    _set_corner_radius(hp_sb, 20)
+    hp_sb.content_margin_left = 16
+    hp_sb.content_margin_right = 16
+    hp_sb.content_margin_top = 12
+    hp_sb.content_margin_bottom = 12
+    hp_sb.shadow_color = Color(0.137, 0.173, 0.318, 0.08)
+    hp_sb.shadow_offset = Vector2(0, 6)
+    hp_sb.shadow_size = 20
+    theme.set_stylebox("panel", "header_pill", hp_sb)
+
+    # --- v2: ability_container (6 能力アビリティカードの親) ---
+    theme.set_type_variation("ability_container", "PanelContainer")
+    var ac_sb := StyleBoxFlat.new()
+    ac_sb.bg_color = Color(1, 1, 1, 0.85)
+    _set_corner_radius(ac_sb, 28)
+    ac_sb.content_margin_left = 20
+    ac_sb.content_margin_right = 20
+    ac_sb.content_margin_top = 18
+    ac_sb.content_margin_bottom = 18
+    ac_sb.shadow_color = Color(0.137, 0.173, 0.318, 0.08)
+    ac_sb.shadow_offset = Vector2(0, 10)
+    ac_sb.shadow_size = 32
+    theme.set_stylebox("panel", "ability_container", ac_sb)
+
+    # --- v2: ability_circle (6 能力の円形アイコン背景) ---
+    # TextureRect で ability_circle_blue.png を使う方式と、StyleBoxTexture を
+    # TextureRect に当てる方式があるが、ここでは TextureRect + PanelContainer
+    # ラップで実現する想定。本 variation は PanelContainer に適用する
+    # circular bg (StyleBoxFlat + pill corner) として定義
+    theme.set_type_variation("ability_circle", "PanelContainer")
+    var circ_sb := StyleBoxFlat.new()
+    circ_sb.bg_color = PRIMARY_BLUE
+    _set_corner_radius(circ_sb, 9999)
+    circ_sb.content_margin_left = 10
+    circ_sb.content_margin_right = 10
+    circ_sb.content_margin_top = 10
+    circ_sb.content_margin_bottom = 10
+    circ_sb.shadow_color = Color(0, 0.345, 0.729, 0.35)
+    circ_sb.shadow_offset = Vector2(0, 4)
+    circ_sb.shadow_size = 10
+    theme.set_stylebox("panel", "ability_circle", circ_sb)
+
+    # --- v2: icon_ability_white (アビリティ円内のアイコン、白色) ---
+    if icon_font != null:
+        theme.set_type_variation("icon_ability_white", "Label")
+        theme.set_font("font", "icon_ability_white", icon_font)
+        theme.set_font_size("font_size", "icon_ability_white", 26)
+        theme.set_color("font_color", "icon_ability_white", Color(1, 1, 1))
+
+    # --- v2: ability_label (アビリティ下のキャプション) ---
+    theme.set_type_variation("ability_label", "Label")
+    theme.set_font_size("font_size", "ability_label", 12)
+    theme.set_color("font_color", "ability_label", ON_SURFACE_V2)
+
+    # --- v2: display_primary (大型数値、青色) ---
+    theme.set_type_variation("display_primary", "Label")
+    theme.set_font_size("font_size", "display_primary", 32)
+    theme.set_color("font_color", "display_primary", PRIMARY_BLUE)
+
+    # --- v2: caption_label (全キャプション用、v2 色) ---
+    theme.set_type_variation("caption_v2", "Label")
+    theme.set_font_size("font_size", "caption_v2", 11)
+    theme.set_color("font_color", "caption_v2", ON_SURFACE_VAR_V2)
+
+    # --- v2: headline_v2 (カード見出し、青系) ---
+    theme.set_type_variation("headline_v2", "Label")
+    theme.set_font_size("font_size", "headline_v2", 16)
+    theme.set_color("font_color", "headline_v2", ON_SURFACE_V2)
+
+    # --- v2: bar_win_v2 / bar_loss_v2 (勝敗バー 青/淡青) ---
+    theme.set_type_variation("bar_win_v2", "PanelContainer")
+    var bw_sb := StyleBoxFlat.new()
+    bw_sb.bg_color = PRIMARY_BLUE
+    bw_sb.corner_radius_top_left = 12
+    bw_sb.corner_radius_bottom_left = 12
+    bw_sb.content_margin_left = 10
+    bw_sb.content_margin_right = 6
+    bw_sb.content_margin_top = 4
+    bw_sb.content_margin_bottom = 4
+    theme.set_stylebox("panel", "bar_win_v2", bw_sb)
+
+    theme.set_type_variation("bar_loss_v2", "PanelContainer")
+    var bl_sb := StyleBoxFlat.new()
+    bl_sb.bg_color = SURFACE_HIGH_V2
+    bl_sb.corner_radius_top_right = 12
+    bl_sb.corner_radius_bottom_right = 12
+    bl_sb.content_margin_left = 6
+    bl_sb.content_margin_right = 10
+    bl_sb.content_margin_top = 4
+    bl_sb.content_margin_bottom = 4
+    theme.set_stylebox("panel", "bar_loss_v2", bl_sb)
+
+    theme.set_type_variation("bar_text_win_v2", "Label")
+    theme.set_font_size("font_size", "bar_text_win_v2", 11)
+    theme.set_color("font_color", "bar_text_win_v2", ON_PRIMARY)
+
+    theme.set_type_variation("bar_text_loss_v2", "Label")
+    theme.set_font_size("font_size", "bar_text_loss_v2", 11)
+    theme.set_color("font_color", "bar_text_loss_v2", ON_SURFACE_VAR_V2)
+
+    # --- v2: nav_tab_active (ホームタブのアクティブ状態、青のピル) ---
+    theme.set_type_variation("nav_tab_active", "PanelContainer")
+    var nav_active_sb := StyleBoxFlat.new()
+    nav_active_sb.bg_color = PRIMARY_BLUE
+    _set_corner_radius(nav_active_sb, 18)
+    nav_active_sb.content_margin_left = 14
+    nav_active_sb.content_margin_right = 14
+    nav_active_sb.content_margin_top = 8
+    nav_active_sb.content_margin_bottom = 8
+    nav_active_sb.shadow_color = Color(0, 0.345, 0.729, 0.35)
+    nav_active_sb.shadow_offset = Vector2(0, 4)
+    nav_active_sb.shadow_size = 10
+    theme.set_stylebox("panel", "nav_tab_active", nav_active_sb)
+
+    # アクティブタブ内のアイコン + ラベルは白
+    if icon_font != null:
+        theme.set_type_variation("icon_nav_active_v2", "Label")
+        theme.set_font("font", "icon_nav_active_v2", icon_font)
+        theme.set_font_size("font_size", "icon_nav_active_v2", 24)
+        theme.set_color("font_color", "icon_nav_active_v2", Color(1, 1, 1))
+
+    theme.set_type_variation("nav_label_active_v2", "Label")
+    theme.set_font_size("font_size", "nav_label_active_v2", 10)
+    theme.set_color("font_color", "nav_label_active_v2", Color(1, 1, 1))
+
+    # 非アクティブ nav v2
+    theme.set_type_variation("nav_label_v2", "Label")
+    theme.set_font_size("font_size", "nav_label_v2", 10)
+    theme.set_color("font_color", "nav_label_v2", ON_SURFACE_VAR_V2)
+
+    if icon_font != null:
+        theme.set_type_variation("icon_nav_v2", "Label")
+        theme.set_font("font", "icon_nav_v2", icon_font)
+        theme.set_font_size("font_size", "icon_nav_v2", 24)
+        theme.set_color("font_color", "icon_nav_v2", ON_SURFACE_VAR_V2)
 
 
 func _target_stylebox(bg: Color, pill: bool) -> StyleBoxFlat:

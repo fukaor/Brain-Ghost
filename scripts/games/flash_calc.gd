@@ -14,11 +14,21 @@
 class_name FlashCalc
 extends BaseGame
 
-const TOTAL_PROBLEMS: int = 12
-const NUMBERS_PER_PROBLEM: int = 4
+const TOTAL_PROBLEMS: int = 15
 const NUMBER_MIN: int = 1
 const NUMBER_MAX: int = 9
 const TIME_LIMIT_SEC: int = 30
+
+## フェーズ分け難易度: 序盤 4 数字 → 中盤 5 数字 → 終盤 6 数字
+const PHASE_1_END: int = 8     # 問題 0..7 は 4 個 (8 問)
+const PHASE_2_END: int = 12    # 問題 8..11 は 5 個 (4 問)
+# 問題 12..14 は 6 個 (3 問)
+const NUMBERS_PHASE_1: int = 4
+const NUMBERS_PHASE_2: int = 5
+const NUMBERS_PHASE_3: int = 6
+
+## 後方互換 / テスト向け: 平均的な数字個数 (フェーズ 1 のデフォルト値を返す)
+const NUMBERS_PER_PROBLEM: int = NUMBERS_PHASE_1
 
 
 var _problems: Array[Array] = []  # 各要素は [int, int, int, int]
@@ -34,16 +44,27 @@ func _on_setup(_seed_value: int) -> void:
     _expected_sums = []
     _current_index = 0
     _correct_count = 0
-    # 全問題を事前生成 (決定論的)
+    # 全問題を事前生成 (決定論的)。フェーズに応じて数字の個数が変わる。
     for i in range(TOTAL_PROBLEMS):
+        var count: int = _numbers_for_problem(i)
         var nums: Array[int] = []
         var sum: int = 0
-        for j in range(NUMBERS_PER_PROBLEM):
+        for j in range(count):
             var n: int = rng.randi_range(NUMBER_MIN, NUMBER_MAX)
             nums.append(n)
             sum += n
         _problems.append(nums)
         _expected_sums.append(sum)
+
+
+## 問題インデックスからその問題で使う数字の個数を返す (フェーズ分け難易度)
+func _numbers_for_problem(index: int) -> int:
+    if index < PHASE_1_END:
+        return NUMBERS_PHASE_1
+    elif index < PHASE_2_END:
+        return NUMBERS_PHASE_2
+    else:
+        return NUMBERS_PHASE_3
 
 
 func _on_user_input(input: Dictionary) -> void:

@@ -22,18 +22,23 @@ extends BaseGame
 
 # --- 定数 ---
 
-const TARGET_COUNT: int = 20
+const TARGET_COUNT: int = 24
 const SCREEN_MARGIN_PX: int = 40
 const TARGET_SIZE_MIN: int = 80
 const TARGET_SIZE_MAX: int = 120
-const WAIT_MS_MIN: int = 400
-const WAIT_MS_MAX: int = 1200
-const FAKE_INTERVAL_MIN: int = 3
-const FAKE_INTERVAL_MAX: int = 5
+const WAIT_MS_MIN: int = 250
+const WAIT_MS_MAX: int = 900
+const FAKE_INTERVAL_MIN: int = 5
+const FAKE_INTERVAL_MAX: int = 7
 const FAKE_PENALTY_MS: int = 50
 ## フェイクが自動消滅するまでの時間 (ms)。
 ## ユーザはこの時間を過ぎるまで何もしなければよい (タップ NG の仕様)。
 const FAKE_VISIBLE_MS: int = 1500
+
+## セッション進行度 (0.0〜1.0) がこの閾値を超えたら待機時間を短縮する (後半ランプ)
+const LATE_RAMP_THRESHOLD: float = 0.66
+## 後半ランプ時に待機時間に掛ける倍率。0.85 = 15% 短縮
+const LATE_RAMP_SCALE: float = 0.85
 
 # --- 状態 ---
 
@@ -94,9 +99,20 @@ func pick_target_size() -> int:
     return rng.randi_range(TARGET_SIZE_MIN, TARGET_SIZE_MAX)
 
 
-## 次に出すターゲットまでの待機時間を決定する（決定論）
+## 次に出すターゲットまでの待機時間を決定する（決定論）。
+## セッション後半 (進行度 66% 以降) では待機時間を短縮してテンポを上げる。
 func pick_wait_ms() -> int:
-    return rng.randi_range(WAIT_MS_MIN, WAIT_MS_MAX)
+    var base: int = rng.randi_range(WAIT_MS_MIN, WAIT_MS_MAX)
+    return _scale_wait_for_progress(base)
+
+
+## 現在の進行度に基づいて待機時間をスケールする (後半ランプ)。
+## テスト可能にするため public 扱いだが、通常は pick_wait_ms 経由で呼ばれる。
+func _scale_wait_for_progress(base_wait: int) -> int:
+    var progress: float = float(_tapped_count) / float(TARGET_COUNT)
+    if progress >= LATE_RAMP_THRESHOLD:
+        return int(float(base_wait) * LATE_RAMP_SCALE)
+    return base_wait
 
 
 ## 次の 1 手がフェイクであるべきか判定する

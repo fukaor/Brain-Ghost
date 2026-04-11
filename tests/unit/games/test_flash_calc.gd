@@ -50,9 +50,19 @@ func test_problem_count_equals_total():
     assert_eq(game._expected_sums.size(), game.TOTAL_PROBLEMS)
 
 
-func test_each_problem_has_correct_number_count():
-    for problem in game._problems:
-        assert_eq(problem.size(), game.NUMBERS_PER_PROBLEM)
+func test_phase_1_problems_have_4_numbers():
+    for i in range(FlashCalc.PHASE_1_END):
+        assert_eq(game._problems[i].size(), FlashCalc.NUMBERS_PHASE_1, "phase1[%d]" % i)
+
+
+func test_phase_2_problems_have_5_numbers():
+    for i in range(FlashCalc.PHASE_1_END, FlashCalc.PHASE_2_END):
+        assert_eq(game._problems[i].size(), FlashCalc.NUMBERS_PHASE_2, "phase2[%d]" % i)
+
+
+func test_phase_3_problems_have_6_numbers():
+    for i in range(FlashCalc.PHASE_2_END, FlashCalc.TOTAL_PROBLEMS):
+        assert_eq(game._problems[i].size(), FlashCalc.NUMBERS_PHASE_3, "phase3[%d]" % i)
 
 
 func test_each_number_in_range():
@@ -99,11 +109,20 @@ func test_complete_all_correct_finishes():
 
 # --- 問題テキスト ---
 
-func test_problem_text_format():
+func test_problem_text_format_phase_1():
+    # 初期状態は問題 0 = フェーズ 1 = 4 数字
     var text: String = game.get_current_problem_text()
-    # "X + X + X + X" の形式
     var parts: PackedStringArray = text.split(" + ")
-    assert_eq(parts.size(), game.NUMBERS_PER_PROBLEM, "4 つの数字 + 区切り")
+    assert_eq(parts.size(), FlashCalc.NUMBERS_PHASE_1, "フェーズ 1 は 4 数字")
     for p in parts:
         var n: int = int(p)
-        assert_true(n >= game.NUMBER_MIN and n <= game.NUMBER_MAX)
+        assert_true(n >= FlashCalc.NUMBER_MIN and n <= FlashCalc.NUMBER_MAX)
+
+
+func test_problem_text_format_phase_3():
+    # フェーズ 3 に進めて確認 (問題 12 以降)
+    for i in range(FlashCalc.PHASE_2_END):
+        game.handle_input({"type": "submit", "answer": game.get_current_expected()})
+    var text: String = game.get_current_problem_text()
+    var parts: PackedStringArray = text.split(" + ")
+    assert_eq(parts.size(), FlashCalc.NUMBERS_PHASE_3, "フェーズ 3 は 6 数字")

@@ -116,3 +116,30 @@ func test_should_show_fake_boundary():
     game._tapped_count = 3
     # _tapped_count + 1 = 4 >= 4
     assert_true(game.should_show_fake(), "4 >= 4 should be true")
+
+
+# --- 後半ランプ (セッション内難易度上昇) ---
+
+func test_late_ramp_not_applied_early():
+    # 進行度 25% (24 中 6 タップ) → 閾値 66% 未満なのでランプなし
+    game._tapped_count = 6
+    assert_eq(game._scale_wait_for_progress(1000), 1000)
+    assert_eq(game._scale_wait_for_progress(500), 500)
+
+
+func test_late_ramp_applied_late():
+    # 進行度 83% (24 中 20 タップ) → 閾値 66% 超えなのでランプ適用
+    # 1000 * 0.85 = 850
+    game._tapped_count = 20
+    assert_eq(game._scale_wait_for_progress(1000), 850)
+
+
+func test_late_ramp_boundary():
+    # 進行度ちょうど 66% 以上で発動
+    game._tapped_count = int(ReflexTap.TARGET_COUNT * ReflexTap.LATE_RAMP_THRESHOLD)
+    # TARGET_COUNT=24、threshold=0.66 → 15.84 → int で 15
+    # 15/24 = 0.625 < 0.66 でまだランプなし
+    assert_eq(game._scale_wait_for_progress(1000), 1000, "境界直下ではランプなし")
+    game._tapped_count += 1
+    # 16/24 = 0.667 > 0.66 でランプ適用
+    assert_eq(game._scale_wait_for_progress(1000), 850, "境界超えでランプ適用")
