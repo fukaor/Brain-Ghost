@@ -22,6 +22,7 @@ const RULES: Dictionary = {
 
 @onready var _title_label: Label = $SafeAreaMargin/MainColumn/TitleLabel
 @onready var _ghost: GhostCharacter = $SafeAreaMargin/MainColumn/GhostCharacter
+@onready var _back_button: Button = $SafeAreaMargin/MainColumn/HeaderRow/BackButton
 @onready var _skip_button: Button = $SafeAreaMargin/MainColumn/ButtonRow/SkipButton
 @onready var _start_button: Button = $SafeAreaMargin/MainColumn/ButtonRow/StartButton
 
@@ -56,6 +57,7 @@ func set_rule(game_type: String) -> void:
 func _wire_signals() -> void:
     _start_button.pressed.connect(_on_start_pressed)
     _skip_button.pressed.connect(_on_skip_pressed)
+    _back_button.pressed.connect(_on_back_pressed)
 
 
 func _configure_skip_visibility() -> void:
@@ -75,3 +77,11 @@ func _on_start_pressed() -> void:
 
 func _on_skip_pressed() -> void:
     _on_start_pressed()
+
+
+func _on_back_pressed() -> void:
+    var gm := get_node_or_null("/root/GameManager")
+    if gm != null and gm.has_method("on_rule_explain_cancelled"):
+        gm.on_rule_explain_cancelled()
+    else:
+        push_warning("[RuleExplain] GameManager.on_rule_explain_cancelled not found")

@@ -31,6 +31,9 @@ const WAIT_MS_MAX: int = 1200
 const FAKE_INTERVAL_MIN: int = 3
 const FAKE_INTERVAL_MAX: int = 5
 const FAKE_PENALTY_MS: int = 50
+## フェイクが自動消滅するまでの時間 (ms)。
+## ユーザはこの時間を過ぎるまで何もしなければよい (タップ NG の仕様)。
+const FAKE_VISIBLE_MS: int = 1500
 
 # --- 状態 ---
 

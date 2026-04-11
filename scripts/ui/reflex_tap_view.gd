@@ -21,9 +21,11 @@ const GAME_AREA_MIN_SIZE: Vector2i = Vector2i(720, 900)  # GameArea の論理サ
 @onready var _speed_label: Label = $SafeAreaMargin/MainColumn/TopHudRow/SpeedPill/HBox/SpeedValue
 @onready var _game_area: Control = $SafeAreaMargin/MainColumn/GameArea
 @onready var _spawn_timer: Timer = $SpawnTimer
+@onready var _fake_dismiss_timer: Timer = $FakeDismissTimer
 
 var _game: ReflexTap
 var _current_target: Button = null
+var _current_is_fake: bool = false
 var _seed_value: int = -1
 
 
@@ -91,17 +93,24 @@ func _spawn_target() -> void:
 
     _game_area.add_child(btn)
     _current_target = btn
+    _current_is_fake = is_fake
 
     _game.mark_target_shown(is_fake)
 
     if is_fake:
         _game.advance_fake_schedule()
+        # フェイクは一定時間で自動消滅 (ユーザがタップしなくても次へ進む)
+        _fake_dismiss_timer.start(float(ReflexTap.FAKE_VISIBLE_MS) / 1000.0)
 
 
 func _on_target_pressed(is_fake: bool) -> void:
+    # フェイクの自動消滅タイマーが走っていればキャンセル (ユーザがタップしたため)
+    _fake_dismiss_timer.stop()
+
     if _current_target != null:
         _current_target.queue_free()
         _current_target = null
+    _current_is_fake = false
 
     if is_fake:
         _game.handle_input({"type": "fake_tap"})
@@ -112,6 +121,18 @@ func _on_target_pressed(is_fake: bool) -> void:
 
     # ゲームがまだアクティブなら次のターゲットをスケジュール
     if _game._is_active:
+        _schedule_next_target()
+
+
+## フェイクが自動消滅する (ユーザがタップせずにスルーした場合)
+func _on_fake_dismiss_timer_timeout() -> void:
+    # ペナルティなし、record_event なし。ただ消して次へ進む
+    if _current_target == null or not _current_is_fake:
+        return
+    _current_target.queue_free()
+    _current_target = null
+    _current_is_fake = false
+    if _game != null and _game._is_active:
         _schedule_next_target()
 
 

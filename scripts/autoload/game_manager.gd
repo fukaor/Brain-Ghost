@@ -108,6 +108,13 @@ func on_rule_explain_confirmed() -> void:
     _safe_change_scene("res://scenes/ui/countdown.tscn")
 
 
+## ルール説明画面の [← 戻る] が押された (やっぱり別のゲームをやりたい場合)
+func on_rule_explain_cancelled() -> void:
+    _current_game_type = ""
+    _previous_score = 0
+    _safe_change_scene("res://scenes/main/home.tscn")
+
+
 ## カウントダウン完了 → _current_game_type のシーンへ動的遷移
 func on_countdown_finished() -> void:
     var scene_path: String = String(GAME_SCENES.get(_current_game_type, ""))
