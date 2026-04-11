@@ -120,14 +120,9 @@ func _on_game_finished(log: PlayLog) -> void:
     if _current_target != null:
         _current_target.queue_free()
         _current_target = null
-    # GameManager に通知
-    if Engine.has_singleton("GameManager"):
-        var gm = Engine.get_singleton("GameManager")
-        if gm.has_method("on_reflex_tap_finished"):
-            gm.on_reflex_tap_finished(log)
-    elif get_node_or_null("/root/GameManager") != null:
-        var gm = get_node("/root/GameManager")
-        if gm.has_method("on_reflex_tap_finished"):
-            gm.on_reflex_tap_finished(log)
+    # GameManager の汎用ハンドラに通知
+    var gm := get_node_or_null("/root/GameManager")
+    if gm != null and gm.has_method("on_game_finished_handler"):
+        gm.on_game_finished_handler(log)
     else:
         push_warning("[ReflexTapView] GameManager not found; log dropped: score=%d" % log.score)

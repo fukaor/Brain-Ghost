@@ -125,3 +125,117 @@ func clear(key: StoreKey) -> void:
         var path: String = _get_native_path(key)
         if FileAccess.file_exists(path):
             DirAccess.remove_absolute(path)
+
+
+# ============================================================
+# --- 高レベル API: PlayLog 操作 ---
+# ============================================================
+
+## 1 件の PlayLog を PLAY_LOGS に追加保存する。
+## 失敗時は false を返し、push_warning を出す。
+func append_play_log(log: PlayLog) -> bool:
+    if log == null:
+        push_warning("[DataStore] append_play_log: null log")
+        return false
+    var dict: Dictionary = _load_play_logs_dict()
+    var logs_array: Array = dict.get("logs", [])
+    logs_array.append(log.to_dict())
+    dict["logs"] = logs_array
+    dict["schemaVersion"] = SCHEMA_VERSION
+    return save(StoreKey.PLAY_LOGS, dict)
+
+
+## PLAY_LOGS から PlayLog 配列を読み込む。
+## [param game_type] 空文字なら全件、指定があれば該当ゲームのみフィルタ
+## [param limit] -1 なら全件、正数なら末尾 N 件（直近 N 件の意味）
+func load_play_logs(game_type: String = "", limit: int = -1) -> Array[PlayLog]:
+    var result: Array[PlayLog] = []
+    var dict: Dictionary = _load_play_logs_dict()
+    var logs_array: Array = dict.get("logs", [])
+    for item in logs_array:
+        if item is Dictionary:
+            var log: PlayLog = PlayLog.from_dict(item)
+            if game_type == "" or log.game_type == game_type:
+                result.append(log)
+    if limit > 0 and result.size() > limit:
+        result = result.slice(result.size() - limit, result.size())
+    return result
+
+
+## PLAY_LOGS の件数を返す。
+## [param game_type] 空文字なら全件、指定があれば該当ゲームのみカウント
+func count_play_logs(game_type: String = "") -> int:
+    var dict: Dictionary = _load_play_logs_dict()
+    var logs_array: Array = dict.get("logs", [])
+    if game_type == "":
+        return logs_array.size()
+    var count: int = 0
+    for item in logs_array:
+        if item is Dictionary and String(item.get("gameType", "")) == game_type:
+            count += 1
+    return count
+
+
+# ============================================================
+# --- 高レベル API: GameBest 操作 ---
+# ============================================================
+
+## 指定ゲームのベスト記録を読み込む。未保存なら score=0 の空 GameBest を返す。
+func load_best(game_type: String) -> GameBest:
+    var dict: Dictionary = _load_bests_dict()
+    var bests: Dictionary = dict.get("bests", {})
+    if bests.has(game_type):
+        var item = bests[game_type]
+        if item is Dictionary:
+            return GameBest.from_dict(item)
+    var empty := GameBest.new()
+    empty.game_type = game_type
+    return empty
+
+
+## 単一の GameBest を保存する（既存の他ゲーム分はマージで保持）。
+func save_best(best: GameBest) -> bool:
+    if best == null or best.game_type == "":
+        push_warning("[DataStore] save_best: invalid best")
+        return false
+    var dict: Dictionary = _load_bests_dict()
+    var bests: Dictionary = dict.get("bests", {})
+    bests[best.game_type] = best.to_dict()
+    dict["bests"] = bests
+    dict["schemaVersion"] = SCHEMA_VERSION
+    return save(StoreKey.GAME_BESTS, dict)
+
+
+## PlayLog のスコアが既存ベストより高ければ更新して true を返す。
+## 同スコア・低スコアでは false を返す（更新なし）。
+## 副作用: total_play_count を必ず +1 する（ベスト更新の有無に関係なく）。
+func update_best_if_better(log: PlayLog) -> bool:
+    if log == null or log.game_type == "":
+        return false
+    var current: GameBest = load_best(log.game_type)
+    var should_update: bool = log.score > current.best_score
+    if should_update:
+        current.best_score = log.score
+        current.best_play_log_id = log.id
+        current.achieved_at = log.played_at
+    current.total_play_count += 1
+    save_best(current)
+    return should_update
+
+
+# ============================================================
+# --- 内部ヘルパー ---
+# ============================================================
+
+func _load_play_logs_dict() -> Dictionary:
+    var dict: Dictionary = load_dict(StoreKey.PLAY_LOGS)
+    if not dict.has("logs"):
+        dict["logs"] = []
+    return dict
+
+
+func _load_bests_dict() -> Dictionary:
+    var dict: Dictionary = load_dict(StoreKey.GAME_BESTS)
+    if not dict.has("bests"):
+        dict["bests"] = {}
+    return dict

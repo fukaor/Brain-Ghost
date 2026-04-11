@@ -1,0 +1,220 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0flashcalc001"]
+
+[ext_resource type="Script" path="res://scripts/ui/flash_calc_view.gd" id="1_view"]
+[ext_resource type="Texture2D" path="res://assets/textures/gradients/page_bg.png" id="2_pagebg"]
+
+[node name="FlashCalc" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_view")
+
+[node name="PageBackground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_pagebg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SafeAreaMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 24
+
+[node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TopHudRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ProgressPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"pill_chip"
+
+[node name="HBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressPill"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="ProgressIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"icon_pill"
+text = "format_list_numbered"
+
+[node name="ProgressValue" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"value"
+text = "0 / 12"
+
+[node name="ElapsedPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"pill_chip"
+
+[node name="HBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/ElapsedPill"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="ElapsedIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ElapsedPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"icon_pill"
+text = "schedule"
+
+[node name="ElapsedValue" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ElapsedPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"value"
+text = "30s"
+
+[node name="CorrectPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"pill_chip"
+
+[node name="HBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/CorrectPill"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="CorrectIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/CorrectPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"icon_pill"
+text = "check_circle"
+
+[node name="CorrectValue" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/CorrectPill/HBox"]
+layout_mode = 2
+theme_type_variation = &"value"
+text = "0 正解"
+
+[node name="CenterColumn" type="VBoxContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 24
+
+[node name="ProblemSpacer" type="Control" parent="SafeAreaMargin/MainColumn/CenterColumn"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="ProblemLabel" type="Label" parent="SafeAreaMargin/MainColumn/CenterColumn"]
+layout_mode = 2
+theme_type_variation = &"hero_big"
+text = "3 + 5 + 2 + 7 = ?"
+horizontal_alignment = 1
+
+[node name="InputLabel" type="Label" parent="SafeAreaMargin/MainColumn/CenterColumn"]
+layout_mode = 2
+theme_type_variation = &"display"
+text = "—"
+horizontal_alignment = 1
+
+[node name="NumPad" type="GridContainer" parent="SafeAreaMargin/MainColumn"]
+custom_minimum_size = Vector2(0, 360)
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 3
+
+[node name="Btn1" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "1"
+
+[node name="Btn2" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "2"
+
+[node name="Btn3" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "3"
+
+[node name="Btn4" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "4"
+
+[node name="Btn5" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "5"
+
+[node name="Btn6" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "6"
+
+[node name="Btn7" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "7"
+
+[node name="Btn8" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "8"
+
+[node name="Btn9" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "9"
+
+[node name="BtnC" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "C"
+
+[node name="Btn0" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"secondary"
+text = "0"
+
+[node name="BtnOK" type="Button" parent="SafeAreaMargin/MainColumn/NumPad"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "OK"
+
+[node name="TimeoutTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="TimeoutTimer" to="." method="_on_timeout_timer_timeout"]

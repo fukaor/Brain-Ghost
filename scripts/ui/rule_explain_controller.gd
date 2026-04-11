@@ -13,7 +13,11 @@ const RULES: Dictionary = {
         "title": "反射タップ",
         "dialogue": "ランダムに出てくる丸をできるだけ速くタップしてね。\n20 回の平均時間でスコアが決まるよ。\n違う色の偽物はタップしちゃダメ！",
     },
-    # 将来: "flash_calc", "number_search", "stroop", "sequence_memory", "card_match"
+    "flash_calc": {
+        "title": "フラッシュ暗算",
+        "dialogue": "計算式が次々出てくるよ。\n答えをテンキーで入力して OK を押してね。\n30 秒で何問解けるかな？",
+    },
+    # 将来: "number_search", "stroop", "sequence_memory", "card_match"
 }
 
 @onready var _title_label: Label = $SafeAreaMargin/MainColumn/TitleLabel

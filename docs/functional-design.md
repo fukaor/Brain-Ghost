@@ -413,7 +413,32 @@ func load(key: StoreKey) -> Dictionary
 func exists(key: StoreKey) -> bool
 func clear(key: StoreKey) -> void
 func migrate_if_needed(current_version: int) -> void
+
+# 高レベル API: PlayLog 操作 (20260413-game-data-persistence で追加)
+func append_play_log(log: PlayLog) -> bool
+func load_play_logs(game_type: String = "", limit: int = -1) -> Array[PlayLog]
+func count_play_logs(game_type: String = "") -> int
+
+# 高レベル API: GameBest 操作 (20260413-game-data-persistence で追加)
+func load_best(game_type: String) -> GameBest             # 不在時は score=0 の空 GameBest
+func save_best(best: GameBest) -> bool                    # 既存の他ゲーム分はマージで保持
+func update_best_if_better(log: PlayLog) -> bool          # ベスト更新時のみ true。total_play_count は常に +1
 ```
+
+**保存スキーマ** (高レベル API 対応):
+
+```json
+// PLAY_LOGS
+{ "schemaVersion": 1, "logs": [PlayLog dicts...] }
+
+// GAME_BESTS
+{ "schemaVersion": 1, "bests": { "reflex_tap": GameBest dict, ... } }
+```
+
+**設計判断**:
+- `update_best_if_better` がベスト判定とインクリメンタル更新の唯一の窓口。各 GameManager.on_<game>_finished から呼ぶ
+- `load_play_logs(game_type, limit)` の `limit` は **末尾 N 件**（直近 N 件）を返す。ゴースト対戦の「直近 5 回平均」生成に使う想定
+- ベスト不在時に空 GameBest を返すのは、呼び出し側の null チェックを省くため
 
 **プラットフォーム分岐**:
 

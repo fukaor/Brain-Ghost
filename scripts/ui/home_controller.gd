@@ -30,6 +30,10 @@ extends Control
 
 @onready var _ad_banner_area: MarginContainer = $AdBannerArea
 
+# 暫定: アクショングリッドの「全ゲーム」カードを flash_calc 起動に割り当て
+# (proper なゲーム選択画面は後続タスクで実装)
+@onready var _all_games_card: PanelContainer = $SafeAreaMargin/MainColumn/ActionGrid/AllGamesCard
+
 
 func _ready() -> void:
     _apply_placeholder_data()
@@ -53,12 +57,14 @@ func _apply_placeholder_data() -> void:
     _ghost.set_dialogue("おかえり！5 日連続すごいね。\n前回スコアは 3200 点だったよ。\n今日もチャレンジする？")
 
 
-## ボタンシグナルを接続する。遷移処理は次ステアリングで実装するので、現段階では print のみ。
+## ボタンシグナルを接続する。
 func _wire_signals() -> void:
     _start_button.pressed.connect(_on_start_button_pressed)
     _home_tab.pressed.connect(func(): print("[Home] HomeTab pressed"))
     _calendar_tab.pressed.connect(func(): print("[Home] CalendarTab pressed"))
     _settings_tab.pressed.connect(func(): print("[Home] SettingsTab pressed"))
+    # 「全ゲーム」カードを flash_calc 起動に割り当て (暫定)
+    _all_games_card.gui_input.connect(_on_all_games_card_input)
 
 
 ## プラットフォーム分岐。広告バナーは Android 版でのみ表示する。
@@ -77,7 +83,17 @@ func _on_start_button_pressed() -> void:
     _ghost.set_dialogue("よーし！一緒にがんばろう！")
     # Week 1 では反射タップ単体起動。デイリーチャレンジ統合は次タスク
     var gm := get_node_or_null("/root/GameManager")
-    if gm != null and gm.has_method("start_reflex_tap"):
-        gm.start_reflex_tap("free")
+    if gm != null and gm.has_method("start_game"):
+        gm.start_game("reflex_tap")
     else:
-        push_warning("[Home] GameManager.start_reflex_tap not found")
+        push_warning("[Home] GameManager.start_game not found")
+
+
+func _on_all_games_card_input(event: InputEvent) -> void:
+    if event is InputEventMouseButton:
+        var mb := event as InputEventMouseButton
+        if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+            _ghost.set_dialogue("フラッシュ暗算だね、計算がんばろう！")
+            var gm := get_node_or_null("/root/GameManager")
+            if gm != null and gm.has_method("start_game"):
+                gm.start_game("flash_calc")

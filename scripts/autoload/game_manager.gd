@@ -3,9 +3,19 @@
 ## アプリ全体のライフサイクル管理、プレイモード（daily/free/onboarding）の保持、
 ## シーン遷移の調停を担う Autoload（最上位のコーディネーター）。
 ##
-## Week 1 段階: free モードで反射タップ単体プレイをサポート。
+## Week 1 段階: free モードでのミニゲーム単体プレイをサポート (反射タップ / フラッシュ暗算)。
 ## デイリーチャレンジ・オンボーディング・他ゲームは Week 2 以降。
+##
+## [b]ゲーム種別の追加方法:[/b]
+## 1. `GAME_SCENES` Dictionary に game_type → tscn パスを追加
+## 2. `_build_play_data_for(log)` に game_type ごとの ScoreSystem 入力構築を追加
 extends Node
+
+## game_type → シーンパスのマッピング。新ゲーム追加時はここに 1 行追加するだけ。
+const GAME_SCENES: Dictionary = {
+    "reflex_tap": "res://scenes/games/reflex_tap.tscn",
+    "flash_calc": "res://scenes/games/flash_calc.tscn",
+}
 
 enum PlayMode { NONE, ONBOARDING, DAILY, FREE }
 
@@ -75,11 +85,22 @@ func get_progress_percent() -> int:
 
 # --- 反射タップフロー (Week 1 で追加) ---
 
-## 反射タップ単体プレイを開始する。home → rule_explain へ遷移
-func start_reflex_tap(_mode: String = "free") -> void:
-    _current_game_type = "reflex_tap"
+## ジェネリックなゲーム単体プレイ開始。home → rule_explain へ遷移。
+## 新ゲーム追加時は GAME_SCENES に登録すれば本メソッドだけでフローが組める。
+func start_game(game_type: String) -> void:
+    if not GAME_SCENES.has(game_type):
+        push_error("[GameManager] start_game: unknown game_type %s" % game_type)
+        _safe_change_scene("res://scenes/main/home.tscn")
+        return
+    _current_game_type = game_type
     current_mode = PlayMode.FREE
+    _previous_score = DataStore.load_best(game_type).best_score
     _safe_change_scene("res://scenes/ui/rule_explain.tscn")
+
+
+## 後方互換: 反射タップ専用ラッパ。新規呼び出しは start_game("reflex_tap") を推奨。
+func start_reflex_tap(_mode: String = "free") -> void:
+    start_game("reflex_tap")
 
 
 ## ルール説明画面の [スタート] / [スキップ] が押された
@@ -87,15 +108,21 @@ func on_rule_explain_confirmed() -> void:
     _safe_change_scene("res://scenes/ui/countdown.tscn")
 
 
-## カウントダウン完了
+## カウントダウン完了 → _current_game_type のシーンへ動的遷移
 func on_countdown_finished() -> void:
-    _safe_change_scene("res://scenes/games/reflex_tap.tscn")
+    var scene_path: String = String(GAME_SCENES.get(_current_game_type, ""))
+    if scene_path == "":
+        push_error("[GameManager] on_countdown_finished: no scene for %s" % _current_game_type)
+        _safe_change_scene("res://scenes/main/home.tscn")
+        return
+    _safe_change_scene(scene_path)
 
 
-## 反射タップゲーム終了 (reflex_tap_view から呼ばれる)
-func on_reflex_tap_finished(log) -> void:
+## 任意のゲーム終了時に呼ばれる汎用ハンドラ。<game>_view から呼ぶ。
+## log.game_type を見て ScoreSystem 入力を構築 → 保存 → 個別結果画面へ。
+func on_game_finished_handler(log) -> void:
     if log == null:
-        push_warning("[GameManager] on_reflex_tap_finished received null log")
+        push_warning("[GameManager] on_game_finished_handler received null log")
         _safe_change_scene("res://scenes/main/home.tscn")
         return
 
@@ -104,20 +131,18 @@ func on_reflex_tap_finished(log) -> void:
     log.played_at = Time.get_datetime_string_from_system(true)
     log.played_date = DateUtil.today_jst()
     log.mode = "free"
-    log.game_type = "reflex_tap"
 
-    # スコア計算: events から平均反応時間を取得して ScoreSystem で算出
-    var avg_ms: float = _compute_avg_reaction_ms(log)
+    # スコア計算: log.events 等から ScoreSystem 入力を構築
+    var play_data: Dictionary = _build_play_data_for(log)
     var score_sys := ScoreSystem.new()
-    log.score = score_sys.calculate_score("reflex_tap", {"average_reaction_ms": avg_ms})
+    log.score = score_sys.calculate_score(log.game_type, play_data)
     score_sys.queue_free()
 
-    # ベスト判定 (Week 1 はスタブ: 前回スコアは 0)
-    _previous_score = _load_previous_score("reflex_tap")
-    log.is_new_best = log.score > _previous_score
+    # ベスト判定 + 保存を DataStore.update_best_if_better に委譲
+    log.is_new_best = DataStore.update_best_if_better(log)
 
-    # DataStore へ保存 (Week 1 はスタブ: 失敗しても warning のみ)
-    _save_play_log(log)
+    # PlayLog 自体の保存（履歴）
+    DataStore.append_play_log(log)
 
     _current_play_log = log
     current_session_logs.append(log)
@@ -125,14 +150,54 @@ func on_reflex_tap_finished(log) -> void:
     _safe_change_scene("res://scenes/ui/individual_result.tscn")
 
 
+## 後方互換: 反射タップ専用ハンドラ。新規呼び出しは on_game_finished_handler を推奨。
+func on_reflex_tap_finished(log) -> void:
+    on_game_finished_handler(log)
+
+
 ## 個別結果画面の [もう一度] が押された
 func on_individual_result_replay() -> void:
-    start_reflex_tap(_current_game_type)
+    start_game(_current_game_type)
 
 
 ## 個別結果画面の [ホームへ] が押された
 func on_individual_result_home() -> void:
     _safe_change_scene("res://scenes/main/home.tscn")
+
+
+## game_type ごとの ScoreSystem 入力構築。新ゲーム追加時はここに分岐を追加する。
+func _build_play_data_for(log) -> Dictionary:
+    match log.game_type:
+        "reflex_tap":
+            var avg_ms: float = _compute_avg_reaction_ms(log)
+            return {"average_reaction_ms": avg_ms}
+        "flash_calc":
+            var correct: int = _count_events_of_type(log, "correct")
+            var remaining: int = _extract_remaining_sec(log)
+            return {"correct_count": correct, "remaining_sec": remaining}
+        _:
+            push_warning("[GameManager] _build_play_data_for: unknown game_type %s" % log.game_type)
+            return {}
+
+
+func _count_events_of_type(log, event_type: String) -> int:
+    if log == null or log.events == null:
+        return 0
+    var count: int = 0
+    for evt in log.events:
+        if evt != null and evt.event_type == event_type:
+            count += 1
+    return count
+
+
+## flash_calc の終了時イベント "session_end" の value に remaining_sec を入れる契約
+func _extract_remaining_sec(log) -> int:
+    if log == null or log.events == null:
+        return 0
+    for evt in log.events:
+        if evt != null and evt.event_type == "session_end":
+            return int(evt.value)
+    return 0
 
 
 # --- ヘルパー ---
@@ -158,12 +223,11 @@ func _compute_avg_reaction_ms(log) -> float:
     return total / float(count)
 
 
-func _load_previous_score(_game_type: String) -> int:
-    # TODO: DataStore.load_dict(GAME_BESTS) から取得する。Week 1 はスタブ
-    return 0
+## DEPRECATED: 残置のみ。新規呼び出しは DataStore.load_best を直接使うこと。
+func _load_previous_score(game_type: String) -> int:
+    return DataStore.load_best(game_type).best_score
 
 
-func _save_play_log(_log) -> void:
-    # TODO: DataStore.load_dict(PLAY_LOGS) → append → save する。Week 1 はスタブ
-    # 現状はログ出力のみ
-    print("[GameManager] PlayLog (stub save): score=%d, game_type=%s" % [_log.score, _log.game_type])
+## DEPRECATED: 残置のみ。新規呼び出しは DataStore.append_play_log を直接使うこと。
+func _save_play_log(log) -> void:
+    DataStore.append_play_log(log)
