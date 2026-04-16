@@ -23,6 +23,9 @@ dist/
 *.apk
 *.aab
 
+# --- MCP 設定（APIキー含む） ---
+.mcp.json
+
 # --- 秘匿情報 ---
 export_presets.cfg.local
 *.keystore
@@ -55,3 +58,17 @@ bun.lockb
 
 # --- ユーザー固有のステアリングメモ（履歴は残す） ---
 .steering/**/*.local.md
+
+# Citadel plugin auto-generated
+.citadel/scripts/
+.citadel/version.txt
+.citadel/plugin-root.txt
+.citadel/project.md
+
+# Citadel planning
+.planning/
+
+# Claude Code temp state
+.claude/agent-context/
+.claude/circuit-breaker-state.json
+.claude/compact-state.json
