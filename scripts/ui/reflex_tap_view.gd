@@ -6,24 +6,37 @@
 ## 1. ReflexTap インスタンスのライフサイクル管理 (setup → start → finish)
 ## 2. Timer によるターゲット出現スケジュール
 ## 3. Control ノードの動的生成 (Button with theme variation "target_circle")
-## 4. HUD (残りタップ数・経過時間) の更新
+## 4. HUD (平均反応時間・進捗・パーセンテージ) の更新
 ## 5. ユーザーのタップを ReflexTap.handle_input() に仲介
 ## 6. game_finished シグナルを GameManager に中継
+##
+## Stitch v0.2 デザイン準拠 (2026-04-14):
+## - HUD: CURRENT AVG + PROGRESS + 円形プログレス%
+## - ゴーストバトルバー: 自分 vs ゴースト リアルタイムスコア
 ##
 ## [b]設計原則:[/b] ロジックは reflex_tap.gd 側、表示・タイミング制御は本ファイル側。
 ## 色・フォント・サイズは Theme 一任（`target_circle` / `target_circle_fake` variation）。
 extends Control
 
-const GAME_AREA_MIN_SIZE: Vector2i = Vector2i(720, 900)  # GameArea の論理サイズ（位置計算用）
-## ターゲット消滅アニメ (縮んでフェードアウト) の所要時間
+const GAME_AREA_MIN_SIZE: Vector2i = Vector2i(720, 900)
 const DISMISS_ANIM_SEC: float = 0.18
 
-@onready var _progress_label: Label = $SafeAreaMargin/MainColumn/TopHudRow/ProgressPill/HBox/ProgressValue
-@onready var _elapsed_label: Label = $SafeAreaMargin/MainColumn/TopHudRow/ElapsedPill/HBox/ElapsedValue
-@onready var _speed_label: Label = $SafeAreaMargin/MainColumn/TopHudRow/SpeedPill/HBox/SpeedValue
+# ゴーストのプレースホルダー反応時間（ms）— ゴーストシステム実装後に動的化
+const GHOST_AVG_REACTION_MS: float = 450.0
+
+# ---------------------------------------------------------------------------
+# ノード参照 (Stitch v0.2 HUD)
+# ---------------------------------------------------------------------------
+@onready var _avg_value: Label = $SafeAreaMargin/MainColumn/TopHudRow/AvgColumn/AvgValue
+@onready var _progress_value: Label = $SafeAreaMargin/MainColumn/TopHudRow/ProgressColumn/ProgressValue
+@onready var _progress_percent: Label = $SafeAreaMargin/MainColumn/TopHudRow/ProgressRing/ProgressPercent
 @onready var _game_area: Control = $SafeAreaMargin/MainColumn/GameArea
 @onready var _spawn_timer: Timer = $SpawnTimer
 @onready var _fake_dismiss_timer: Timer = $FakeDismissTimer
+
+# ゴーストバトルバー
+@onready var _player_score_label: Label = $SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/ScoreRow/PlayerScore
+@onready var _ghost_score_label: Label = $SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/ScoreRow/GhostScore
 
 var _game: ReflexTap
 var _current_target: Button = null
@@ -37,19 +50,47 @@ func _ready() -> void:
     _game.game_finished.connect(_on_game_finished)
     _game.setup(_seed_value)
     _game.start()
-    _progress_label.text = "0 / %d" % _game.get_total_count()
-    _elapsed_label.text = "0.0s"
-    _speed_label.text = "— ms"
-    # 最初のターゲットを少し待ってから出す
+    _avg_value.text = "—"
+    _progress_value.text = "0 / %d" % _game.get_total_count()
+    _progress_percent.text = "0%"
+    _ghost_score_label.text = str(int(round((1000.0 / GHOST_AVG_REACTION_MS) * 300.0)))
     _schedule_next_target()
 
 
 func _process(_delta: float) -> void:
     if _game == null or not _game._is_active:
         return
-    var elapsed_sec: float = float(_game.get_elapsed_ms()) / 1000.0
-    _elapsed_label.text = "%.1fs" % elapsed_sec
-    _progress_label.text = "%d / %d" % [_game.get_tapped_count(), _game.get_total_count()]
+
+    var tapped := _game.get_tapped_count()
+    var total := _game.get_total_count()
+
+    # PROGRESS
+    _progress_value.text = "%d / %d" % [tapped, total]
+
+    # パーセンテージ
+    var pct := 0
+    if total > 0:
+        pct = int(round(float(tapped) / float(total) * 100.0))
+    _progress_percent.text = "%d%%" % pct
+
+    # CURRENT AVG (累積平均反応時間を秒で表示)
+    if _game._reaction_times_ms.size() > 0:
+        var total_ms: float = 0.0
+        for ms in _game._reaction_times_ms:
+            total_ms += float(ms)
+        var avg_sec: float = (total_ms / float(_game._reaction_times_ms.size())) / 1000.0
+        _avg_value.text = "%.2fs" % avg_sec
+    else:
+        _avg_value.text = "—"
+
+    # プレイヤースコア（リアルタイム概算）
+    if _game._reaction_times_ms.size() > 0:
+        var total_ms_2: float = 0.0
+        for ms in _game._reaction_times_ms:
+            total_ms_2 += float(ms)
+        var avg_ms: float = total_ms_2 / float(_game._reaction_times_ms.size())
+        if avg_ms > 0.0:
+            _player_score_label.text = str(int(round((1000.0 / avg_ms) * 300.0)))
 
 
 ## GameManager から外部シードを注入するための setter（デイリーチャレンジ用）
@@ -76,10 +117,6 @@ func _spawn_target() -> void:
     var is_fake: bool = _game.should_show_fake()
     var size: int = _game.pick_target_size()
     var area_size: Vector2i = Vector2i(_game_area.size) if _game_area.size.x > 0 else GAME_AREA_MIN_SIZE
-    # ReflexTap の generate_target_position はロジック上は別コンテキスト（viewport フル）だが、
-    # 本シーンでは GameArea 内に配置する。area_size を使って計算する。
-    # ただし rng を進めるため、reflex_tap の generate_target_position は呼ばずに
-    # 独自のマージン計算で済ませる（rng は pick_target_size/pick_wait_ms で進んでいる）
     var margin: int = ReflexTap.SCREEN_MARGIN_PX
     var max_x: int = max(margin, area_size.x - margin - size)
     var max_y: int = max(margin, area_size.y - margin - size)
@@ -93,6 +130,16 @@ func _spawn_target() -> void:
     btn.position = Vector2(x, y)
     btn.pressed.connect(_on_target_pressed.bind(is_fake))
 
+    # Stitch準拠: ターゲット/フェイクに中央アイコンを追加
+    var icon_label := Label.new()
+    icon_label.theme_type_variation = "icon_ability_white"
+    icon_label.text = "close" if is_fake else "stars"
+    icon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    icon_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    icon_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+    icon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    btn.add_child(icon_label)
+
     _game_area.add_child(btn)
     _current_target = btn
     _current_is_fake = is_fake
@@ -101,12 +148,10 @@ func _spawn_target() -> void:
 
     if is_fake:
         _game.advance_fake_schedule()
-        # フェイクは一定時間で自動消滅 (ユーザがタップしなくても次へ進む)
         _fake_dismiss_timer.start(float(ReflexTap.FAKE_VISIBLE_MS) / 1000.0)
 
 
 func _on_target_pressed(is_fake: bool) -> void:
-    # フェイクの自動消滅タイマーが走っていればキャンセル (ユーザがタップしたため)
     _fake_dismiss_timer.stop()
 
     if _current_target != null:
@@ -118,17 +163,12 @@ func _on_target_pressed(is_fake: bool) -> void:
         _game.handle_input({"type": "fake_tap"})
     else:
         _game.handle_input({"type": "target_tap"})
-        var last_reaction: int = _game._reaction_times_ms[-1] if _game._reaction_times_ms.size() > 0 else 0
-        _speed_label.text = "%d ms" % last_reaction
 
-    # ゲームがまだアクティブなら次のターゲットをスケジュール (アニメ中に並行して次の Timer を回す)
     if _game._is_active:
         _schedule_next_target()
 
 
-## フェイクが自動消滅する (ユーザがタップせずにスルーした場合)
 func _on_fake_dismiss_timer_timeout() -> void:
-    # ペナルティなし、record_event なし。ただ消して次へ進む
     if _current_target == null or not _current_is_fake:
         return
     _dismiss_target(_current_target)
@@ -138,15 +178,10 @@ func _on_fake_dismiss_timer_timeout() -> void:
         _schedule_next_target()
 
 
-## 渡された Button を「縮んでフェードアウト」アニメで消す。
-## アニメ終了後に queue_free を呼ぶので、呼び出し側は _current_target = null だけすれば良い。
-## アニメ中の二重タップを防ぐため mouse_filter = IGNORE にしておく。
 func _dismiss_target(btn: Button) -> void:
     if btn == null:
         return
-    # 多重タップ防止
     btn.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    # スケールの中心を Button の中央に
     btn.pivot_offset = btn.size * 0.5
     var tween := create_tween()
     tween.set_parallel(true)
@@ -165,7 +200,6 @@ func _on_game_finished(log: PlayLog) -> void:
     if _current_target != null:
         _current_target.queue_free()
         _current_target = null
-    # GameManager の汎用ハンドラに通知
     var gm := get_node_or_null("/root/GameManager")
     if gm != null and gm.has_method("on_game_finished_handler"):
         gm.on_game_finished_handler(log)

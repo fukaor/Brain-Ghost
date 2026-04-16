@@ -76,6 +76,7 @@
   "trust": {
     "sessionCount": 0,
     "campaignCount": 0,
-    "level": "novice"
+    "level": "novice",
+    "sessions_completed": 10
   }
 }

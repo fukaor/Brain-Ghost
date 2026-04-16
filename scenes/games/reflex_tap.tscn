@@ -1,7 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://b0reflextap0001"]
+[gd_scene load_steps=4 format=3 uid="uid://b0reflextap0001"]
 
 [ext_resource type="Script" path="res://scripts/ui/reflex_tap_view.gd" id="1_view"]
-[ext_resource type="Texture2D" path="res://assets/textures/gradients/page_bg.png" id="2_pagebg"]
+
+[sub_resource type="Gradient" id="Gradient_playbg"]
+colors = PackedColorArray(0.678, 0.847, 0.976, 1, 0.82, 0.906, 0.976, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_playbg"]
+gradient = SubResource("Gradient_playbg")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
 
 [node name="ReflexTap" type="Control"]
 layout_mode = 3
@@ -19,7 +26,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_pagebg")
+texture = SubResource("GradientTexture2D_playbg")
 expand_mode = 1
 stretch_mode = 6
 
@@ -31,82 +38,138 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 32
+theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_bottom = 0
 
 [node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 8
 
 [node name="TopHudRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 16
 
-[node name="ProgressPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
+[node name="AvgColumn" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"pill_chip"
+theme_override_constants/separation = 0
 
-[node name="HBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressPill"]
+[node name="AvgCaption" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/AvgColumn"]
 layout_mode = 2
-theme_override_constants/separation = 6
-alignment = 1
+theme_type_variation = &"caption_v2"
+text = "CURRENT AVG"
 
-[node name="ProgressIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressPill/HBox"]
+[node name="AvgValue" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/AvgColumn"]
 layout_mode = 2
-theme_type_variation = &"icon_pill"
-text = "radio_button_checked"
+theme_type_variation = &"display_primary"
+text = "—"
 
-[node name="ProgressValue" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressPill/HBox"]
+[node name="ProgressColumn" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
 layout_mode = 2
-theme_type_variation = &"value"
+theme_override_constants/separation = 0
+
+[node name="ProgressCaption" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressColumn"]
+layout_mode = 2
+theme_type_variation = &"caption_v2"
+text = "PROGRESS"
+
+[node name="ProgressValue" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressColumn"]
+layout_mode = 2
+theme_type_variation = &"display_primary"
 text = "0 / 20"
 
-[node name="ElapsedPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
+[node name="HudSpacer" type="Control" parent="SafeAreaMargin/MainColumn/TopHudRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_type_variation = &"pill_chip"
 
-[node name="HBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/ElapsedPill"]
+[node name="ProgressRing" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
 layout_mode = 2
-theme_override_constants/separation = 6
-alignment = 1
+size_flags_vertical = 4
+theme_override_constants/separation = 0
 
-[node name="ElapsedIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ElapsedPill/HBox"]
+[node name="ProgressPercent" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ProgressRing"]
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
-theme_type_variation = &"icon_pill"
-text = "schedule"
-
-[node name="ElapsedValue" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/ElapsedPill/HBox"]
-layout_mode = 2
-theme_type_variation = &"value"
-text = "0.0s"
-
-[node name="SpeedPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/TopHudRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"pill_chip"
-
-[node name="HBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/TopHudRow/SpeedPill"]
-layout_mode = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="SpeedIcon" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/SpeedPill/HBox"]
-layout_mode = 2
-theme_type_variation = &"icon_pill"
-text = "bolt"
-
-[node name="SpeedValue" type="Label" parent="SafeAreaMargin/MainColumn/TopHudRow/SpeedPill/HBox"]
-layout_mode = 2
-theme_type_variation = &"value"
-text = "— ms"
+theme_type_variation = &"caption_v2"
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="GameArea" type="Control" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
 size_flags_vertical = 3
 clip_contents = true
+
+[node name="GhostBattleBar" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+theme_type_variation = &"glass_bubble"
+
+[node name="BattleMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/GhostBattleBar"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="BattleVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BattleHeaderRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BattleIcon" type="Label" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/BattleHeaderRow"]
+layout_mode = 2
+theme_type_variation = &"icon_nav_v2"
+text = "swords"
+
+[node name="BattleTitle" type="Label" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/BattleHeaderRow"]
+layout_mode = 2
+theme_type_variation = &"headline_v2"
+text = "ゴーストバトル"
+
+[node name="BattleSpacer" type="Control" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/BattleHeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LiveSyncBadge" type="PanelContainer" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/BattleHeaderRow"]
+layout_mode = 2
+theme_type_variation = &"pill_chip"
+
+[node name="LiveSyncLabel" type="Label" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/BattleHeaderRow/LiveSyncBadge"]
+layout_mode = 2
+theme_type_variation = &"caption_v2"
+text = "LIVE SYNC"
+
+[node name="ScoreRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PlayerLabel" type="Label" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/ScoreRow"]
+layout_mode = 2
+theme_type_variation = &"caption_v2"
+text = "自分"
+
+[node name="PlayerBar" type="PanelContainer" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/ScoreRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"bar_win_v2"
+
+[node name="PlayerScore" type="Label" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/ScoreRow"]
+layout_mode = 2
+theme_type_variation = &"headline_v2"
+text = "0"
+
+[node name="GhostLabel" type="Label" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/ScoreRow"]
+layout_mode = 2
+theme_type_variation = &"caption_v2"
+text = "ゴースト"
+
+[node name="GhostScore" type="Label" parent="SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/ScoreRow"]
+layout_mode = 2
+theme_type_variation = &"headline_v2"
+text = "—"
 
 [node name="SpawnTimer" type="Timer" parent="."]
 one_shot = true
