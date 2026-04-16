@@ -1,8 +1,159 @@
-[gd_scene load_steps=4 format=3 uid="uid://b0ruleexp00001"]
+[gd_scene load_steps=20 format=3 uid="uid://b0ruleexp00001"]
 
 [ext_resource type="Script" path="res://scripts/ui/rule_explain_controller.gd" id="1_ctrl"]
-[ext_resource type="Texture2D" path="res://assets/textures/gradients/page_bg.png" id="2_pagebg"]
-[ext_resource type="PackedScene" path="res://scenes/ui/ghost_character.tscn" id="3_ghost"]
+[ext_resource type="Texture2D" path="res://assets/characters/ghost_seirei.png" id="3_ghost"]
+[ext_resource type="Script" path="res://scripts/ui/speech_bubble.gd" id="4_bubble"]
+[ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="5_msym"]
+
+[sub_resource type="Gradient" id="Gradient_rulebg"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.878, 0.949, 0.996, 1, 0.729, 0.902, 0.992, 1, 0.49, 0.827, 0.988, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rulebg"]
+gradient = SubResource("Gradient_rulebg")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghost_bg"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.878, 0.949, 0.996, 0.5)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_subtitle_container"]
+content_margin_left = 21.0
+content_margin_top = 14.0
+content_margin_right = 21.0
+content_margin_bottom = 14.0
+bg_color = Color(0, 0.484, 1, 0.1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0.484, 1, 0.2)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_target_card"]
+content_margin_left = 16.0
+content_margin_top = 20.0
+content_margin_right = 16.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 1, 1, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0.484, 1, 0.3)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fake_card"]
+content_margin_left = 16.0
+content_margin_top = 20.0
+content_margin_right = 16.0
+content_margin_bottom = 20.0
+bg_color = Color(0.937, 0.937, 1, 0.6)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.635, 0.671, 0.843, 0.3)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_icon_circle_blue"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0.484, 1, 0.15)
+corner_radius_top_left = 54
+corner_radius_top_right = 54
+corner_radius_bottom_right = 54
+corner_radius_bottom_left = 54
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_icon_circle_grey"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.424, 0.459, 0.62, 0.12)
+corner_radius_top_left = 54
+corner_radius_top_right = 54
+corner_radius_bottom_right = 54
+corner_radius_bottom_left = 54
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pill_blue"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0.484, 1, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pill_grey"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(0.635, 0.671, 0.843, 0.2)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.635, 0.671, 0.843, 0.2)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_home_btn"]
+content_margin_left = 32.0
+content_margin_top = 14.0
+content_margin_right = 32.0
+content_margin_bottom = 14.0
+bg_color = Color(1, 1, 1, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.6)
+corner_radius_top_left = 26
+corner_radius_top_right = 26
+corner_radius_bottom_right = 26
+corner_radius_bottom_left = 26
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_home_btn_pressed"]
+content_margin_left = 32.0
+content_margin_top = 14.0
+content_margin_right = 32.0
+content_margin_bottom = 14.0
+bg_color = Color(0.92, 0.94, 1, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.6)
+corner_radius_top_left = 26
+corner_radius_top_right = 26
+corner_radius_bottom_right = 26
+corner_radius_bottom_left = 26
 
 [node name="RuleExplain" type="Control"]
 layout_mode = 3
@@ -20,7 +171,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_pagebg")
+texture = SubResource("GradientTexture2D_rulebg")
 expand_mode = 1
 stretch_mode = 6
 
@@ -31,73 +182,278 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 24
+theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 48
-theme_override_constants/margin_right = 24
+theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
 [node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
 layout_mode = 2
-theme_override_constants/separation = 24
+theme_override_constants/separation = 16
 
-[node name="HeaderRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
+[node name="GhostRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
+alignment = 0
 
-[node name="BackButton" type="Button" parent="SafeAreaMargin/MainColumn/HeaderRow"]
-custom_minimum_size = Vector2(56, 56)
+[node name="GhostChibiBg" type="PanelContainer" parent="SafeAreaMargin/MainColumn/GhostRow"]
+custom_minimum_size = Vector2(213, 213)
 layout_mode = 2
-flat = true
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ghost_bg")
 
-[node name="BackIcon" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/BackButton"]
+[node name="GhostChibi" type="TextureRect" parent="SafeAreaMargin/MainColumn/GhostRow/GhostChibiBg"]
 layout_mode = 2
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -14.0
-offset_top = -14.0
-offset_right = 14.0
-offset_bottom = 14.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_type_variation = &"icon_nav"
-text = "arrow_back"
+texture = ExtResource("3_ghost")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="HeaderSpacer" type="Control" parent="SafeAreaMargin/MainColumn/HeaderRow"]
+[node name="SpeechBubble" type="PanelContainer" parent="SafeAreaMargin/MainColumn/GhostRow"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_type_variation = &"glass_bubble"
+script = ExtResource("4_bubble")
+tail_direction = 1
+tail_width = 16.0
+tail_height = 10.0
+tail_offset_x = 0.0
 
-[node name="TitleLabel" type="Label" parent="SafeAreaMargin/MainColumn"]
+[node name="BubbleMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/GhostRow/SpeechBubble"]
 layout_mode = 2
-theme_type_variation = &"h1"
-text = "反射タップ"
-horizontal_alignment = 1
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 18
 
-[node name="GhostCharacter" parent="SafeAreaMargin/MainColumn" instance=ExtResource("3_ghost")]
+[node name="SpeechText" type="Label" parent="SafeAreaMargin/MainColumn/GhostRow/SpeechBubble/BubbleMargin"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 23
+text = "「反射タップ」のルールを説明するね！画面に出てくるターゲットを、できるだけ早くタップして。フェイクには気をつけてね。"
+autowrap_mode = 2
 
-[node name="FlexSpacer" type="Control" parent="SafeAreaMargin/MainColumn"]
+[node name="FlexSpacer1" type="Control" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ButtonRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
+[node name="MainCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_type_variation = &"glass_bubble"
 
-[node name="SkipButton" type="Button" parent="SafeAreaMargin/MainColumn/ButtonRow"]
-custom_minimum_size = Vector2(0, 64)
+[node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/MainCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 37
+theme_override_constants/margin_top = 37
+theme_override_constants/margin_right = 37
+theme_override_constants/margin_bottom = 37
+
+[node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin"]
+layout_mode = 2
+theme_override_constants/separation = 27
+
+[node name="TitleLabel" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_font_sizes/font_size = 40
+text = "反射タップ"
+horizontal_alignment = 1
+
+[node name="TitleDecorLine" type="ColorRect" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(85, 3)
+layout_mode = 2
+size_flags_horizontal = 4
+color = Color(0, 0.484, 1, 0.2)
+
+[node name="SubtitleContainer" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_subtitle_container")
+
+[node name="SubtitleRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/SubtitleContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="SubtitleIcon" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/SubtitleContainer/SubtitleRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("5_msym")
+theme_override_font_sizes/font_size = 40
+text = "track_changes"
+
+[node name="SubtitleText" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/SubtitleContainer/SubtitleRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 23
+text = "20回タップの平均反応時間を計測"
+
+[node name="HintCardsRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_constants/separation = 27
+
+[node name="TargetCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_type_variation = &"secondary"
-text = "スキップ"
-visible = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_target_card")
 
-[node name="StartButton" type="Button" parent="SafeAreaMargin/MainColumn/ButtonRow"]
+[node name="TargetColumn" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="TargetTitle" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "TARGET"
+horizontal_alignment = 1
+
+[node name="TargetIconCenter" type="CenterContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn"]
+layout_mode = 2
+
+[node name="TargetIconBg" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetIconCenter"]
+custom_minimum_size = Vector2(107, 107)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_icon_circle_blue")
+
+[node name="TargetIcon" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetIconCenter/TargetIconBg"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("5_msym")
+theme_override_font_sizes/font_size = 80
+text = "flare"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TargetActionCenter" type="CenterContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn"]
+layout_mode = 2
+
+[node name="TargetActionPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetActionCenter"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pill_blue")
+
+[node name="TargetAction" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetActionCenter/TargetActionPill"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "タップして！"
+
+[node name="FakeCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_fake_card")
+
+[node name="FakeColumn" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="FakeTitle" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 1)
+theme_override_font_sizes/font_size = 16
+text = "FAKE"
+horizontal_alignment = 1
+
+[node name="FakeIconCenter" type="CenterContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn"]
+layout_mode = 2
+
+[node name="FakeIconBg" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeIconCenter"]
+custom_minimum_size = Vector2(107, 107)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_icon_circle_grey")
+
+[node name="FakeIcon" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeIconCenter/FakeIconBg"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.424, 0.459, 0.62, 0.4)
+theme_override_fonts/font = ExtResource("5_msym")
+theme_override_font_sizes/font_size = 80
+text = "flare"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FakeActionCenter" type="CenterContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn"]
+layout_mode = 2
+
+[node name="FakeActionPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeActionCenter"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pill_grey")
+
+[node name="FakeAction" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeActionCenter/FakeActionPill"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 1)
+theme_override_font_sizes/font_size = 16
+text = "無視してね"
+
+[node name="FlexSpacer2" type="Control" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StartButton" type="Button" parent="SafeAreaMargin/MainColumn"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_type_variation = &"cta_gradient"
-text = "  スタート"
+theme_type_variation = &"cta_blue"
+text = " "
+
+[node name="ButtonContent" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/StartButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="ButtonText" type="Label" parent="SafeAreaMargin/MainColumn/StartButton/ButtonContent"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+text = "脳トレを開始する"
+
+[node name="PlayIcon" type="Label" parent="SafeAreaMargin/MainColumn/StartButton/ButtonContent"]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_msym")
+theme_override_font_sizes/font_size = 40
+text = "play_circle"
+
+[node name="HomeLinkButton" type="Button" parent="SafeAreaMargin/MainColumn"]
+custom_minimum_size = Vector2(260, 56)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_home_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_home_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_home_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_home_btn")
+text = " "
+flat = false
+
+[node name="HomeBtnContent" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/HomeLinkButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="HomeIcon" type="Label" parent="SafeAreaMargin/MainColumn/HomeLinkButton/HomeBtnContent"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("5_msym")
+theme_override_font_sizes/font_size = 28
+text = "home"
+
+[node name="HomeText" type="Label" parent="SafeAreaMargin/MainColumn/HomeLinkButton/HomeBtnContent"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "ホームに戻る"
