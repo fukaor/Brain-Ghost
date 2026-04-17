@@ -15,6 +15,7 @@ extends Node
 const GAME_SCENES: Dictionary = {
     "reflex_tap": "res://scenes/games/reflex_tap.tscn",
     "flash_calc": "res://scenes/games/flash_calc.tscn",
+    "sequence_memory": "res://scenes/games/sequence_memory.tscn",
 }
 
 enum PlayMode { NONE, ONBOARDING, DAILY, FREE }
@@ -182,6 +183,9 @@ func _build_play_data_for(log) -> Dictionary:
             var correct: int = _count_events_of_type(log, "correct")
             var remaining: int = _extract_remaining_sec(log)
             return {"correct_count": correct, "remaining_sec": remaining}
+        "sequence_memory":
+            var max_level: int = _extract_max_level(log)
+            return {"max_reached_level": max_level}
         _:
             push_warning("[GameManager] _build_play_data_for: unknown game_type %s" % log.game_type)
             return {}
@@ -205,6 +209,17 @@ func _extract_remaining_sec(log) -> int:
         if evt != null and evt.event_type == "session_end":
             return int(evt.value)
     return 0
+
+
+## sequence_memory の level_cleared イベントの最大値を取得
+func _extract_max_level(log) -> int:
+    if log == null or log.events == null:
+        return 0
+    var max_level: int = 0
+    for evt in log.events:
+        if evt != null and evt.event_type == "level_cleared":
+            max_level = max(max_level, int(evt.value))
+    return max_level
 
 
 # --- ヘルパー ---

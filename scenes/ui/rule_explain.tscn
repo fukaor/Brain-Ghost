@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://b0ruleexp00001"]
+[gd_scene load_steps=14 format=3 uid="uid://b0ruleexp00001"]
 
 [ext_resource type="Script" path="res://scripts/ui/rule_explain_controller.gd" id="1_ctrl"]
 [ext_resource type="Texture2D" path="res://assets/characters/ghost_seirei.png" id="3_ghost"]
@@ -42,86 +42,6 @@ corner_radius_top_right = 22
 corner_radius_bottom_right = 22
 corner_radius_bottom_left = 22
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_target_card"]
-content_margin_left = 16.0
-content_margin_top = 20.0
-content_margin_right = 16.0
-content_margin_bottom = 20.0
-bg_color = Color(1, 1, 1, 0.8)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0, 0.484, 1, 0.3)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fake_card"]
-content_margin_left = 16.0
-content_margin_top = 20.0
-content_margin_right = 16.0
-content_margin_bottom = 20.0
-bg_color = Color(0.937, 0.937, 1, 0.6)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.635, 0.671, 0.843, 0.3)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_icon_circle_blue"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-bg_color = Color(0, 0.484, 1, 0.15)
-corner_radius_top_left = 54
-corner_radius_top_right = 54
-corner_radius_bottom_right = 54
-corner_radius_bottom_left = 54
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_icon_circle_grey"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-bg_color = Color(0.424, 0.459, 0.62, 0.12)
-corner_radius_top_left = 54
-corner_radius_top_right = 54
-corner_radius_bottom_right = 54
-corner_radius_bottom_left = 54
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pill_blue"]
-content_margin_left = 16.0
-content_margin_top = 8.0
-content_margin_right = 16.0
-content_margin_bottom = 8.0
-bg_color = Color(0, 0.484, 1, 1)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pill_grey"]
-content_margin_left = 16.0
-content_margin_top = 8.0
-content_margin_right = 16.0
-content_margin_bottom = 8.0
-bg_color = Color(0.635, 0.671, 0.843, 0.2)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.635, 0.671, 0.843, 0.2)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_home_btn"]
 content_margin_left = 32.0
@@ -292,7 +212,7 @@ theme_override_constants/separation = 27
 [node name="TargetCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_target_card")
+theme_type_variation = &"hint_card_target"
 
 [node name="TargetColumn" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard"]
 layout_mode = 2
@@ -312,7 +232,7 @@ layout_mode = 2
 [node name="TargetIconBg" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetIconCenter"]
 custom_minimum_size = Vector2(107, 107)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_icon_circle_blue")
+theme_type_variation = &"icon_circle_blue"
 
 [node name="TargetIcon" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetIconCenter/TargetIconBg"]
 layout_mode = 2
@@ -328,7 +248,7 @@ layout_mode = 2
 
 [node name="TargetActionPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetActionCenter"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_pill_blue")
+theme_type_variation = &"pill_action_blue"
 
 [node name="TargetAction" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetActionCenter/TargetActionPill"]
 layout_mode = 2
@@ -339,7 +259,7 @@ text = "タップして！"
 [node name="FakeCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_fake_card")
+theme_type_variation = &"hint_card_fake"
 
 [node name="FakeColumn" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard"]
 layout_mode = 2
@@ -359,7 +279,7 @@ layout_mode = 2
 [node name="FakeIconBg" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeIconCenter"]
 custom_minimum_size = Vector2(107, 107)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_icon_circle_grey")
+theme_type_variation = &"icon_circle_grey"
 
 [node name="FakeIcon" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeIconCenter/FakeIconBg"]
 layout_mode = 2
@@ -375,7 +295,7 @@ layout_mode = 2
 
 [node name="FakeActionPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeActionCenter"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_pill_grey")
+theme_type_variation = &"pill_action_grey"
 
 [node name="FakeAction" type="Label" parent="SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeActionCenter/FakeActionPill"]
 layout_mode = 2

@@ -34,9 +34,8 @@ const GHOST_AVG_REACTION_MS: float = 450.0
 @onready var _spawn_timer: Timer = $SpawnTimer
 @onready var _fake_dismiss_timer: Timer = $FakeDismissTimer
 
-# ゴーストバトルバー
-@onready var _player_score_label: Label = $SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/ScoreRow/PlayerScore
-@onready var _ghost_score_label: Label = $SafeAreaMargin/MainColumn/GhostBattleBar/BattleMargin/BattleVBox/ScoreRow/GhostScore
+# ゴーストバトルバー (共有シーン scenes/shared/ghost_battle_bar.tscn)
+@onready var _ghost_battle_bar = $SafeAreaMargin/MainColumn/GhostBattleBar
 
 var _game: ReflexTap
 var _current_target: Button = null
@@ -53,7 +52,7 @@ func _ready() -> void:
     _avg_value.text = "—"
     _progress_value.text = "0 / %d" % _game.get_total_count()
     _progress_percent.text = "0%"
-    _ghost_score_label.text = str(int(round((1000.0 / GHOST_AVG_REACTION_MS) * 300.0)))
+    _ghost_battle_bar.set_ghost_score(int(round((1000.0 / GHOST_AVG_REACTION_MS) * 300.0)))
     _schedule_next_target()
 
 
@@ -90,7 +89,7 @@ func _process(_delta: float) -> void:
             total_ms_2 += float(ms)
         var avg_ms: float = total_ms_2 / float(_game._reaction_times_ms.size())
         if avg_ms > 0.0:
-            _player_score_label.text = str(int(round((1000.0 / avg_ms) * 300.0)))
+            _ghost_battle_bar.set_player_score(int(round((1000.0 / avg_ms) * 300.0)))
 
 
 ## GameManager から外部シードを注入するための setter（デイリーチャレンジ用）
@@ -130,14 +129,21 @@ func _spawn_target() -> void:
     btn.position = Vector2(x, y)
     btn.pressed.connect(_on_target_pressed.bind(is_fake))
 
-    # Stitch準拠: ターゲット/フェイクに中央アイコンを追加
+    # ルール説明画面と統一: 淡い背景 + 色付きアイコン
+    # TARGET = 青アイコン Color(0, 0.484, 1, 1) / FAKE = 濃グレー半透明 Color(0.424, 0.459, 0.62, 0.4)
+    # サイズ比率はルール説明画面の 80px / 107px (≈0.75) に準拠
     var icon_label := Label.new()
     icon_label.theme_type_variation = "icon_ability_white"
-    icon_label.text = "close" if is_fake else "stars"
+    icon_label.add_theme_font_size_override("font_size", int(size * 0.7))
+    icon_label.text = "flare"
     icon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     icon_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     icon_label.set_anchors_preset(Control.PRESET_FULL_RECT)
     icon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    if is_fake:
+        icon_label.add_theme_color_override("font_color", Color(0.424, 0.459, 0.62, 0.4))
+    else:
+        icon_label.add_theme_color_override("font_color", Color(0, 0.484, 1, 1))
     btn.add_child(icon_label)
 
     _game_area.add_child(btn)

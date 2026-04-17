@@ -17,20 +17,78 @@ const RULES: Dictionary = {
         "speech": "「反射タップ」のルールを説明するね！画面に出てくるターゲットを、できるだけ早くタップして。フェイクには気をつけてね。",
         "subtitle_icon": "track_changes",
         "subtitle": "20回タップの平均反応時間を計測",
-        "target_icon": "flare",
-        "target_action": "タップして！",
-        "fake_icon": "flare",
-        "fake_action": "無視してね",
+        "card1_title": "TARGET",
+        "card1_icon": "flare",
+        "card1_action": "タップして！",
+        "card2_title": "FAKE",
+        "card2_icon": "flare",
+        "card2_action": "無視してね",
+        "card2_style": "inactive",  # inactive=グレー(やらない), active=青(やる)
     },
     "flash_calc": {
         "title": "フラッシュ暗算",
-        "speech": "「フラッシュ暗算」のルールを説明するね！計算式が出てくるから、答えをテンキーで入力してね。30秒で何問解けるかな？",
+        "speech": "「フラッシュ暗算」のルールを説明するね！画面に次々出てくる数字を計算して、足したり引いたりして、最後に合計を答えてね。",
         "subtitle_icon": "calculate",
-        "subtitle": "30秒間で計算問題に挑戦",
-        "target_icon": "dialpad",
-        "target_action": "テンキーで入力",
-        "fake_icon": "schedule",
-        "fake_action": "30秒以内に！",
+        "subtitle": "制限時間：30秒",
+        "card1_title": "入力",
+        "card1_icon": "dialpad",
+        "card1_action": "テンキーで回答",
+        "card2_title": "制限",
+        "card2_icon": "schedule",
+        "card2_action": "30秒以内に！",
+        "card2_style": "inactive",
+    },
+    "stroop": {
+        "title": "ストループ",
+        "speech": "「ストループ」のルールを説明するね！文字の「色」を答えてね。書いてある言葉ではなく、色に注目して！",
+        "subtitle_icon": "palette",
+        "subtitle": "30秒間で文字の色を正しく回答",
+        "card1_title": "正解",
+        "card1_icon": "check_circle",
+        "card1_action": "色をタップ！",
+        "card2_title": "注意",
+        "card2_icon": "warning",
+        "card2_action": "文字ではなく色",
+        "card2_style": "inactive",
+    },
+    "sequence_memory": {
+        "title": "順番記憶",
+        "speech": "「順番記憶」のルールを説明するね！パネルが光る順番を覚えて、同じ順番でタップしてね。レベルが上がると数が増えるよ！",
+        "subtitle_icon": "grid_view",
+        "subtitle": "光る順番を覚えてタップ",
+        "card1_title": "記憶",
+        "card1_icon": "visibility",
+        "card1_action": "順番を覚えて",
+        "card2_title": "再現",
+        "card2_icon": "touch_app",
+        "card2_action": "同じ順でタップ",
+        "card2_style": "active",
+    },
+    "card_match": {
+        "title": "神経衰弱",
+        "speech": "「神経衰弱」のルールを説明するね！カードをめくって同じ絵柄のペアを見つけてね。少ないタップ数でクリアを目指そう！",
+        "subtitle_icon": "content_copy",
+        "subtitle": "ペアを見つけてクリア",
+        "card1_title": "めくる",
+        "card1_icon": "flip",
+        "card1_action": "カードをタップ",
+        "card2_title": "目標",
+        "card2_icon": "emoji_events",
+        "card2_action": "少ないタップで",
+        "card2_style": "active",
+    },
+    "number_search": {
+        "title": "数字さがし",
+        "speech": "「数字さがし」のルールを説明するね！画面に散らばった数字を、1から順番にタップしていってね。速くクリアするほど高得点！",
+        "subtitle_icon": "search",
+        "subtitle": "1から順番にタップ",
+        "card1_title": "探す",
+        "card1_icon": "pin",
+        "card1_action": "1→2→3の順で",
+        "card2_title": "スピード",
+        "card2_icon": "bolt",
+        "card2_action": "速いほど高得点",
+        "card2_style": "active",
     },
 }
 
@@ -41,10 +99,18 @@ const RULES: Dictionary = {
 @onready var _title_label: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/TitleLabel
 @onready var _subtitle_icon: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/SubtitleContainer/SubtitleRow/SubtitleIcon
 @onready var _subtitle_text: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/SubtitleContainer/SubtitleRow/SubtitleText
-@onready var _target_icon: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetIconCenter/TargetIconBg/TargetIcon
-@onready var _target_action: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetActionCenter/TargetActionPill/TargetAction
-@onready var _fake_icon: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeIconCenter/FakeIconBg/FakeIcon
-@onready var _fake_action: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeActionCenter/FakeActionPill/FakeAction
+# ヒントカード1（左）
+@onready var _card1_title: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetTitle
+@onready var _card1_icon: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetIconCenter/TargetIconBg/TargetIcon
+@onready var _card1_action: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/TargetCard/TargetColumn/TargetActionCenter/TargetActionPill/TargetAction
+# ヒントカード2（右）
+@onready var _card2_panel: PanelContainer = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard
+@onready var _card2_title: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeTitle
+@onready var _card2_icon_bg: PanelContainer = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeIconCenter/FakeIconBg
+@onready var _card2_icon: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeIconCenter/FakeIconBg/FakeIcon
+@onready var _card2_action_pill: PanelContainer = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeActionCenter/FakeActionPill
+@onready var _card2_action: Label = $SafeAreaMargin/MainColumn/MainCard/CardMargin/CardVBox/HintCardsRow/FakeCard/FakeColumn/FakeActionCenter/FakeActionPill/FakeAction
+# ボタン
 @onready var _start_button: Button = $SafeAreaMargin/MainColumn/StartButton
 @onready var _home_link: Button = $SafeAreaMargin/MainColumn/HomeLinkButton
 
@@ -73,10 +139,27 @@ func set_rule(game_type: String) -> void:
     _speech_text.text = String(rule.get("speech", ""))
     _subtitle_icon.text = String(rule.get("subtitle_icon", "timer"))
     _subtitle_text.text = String(rule.get("subtitle", ""))
-    _target_icon.text = String(rule.get("target_icon", "stars"))
-    _target_action.text = String(rule.get("target_action", ""))
-    _fake_icon.text = String(rule.get("fake_icon", "close"))
-    _fake_action.text = String(rule.get("fake_action", ""))
+    _card1_title.text = String(rule.get("card1_title", "TARGET"))
+    _card1_icon.text = String(rule.get("card1_icon", "stars"))
+    _card1_action.text = String(rule.get("card1_action", ""))
+    _card2_title.text = String(rule.get("card2_title", "FAKE"))
+    _card2_icon.text = String(rule.get("card2_icon", "close"))
+    _card2_action.text = String(rule.get("card2_action", ""))
+
+    # カード2: 枠・タイトル・ピルは全ゲーム青系で統一。アイコンのみゲームごとに切替。
+    # card2_style: "active"=アイコン青(やる), "inactive"=アイコングレー(注意/やらない)
+    _card2_panel.theme_type_variation = "hint_card_target"
+    _card2_title.add_theme_color_override("font_color", Color(0, 0.484, 1, 1))
+    _card2_action_pill.theme_type_variation = "pill_action_blue"
+    _card2_action.add_theme_color_override("font_color", Color(1, 1, 1, 1))
+
+    var card2_style: String = String(rule.get("card2_style", "inactive"))
+    if card2_style == "active":
+        _card2_icon_bg.theme_type_variation = "icon_circle_blue"
+        _card2_icon.add_theme_color_override("font_color", Color(0, 0.484, 1, 1))
+    else:
+        _card2_icon_bg.theme_type_variation = "icon_circle_grey"
+        _card2_icon.add_theme_color_override("font_color", Color(0.424, 0.459, 0.62, 0.4))
 
 
 func _wire_signals() -> void:

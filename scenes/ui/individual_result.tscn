@@ -1,16 +1,19 @@
-[gd_scene load_steps=7 format=3 uid="uid://b0indresult001"]
+[gd_scene load_steps=6 format=3 uid="uid://b0indresult001"]
 
 [ext_resource type="Script" path="res://scripts/ui/individual_result_controller.gd" id="1_ctrl"]
 [ext_resource type="Texture2D" path="res://assets/characters/ghost_seirei.png" id="3_ghost"]
 [ext_resource type="Script" path="res://scripts/ui/speech_bubble.gd" id="4_bubble"]
+[ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="5_msym"]
 
 [sub_resource type="Gradient" id="Gradient_resultbg"]
-colors = PackedColorArray(0.85, 0.91, 0.97, 1, 0.93, 0.95, 0.98, 1)
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.878, 0.949, 0.996, 1, 0.729, 0.902, 0.992, 1, 0.49, 0.827, 0.988, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_resultbg"]
 gradient = SubResource("Gradient_resultbg")
-fill_from = Vector2(0.5, 0)
-fill_to = Vector2(0.5, 1)
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
 
 [node name="IndividualResult" type="Control"]
 layout_mode = 3
@@ -32,19 +35,6 @@ texture = SubResource("GradientTexture2D_resultbg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="GhostMascotBg" type="TextureRect" parent="."]
-layout_mode = 1
-anchor_left = 0.1
-anchor_top = 0.1
-anchor_right = 0.9
-anchor_bottom = 0.6
-grow_horizontal = 2
-grow_vertical = 2
-modulate = Color(1, 1, 1, 0.25)
-texture = ExtResource("3_ghost")
-expand_mode = 1
-stretch_mode = 5
-
 [node name="SafeAreaMargin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -52,21 +42,21 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
 [node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 10
 
 [node name="GhostRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 8
 
 [node name="GhostChibi" type="TextureRect" parent="SafeAreaMargin/MainColumn/GhostRow"]
-custom_minimum_size = Vector2(80, 96)
+custom_minimum_size = Vector2(213, 213)
 layout_mode = 2
 size_flags_vertical = 0
 texture = ExtResource("3_ghost")
@@ -79,198 +69,301 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_type_variation = &"glass_bubble"
 script = ExtResource("4_bubble")
+tail_direction = 1
 tail_width = 16.0
 tail_height = 10.0
-tail_offset_x = -60.0
+tail_offset_x = 0.0
 
 [node name="BubbleMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/GhostRow/SpeechBubble"]
 layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 18
 
 [node name="SpeechText" type="Label" parent="SafeAreaMargin/MainColumn/GhostRow/SpeechBubble/BubbleMargin"]
 layout_mode = 2
-theme_type_variation = &"caption_v2"
+theme_override_colors/font_color = Color(0.137, 0.173, 0.318, 1)
+theme_override_font_sizes/font_size = 23
 text = "お疲れさま！"
 autowrap_mode = 2
 
-[node name="ResultsHeaderRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
+[node name="ScoreCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
-alignment = 1
-theme_override_constants/separation = 6
+theme_type_variation = &"premium_card"
 
-[node name="ResultsDot" type="Label" parent="SafeAreaMargin/MainColumn/ResultsHeaderRow"]
-layout_mode = 2
-theme_type_variation = &"icon_pill"
-text = "radio_button_checked"
-
-[node name="ResultsText" type="Label" parent="SafeAreaMargin/MainColumn/ResultsHeaderRow"]
-layout_mode = 2
-theme_type_variation = &"headline_v2"
-text = "RESULTS"
-
-[node name="ScoreSection" type="VBoxContainer" parent="SafeAreaMargin/MainColumn"]
+[node name="ScoreCardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/ScoreCard"]
 layout_mode = 2
 theme_override_constants/separation = 4
+alignment = 1
 
-[node name="ScoreRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ScoreSection"]
+[node name="ResultsHeader" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 4
+
+[node name="StarLeft" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox/ResultsHeader"]
+layout_mode = 2
+theme_type_variation = &"icon_pill"
+theme_override_font_sizes/font_size = 18
+text = "stars"
+
+[node name="ResultsLabel" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox/ResultsHeader"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "RESULTS"
+
+[node name="StarRight" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox/ResultsHeader"]
+layout_mode = 2
+theme_type_variation = &"icon_pill"
+theme_override_font_sizes/font_size = 18
+text = "stars"
+
+[node name="NewBestBadge" type="PanelContainer" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"new_best_badge"
+visible = false
+
+[node name="NewBestLabel" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox/NewBestBadge"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.267, 0.192, 0, 1)
+theme_override_font_sizes/font_size = 12
+text = "NEW BEST!"
+
+[node name="ScoreRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox"]
 layout_mode = 2
 alignment = 1
 theme_override_constants/separation = 2
 
-[node name="ScoreValue" type="Label" parent="SafeAreaMargin/MainColumn/ScoreSection/ScoreRow"]
+[node name="ScoreValue" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox/ScoreRow"]
 layout_mode = 2
-theme_type_variation = &"display_primary"
+theme_override_colors/font_color = Color(0.059, 0.09, 0.165, 1)
+theme_override_font_sizes/font_size = 100
 text = "—"
 
-[node name="ScoreUnit" type="Label" parent="SafeAreaMargin/MainColumn/ScoreSection/ScoreRow"]
+[node name="ScoreUnit" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox/ScoreRow"]
 layout_mode = 2
-size_flags_vertical = 8
-theme_type_variation = &"h1"
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(0.059, 0.09, 0.165, 1)
+theme_override_font_sizes/font_size = 48
 text = "s"
 
-[node name="NewBestBadge" type="PanelContainer" parent="SafeAreaMargin/MainColumn/ScoreSection/ScoreRow"]
+[node name="ScoreCaption" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox"]
 layout_mode = 2
-size_flags_vertical = 0
-theme_type_variation = &"new_best_badge"
-visible = false
-
-[node name="NewBestLabel" type="Label" parent="SafeAreaMargin/MainColumn/ScoreSection/ScoreRow/NewBestBadge"]
-layout_mode = 2
-theme_type_variation = &"caption_v2"
-text = "NEW BEST!"
-
-[node name="ScoreCaption" type="Label" parent="SafeAreaMargin/MainColumn/ScoreSection"]
-layout_mode = 2
-theme_type_variation = &"caption_v2"
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_font_sizes/font_size = 16
 text = "平均反応時間"
 horizontal_alignment = 1
 
 [node name="ComparisonCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
-theme_type_variation = &"result_card"
+theme_type_variation = &"glass_bubble"
 
 [node name="ComparisonMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard"]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 16
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
 theme_override_constants/margin_bottom = 12
 
-[node name="ComparisonHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin"]
+[node name="ComparisonVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="YouSection" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonHBox"]
+[node name="ScoreCompareRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 2
 
-[node name="YouCaption" type="Label" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonHBox/YouSection"]
+[node name="YouSection" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/ScoreCompareRow"]
 layout_mode = 2
-theme_type_variation = &"caption_v2"
+theme_override_constants/separation = 0
+
+[node name="YouCaption" type="Label" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/ScoreCompareRow/YouSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 0.6)
+theme_override_font_sizes/font_size = 12
 text = "YOU"
 
-[node name="YouValue" type="Label" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonHBox/YouSection"]
+[node name="YouValue" type="Label" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/ScoreCompareRow/YouSection"]
 layout_mode = 2
-theme_type_variation = &"display_primary"
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_font_sizes/font_size = 28
 text = "—"
 
-[node name="VictoryBadge" type="PanelContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonHBox"]
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"pill_chip"
-
-[node name="VictoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonHBox/VictoryBadge"]
-layout_mode = 2
-theme_type_variation = &"caption_v2"
-text = "VICTORY"
-
-[node name="GhostSection" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonHBox"]
+[node name="CompareSpacer" type="Control" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/ScoreCompareRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 2
 
-[node name="GhostCaption" type="Label" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonHBox/GhostSection"]
+[node name="VictoryBadge" type="PanelContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/ScoreCompareRow"]
 layout_mode = 2
-theme_type_variation = &"caption_v2"
+size_flags_vertical = 4
+theme_type_variation = &"victory_badge"
+
+[node name="VictoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/ScoreCompareRow/VictoryBadge"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.353, 0.216, 1)
+theme_override_font_sizes/font_size = 14
+text = "VICTORY"
+
+[node name="CompareSpacer2" type="Control" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/ScoreCompareRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GhostSection" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/ScoreCompareRow"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="GhostCaption" type="Label" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/ScoreCompareRow/GhostSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_font_sizes/font_size = 12
 text = "GHOST"
 horizontal_alignment = 2
 
-[node name="GhostValue" type="Label" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonHBox/GhostSection"]
+[node name="GhostValue" type="Label" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/ScoreCompareRow/GhostSection"]
 layout_mode = 2
-theme_type_variation = &"display_primary"
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 1)
+theme_override_font_sizes/font_size = 28
 text = "—"
 horizontal_alignment = 2
 
-[node name="StatsCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
+[node name="CompareBarRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox"]
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
-theme_type_variation = &"result_card"
+theme_override_constants/separation = 2
 
-[node name="StatsMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/StatsCard"]
+[node name="PlayerBarSegment" type="PanelContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/CompareBarRow"]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 12
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 58.0
+theme_type_variation = &"bar_win_v2"
 
-[node name="StatsHBox" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/StatsCard/StatsMargin"]
+[node name="GhostBarSegment" type="PanelContainer" parent="SafeAreaMargin/MainColumn/ComparisonCard/ComparisonMargin/ComparisonVBox/CompareBarRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 42.0
+theme_type_variation = &"bar_loss_v2"
+
+[node name="StatsGrid" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="PerfectSection" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/StatsCard/StatsMargin/StatsHBox"]
+[node name="PerfectCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn/StatsGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 2
+theme_type_variation = &"stat_card"
 
-[node name="PerfectCaption" type="Label" parent="SafeAreaMargin/MainColumn/StatsCard/StatsMargin/StatsHBox/PerfectSection"]
+[node name="PerfectVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/StatsGrid/PerfectCard"]
 layout_mode = 2
-theme_type_variation = &"caption_v2"
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="PerfectCaption" type="Label" parent="SafeAreaMargin/MainColumn/StatsGrid/PerfectCard/PerfectVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.7)
+theme_override_font_sizes/font_size = 12
 text = "パーフェクト"
+horizontal_alignment = 1
 
-[node name="PerfectValue" type="Label" parent="SafeAreaMargin/MainColumn/StatsCard/StatsMargin/StatsHBox/PerfectSection"]
+[node name="PerfectValue" type="Label" parent="SafeAreaMargin/MainColumn/StatsGrid/PerfectCard/PerfectVBox"]
 layout_mode = 2
-theme_type_variation = &"display_primary"
+theme_override_colors/font_color = Color(0.137, 0.173, 0.318, 1)
+theme_override_font_sizes/font_size = 36
 text = "—"
+horizontal_alignment = 1
 
-[node name="StatsDivider" type="VSeparator" parent="SafeAreaMargin/MainColumn/StatsCard/StatsMargin/StatsHBox"]
-layout_mode = 2
-
-[node name="MissSection" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/StatsCard/StatsMargin/StatsHBox"]
+[node name="MissCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn/StatsGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_type_variation = &"stat_card"
+
+[node name="MissVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/StatsGrid/MissCard"]
+layout_mode = 2
 theme_override_constants/separation = 2
+alignment = 1
 
-[node name="MissCaption" type="Label" parent="SafeAreaMargin/MainColumn/StatsCard/StatsMargin/StatsHBox/MissSection"]
+[node name="MissCaption" type="Label" parent="SafeAreaMargin/MainColumn/StatsGrid/MissCard/MissVBox"]
 layout_mode = 2
-theme_type_variation = &"caption_v2"
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.7)
+theme_override_font_sizes/font_size = 12
 text = "ミス"
+horizontal_alignment = 1
 
-[node name="MissValue" type="Label" parent="SafeAreaMargin/MainColumn/StatsCard/StatsMargin/StatsHBox/MissSection"]
+[node name="MissValue" type="Label" parent="SafeAreaMargin/MainColumn/StatsGrid/MissCard/MissVBox"]
 layout_mode = 2
-theme_type_variation = &"display_primary"
+theme_override_colors/font_color = Color(0.702, 0.106, 0.145, 1)
+theme_override_font_sizes/font_size = 36
 text = "—"
+horizontal_alignment = 1
+
+[node name="ButtonSpacer" type="Control" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="ReplayButton" type="Button" parent="SafeAreaMargin/MainColumn"]
-custom_minimum_size = Vector2(0, 72)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"cta_blue"
+text = " "
+
+[node name="ReplayContent" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/ReplayButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="ReplayText" type="Label" parent="SafeAreaMargin/MainColumn/ReplayButton/ReplayContent"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
 text = "もう一度プレイ"
 
-[node name="HomeLinkRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
+[node name="ReplayIcon" type="Label" parent="SafeAreaMargin/MainColumn/ReplayButton/ReplayContent"]
 layout_mode = 2
-alignment = 1
-theme_override_constants/separation = 6
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_msym")
+theme_override_font_sizes/font_size = 40
+text = "replay"
 
-[node name="HomeIcon" type="Label" parent="SafeAreaMargin/MainColumn/HomeLinkRow"]
+[node name="HomeButton" type="Button" parent="SafeAreaMargin/MainColumn"]
+custom_minimum_size = Vector2(260, 56)
 layout_mode = 2
-theme_type_variation = &"icon_nav_v2"
+size_flags_horizontal = 4
+theme_type_variation = &"home_button"
+text = " "
+
+[node name="HomeContent" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/HomeButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="HomeIcon" type="Label" parent="SafeAreaMargin/MainColumn/HomeButton/HomeContent"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("5_msym")
+theme_override_font_sizes/font_size = 28
 text = "home"
 
-[node name="HomeLink" type="Button" parent="SafeAreaMargin/MainColumn/HomeLinkRow"]
+[node name="HomeText" type="Label" parent="SafeAreaMargin/MainColumn/HomeButton/HomeContent"]
 layout_mode = 2
-flat = true
+mouse_filter = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_font_sizes/font_size = 20
 text = "ホームに戻る"
