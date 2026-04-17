@@ -57,7 +57,7 @@ const ABILITY_KEYS: Array[String] = [
 ]
 
 ## 実装済みゲーム (GameManager.GAME_SCENES と同期)
-const IMPLEMENTED_GAMES := ["reflex_tap", "flash_calc"]
+const IMPLEMENTED_GAMES := ["reflex_tap", "flash_calc", "sequence_memory"]
 
 # ---------------------------------------------------------------------------
 # ノード参照
@@ -302,7 +302,7 @@ func _wire_signals() -> void:
 	_cell_judgment.pressed.connect(_on_ability_pressed.bind("judgment"))
 
 	# ボトムナビ 5 タブ
-	_nav_train.pressed.connect(func(): print("[Home] NavTrain pressed (TODO)"))
+	_nav_train.pressed.connect(_on_nav_train_pressed)
 	_nav_analytics.pressed.connect(func(): print("[Home] NavAnalytics pressed (TODO)"))
 	_nav_home.pressed.connect(func(): print("[Home] NavHome pressed (already on home)"))
 	_nav_award.pressed.connect(func(): print("[Home] NavAward pressed (TODO)"))
@@ -322,6 +322,14 @@ func _configure_platform_visibility() -> void:
 # ---------------------------------------------------------------------------
 # ボタンハンドラ
 # ---------------------------------------------------------------------------
+
+func _on_nav_train_pressed() -> void:
+	var gm := get_node_or_null("/root/GameManager")
+	if gm != null and gm.has_method("navigate_to_game_list"):
+		gm.navigate_to_game_list()
+	else:
+		get_tree().change_scene_to_file("res://scenes/ui/game_list.tscn")
+
 
 func _on_start_button_pressed() -> void:
 	_speech_text.text = "よーし！一緒にがんばろう！"

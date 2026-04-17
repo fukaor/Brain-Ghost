@@ -39,6 +39,8 @@ var _current_game_type: String = ""
 var _current_play_log: PlayLog = null
 ## 直近の前回スコア (個別結果画面で前回比表示に使用)
 var _previous_score: int = 0
+## ルール説明画面の [← 戻る] で戻る先のシーン
+var _entry_scene: String = "res://scenes/main/home.tscn"
 
 
 # --- ライフサイクル ---
@@ -113,7 +115,7 @@ func on_rule_explain_confirmed() -> void:
 func on_rule_explain_cancelled() -> void:
     _current_game_type = ""
     _previous_score = 0
-    _safe_change_scene("res://scenes/main/home.tscn")
+    _safe_change_scene(_entry_scene)
 
 
 ## カウントダウン完了 → _current_game_type のシーンへ動的遷移
@@ -220,6 +222,24 @@ func _extract_max_level(log) -> int:
         if evt != null and evt.event_type == "level_cleared":
             max_level = max(max_level, int(evt.value))
     return max_level
+
+
+# --- ナビゲーション ---
+
+const GAME_LIST_SCENE: String = "res://scenes/ui/game_list.tscn"
+const HOME_SCENE: String = "res://scenes/main/home.tscn"
+
+
+## 脳トレ一覧画面へ遷移
+func navigate_to_game_list() -> void:
+    _entry_scene = GAME_LIST_SCENE
+    _safe_change_scene(GAME_LIST_SCENE)
+
+
+## ホーム画面へ遷移
+func navigate_to_home() -> void:
+    _entry_scene = HOME_SCENE
+    _safe_change_scene(HOME_SCENE)
 
 
 # --- ヘルパー ---
