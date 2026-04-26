@@ -43,8 +43,8 @@ func get_plays_until_ready(play_log_count: int) -> int:
 
 ## 直近 5 件の PlayLog からゴーストデータを生成する
 ## TODO: Week 2-3 で A-03 の平均化アルゴリズムを実装
-func compute_ghost(game_type: String, recent_logs: Array) -> GhostData:
-    var ghost := GhostData.new()
+func compute_ghost(game_type: String, recent_logs: Array) -> GhostDataModel:
+    var ghost := GhostDataModel.new()
     ghost.game_type = game_type
     if recent_logs.size() < REQUIRED_PLAYS_FOR_GHOST:
         ghost.is_ready = false
@@ -57,7 +57,7 @@ func compute_ghost(game_type: String, recent_logs: Array) -> GhostData:
 
 ## 自分のスコア/タイムとゴーストを比較して勝敗を返す
 ## TODO: Week 2-3 で実装
-func judge_result(_game_type: String, _self_value: float, _ghost: GhostData) -> Dictionary:
+func judge_result(_game_type: String, _self_value: float, _ghost: GhostDataModel) -> Dictionary:
     return {
         "result": "draw",
         "selfValue": 0.0,

@@ -1,12 +1,16 @@
-## GhostData
+## GhostDataModel
 ##
-## 直近 5 回のプレイログから計算されたゴースト対戦用データ。
+## 直近 5 回のプレイログから計算されたゴースト対戦用データ（純粋モデル）。
 ## docs/functional-design.md 「データモデル定義 > GhostData」準拠。
 ##
 ## タイム系ゲームでは [code]average_events[/code] を使ってプレイ中のプログレスバーを再生し、
 ## クリア系ゲームでは [code]average_duration_ms[/code] / [code]average_score[/code] を
 ## 結果画面でのタイム比較に使う。
-class_name GhostData
+##
+## [b]NOTE:[/b] 2026-04-22 に [code]class_name GhostData[/code] から
+## [code]GhostDataModel[/code] にリネーム。Autoload [code]GhostData[/code]
+## （ゴースト対戦サービス）との名前衝突回避。
+class_name GhostDataModel
 extends RefCounted
 
 var game_type: String = ""
@@ -36,8 +40,8 @@ func to_dict() -> Dictionary:
         "computedAt": computed_at,
     }
 
-static func from_dict(d: Dictionary) -> GhostData:
-    var g := GhostData.new()
+static func from_dict(d: Dictionary) -> GhostDataModel:
+    var g := GhostDataModel.new()
     g.game_type = String(d.get("gameType", ""))
     g.is_ready = bool(d.get("isReady", false))
     g.average_score = float(d.get("averageScore", 0.0))

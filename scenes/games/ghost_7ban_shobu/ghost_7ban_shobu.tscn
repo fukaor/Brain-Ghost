@@ -1,0 +1,735 @@
+[gd_scene load_steps=17 format=3 uid="uid://cg7banshobu0001"]
+
+[ext_resource type="Script" path="res://scripts/ui/ghost_7ban_shobu_view.gd" id="1_view"]
+[ext_resource type="Texture2D" uid="uid://dfog35f0c3qx0" path="res://assets/characters/Sleek_black_cat_in_minimalist_style.png" id="3_sdcat_ready"]
+
+; ----- Ready 画面の吹き出しスタイル（白ベース + 下向き三角のアロー） -----
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ready_bubble"]
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 10
+shadow_offset = Vector2(0, 4)
+
+; ----- Ready 画面の TAP でスタートボタンスタイル（#FACC15 黄色ピル） -----
+; 参考: reference/mockup/variant-b.jsx L482-487
+;   padding: 11px 36px / borderRadius 999 / background #FACC15 / boxShadow 0 6 18 rgba(0,0,0,0.3)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_start_button"]
+content_margin_left = 36.0
+content_margin_top = 11.0
+content_margin_right = 36.0
+content_margin_bottom = 11.0
+bg_color = Color(0.98, 0.8, 0.082, 1)
+corner_radius_top_left = 999
+corner_radius_top_right = 999
+corner_radius_bottom_right = 999
+corner_radius_bottom_left = 999
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 18
+shadow_offset = Vector2(0, 6)
+
+; ----- 背景グラデ（デフォルト：青） -----
+[sub_resource type="Gradient" id="Gradient_bg_default"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0, 0.345, 0.729, 1, 0, 0.231, 0.529, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bg_default"]
+gradient = SubResource("Gradient_bg_default")
+fill = 0
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+; ----- アンビエントグリッドパターン（白 1.2% 1px / 60px 間隔。視認できるかできないか程度） -----
+[sub_resource type="Gradient" id="Gradient_grid_line"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.02, 0.021, 1)
+colors = PackedColorArray(1, 1, 1, 0.012, 1, 1, 1, 0.012, 1, 1, 1, 0, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_grid_line"]
+gradient = SubResource("Gradient_grid_line")
+width = 60
+height = 4
+fill_from = Vector2(0, 0)
+fill_to = Vector2(1, 0)
+
+; ----- レーン下地（非常に薄いブルー半透明） -----
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lane_you"]
+bg_color = Color(0.133, 0.773, 0.369, 0.05)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.718, 0.961, 0.784, 0.42)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lane_ghost"]
+bg_color = Color(0.796, 0.835, 0.882, 0.04)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.796, 0.835, 0.882, 0.3)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+; ----- レーン内トラックレール：横一本の薄いグラデーション線 -----
+[sub_resource type="Gradient" id="Gradient_rail_you"]
+offsets = PackedFloat32Array(0, 0.1, 0.9, 1)
+colors = PackedColorArray(0.718, 0.961, 0.784, 0, 0.718, 0.961, 0.784, 0.35, 0.718, 0.961, 0.784, 0.35, 0.718, 0.961, 0.784, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rail_you"]
+gradient = SubResource("Gradient_rail_you")
+width = 512
+height = 2
+fill_from = Vector2(0, 0)
+fill_to = Vector2(1, 0)
+
+[sub_resource type="Gradient" id="Gradient_rail_ghost"]
+offsets = PackedFloat32Array(0, 0.1, 0.9, 1)
+colors = PackedColorArray(0.796, 0.835, 0.882, 0, 0.796, 0.835, 0.882, 0.28, 0.796, 0.835, 0.882, 0.28, 0.796, 0.835, 0.882, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rail_ghost"]
+gradient = SubResource("Gradient_rail_ghost")
+width = 512
+height = 2
+fill_from = Vector2(0, 0)
+fill_to = Vector2(1, 0)
+
+; ----- GHOST LINE（発光用 StyleBox。shadow で pulse） -----
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghost_line"]
+bg_color = Color(1, 1, 1, 0.95)
+shadow_color = Color(1, 1, 1, 0.6)
+shadow_size = 12
+
+; ===================================================================
+; ルート
+; ===================================================================
+[node name="Ghost7BanShobu" type="Control"]
+custom_minimum_size = Vector2(1280, 720)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_view")
+
+[node name="PageBackground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_bg_default")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="AmbientGrid" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_grid_line")
+expand_mode = 1
+stretch_mode = 1
+mouse_filter = 2
+
+[node name="TapArea" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+; ===================================================================
+; HUD（ガラス調）
+; ===================================================================
+[node name="Hud" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 56.0
+grow_horizontal = 2
+theme_type_variation = &"g7_hud"
+mouse_filter = 2
+
+[node name="HudRow" type="HBoxContainer" parent="Hud"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="HudLeftMargin" type="Control" parent="Hud/HudRow"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+
+[node name="RoundIndicator" type="Label" parent="Hud/HudRow"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"caption_on_dark_strong"
+theme_override_font_sizes/font_size = 16
+text = "⚔ 第 1 戦 / 7"
+
+[node name="HudSpacerLeft" type="Control" parent="Hud/HudRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressDots" type="HBoxContainer" parent="Hud/HudRow"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 5
+
+[node name="HudSpacerRight" type="Control" parent="Hud/HudRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScoreRow" type="HBoxContainer" parent="Hud/HudRow"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+
+[node name="YouLabel" type="Label" parent="Hud/HudRow/ScoreRow"]
+layout_mode = 2
+theme_type_variation = &"caption_on_dark_muted"
+theme_override_font_sizes/font_size = 10
+text = "YOU"
+
+[node name="YouWins" type="Label" parent="Hud/HudRow/ScoreRow"]
+layout_mode = 2
+theme_type_variation = &"display_on_dark_green"
+theme_override_font_sizes/font_size = 24
+text = "0"
+
+[node name="ScoreDivider" type="Label" parent="Hud/HudRow/ScoreRow"]
+layout_mode = 2
+theme_type_variation = &"caption_on_dark_muted"
+theme_override_font_sizes/font_size = 16
+text = "-"
+
+[node name="GhostWins" type="Label" parent="Hud/HudRow/ScoreRow"]
+layout_mode = 2
+theme_type_variation = &"display_on_dark_slate"
+theme_override_font_sizes/font_size = 24
+text = "0"
+
+[node name="GhostLabel" type="Label" parent="Hud/HudRow/ScoreRow"]
+layout_mode = 2
+theme_type_variation = &"caption_on_dark_muted"
+theme_override_font_sizes/font_size = 10
+text = "GHOST"
+
+[node name="HudRightMargin" type="Control" parent="Hud/HudRow"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+
+; ===================================================================
+; プレイフィールド（2 レーン + GHOST LINE）
+; ===================================================================
+[node name="Playfield" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 56.0
+offset_bottom = -140.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="YouLane" type="PanelContainer" parent="Playfield"]
+custom_minimum_size = Vector2(0, 170)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 18.0
+offset_top = 30.0
+offset_right = -18.0
+offset_bottom = 200.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lane_you")
+mouse_filter = 2
+
+[node name="YouLabel" type="Label" parent="Playfield/YouLane"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_type_variation = &"caption_on_dark_green"
+theme_override_font_sizes/font_size = 12
+text = "  自分"
+
+[node name="RailYou" type="TextureRect" parent="Playfield/YouLane"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+custom_minimum_size = Vector2(0, 2)
+texture = SubResource("GradientTexture2D_rail_you")
+expand_mode = 1
+stretch_mode = 0
+mouse_filter = 2
+
+[node name="YouOrbLayer" type="Control" parent="Playfield/YouLane"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="GhostLane" type="PanelContainer" parent="Playfield"]
+custom_minimum_size = Vector2(0, 170)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = -260.0
+offset_right = -18.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lane_ghost")
+mouse_filter = 2
+
+[node name="GhostLaneLabel" type="Label" parent="Playfield/GhostLane"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_type_variation = &"caption_on_dark_slate"
+theme_override_font_sizes/font_size = 12
+text = "  ゴースト"
+
+[node name="RailGhost" type="TextureRect" parent="Playfield/GhostLane"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+custom_minimum_size = Vector2(0, 2)
+texture = SubResource("GradientTexture2D_rail_ghost")
+expand_mode = 1
+stretch_mode = 0
+mouse_filter = 2
+
+[node name="GhostOrbLayer" type="Control" parent="Playfield/GhostLane"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="GhostLine" type="PanelContainer" parent="Playfield"]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -1.5
+offset_top = 22.0
+offset_right = 1.5
+offset_bottom = -38.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ghost_line")
+mouse_filter = 2
+
+[node name="GhostLineLabel" type="Label" parent="Playfield"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -70.0
+offset_top = 2.0
+offset_right = 70.0
+offset_bottom = 22.0
+grow_horizontal = 2
+theme_type_variation = &"caption_on_dark_strong"
+theme_override_font_sizes/font_size = 10
+text = "GHOST LINE"
+horizontal_alignment = 1
+
+[node name="GhostReadout" type="Label" parent="Playfield"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -46.0
+offset_right = 380.0
+offset_bottom = -20.0
+grow_vertical = 0
+theme_type_variation = &"caption_on_dark_slate"
+theme_override_font_sizes/font_size = 13
+text = ""
+
+[node name="AnnounceOverlay" type="Label" parent="Playfield"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -40.0
+offset_right = 360.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"announce_on_dark"
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+
+; ===================================================================
+; 履歴ストリップ R1〜R7
+; ===================================================================
+[node name="HistoryStrip" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -132.0
+offset_right = -30.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 10
+mouse_filter = 2
+
+; ===================================================================
+; READY オーバーレイ
+; ===================================================================
+[node name="ReadyOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TitleBox" type="VBoxContainer" parent="ReadyOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -180.0
+offset_right = 400.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 1
+mouse_filter = 2
+
+[node name="SubtitleTop" type="Label" parent="ReadyOverlay/TitleBox"]
+layout_mode = 2
+theme_type_variation = &"caption_on_dark_gold"
+theme_override_font_sizes/font_size = 14
+text = "GHOST 7-BAN"
+horizontal_alignment = 1
+
+[node name="TitleMain" type="Label" parent="ReadyOverlay/TitleBox"]
+layout_mode = 2
+theme_type_variation = &"display_on_dark"
+theme_override_font_sizes/font_size = 88
+text = "7 番勝負"
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="ReadyOverlay/TitleBox"]
+layout_mode = 2
+theme_type_variation = &"caption_on_dark"
+theme_override_font_sizes/font_size = 15
+text = "上レーン＝自分、下レーン＝ゴースト。
+同じターゲットで GHOST LINE を同時に走り、
+ゴーストより先にラインで TAP せよ"
+horizontal_alignment = 1
+
+[node name="StartHint" type="PanelContainer" parent="ReadyOverlay/TitleBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_start_button")
+mouse_filter = 2
+
+[node name="StartHintLabel" type="Label" parent="ReadyOverlay/TitleBox/StartHint"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.118, 0.161, 0.231, 1)
+theme_override_constants/character_spacing = 2
+theme_override_font_sizes/font_size = 16
+text = "TAP で スタート"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+; ----- Ready 画面の SD キャラ（左下に配置、吹き出しはキャラ上に浮かぶ） -----
+; 参考: reference/mockup/ゴースト7番勝負.html の variant-b "Ready 画面"
+; 892×412 の参照キャンバスで left:32, bottom:28, 画像幅 200。
+; Godot 1280×720 にスケール: left≈46, bottom≈40, 画像幅≈280。
+[node name="ReadyCharacterRoot" type="Control" parent="ReadyOverlay"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 46.0
+offset_top = -340.0
+offset_right = 326.0
+offset_bottom = -40.0
+grow_horizontal = 1
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="ReadyCatPortrait" type="TextureRect" parent="ReadyOverlay/ReadyCharacterRoot"]
+texture_filter = 3
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -280.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("3_sdcat_ready")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="ReadyBubble" type="PanelContainer" parent="ReadyOverlay/ReadyCharacterRoot"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -140.0
+offset_top = -12.0
+offset_right = 80.0
+offset_bottom = 34.0
+grow_horizontal = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_ready_bubble")
+mouse_filter = 2
+
+[node name="ReadyBubbleText" type="Label" parent="ReadyOverlay/ReadyCharacterRoot/ReadyBubble"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.137, 0.173, 0.318, 1)
+theme_override_font_sizes/font_size = 18
+text = "今日は本気でいくよ"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+; 吹き出し下向き三角（キャラの頭へ向かう矢印）
+[node name="ReadyBubbleTail" type="Polygon2D" parent="ReadyOverlay/ReadyCharacterRoot/ReadyBubble"]
+position = Vector2(26, 46)
+color = Color(1, 1, 1, 1)
+polygon = PackedVector2Array(0, 0, 14, 0, 7, 10)
+
+; ===================================================================
+; COUNTDOWN オーバーレイ
+; ===================================================================
+[node name="CountdownOverlay" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -140.0
+offset_right = 160.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"display_on_dark_gold"
+theme_override_font_sizes/font_size = 200
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+mouse_filter = 2
+
+; ===================================================================
+; RESULT カード（ダーク）
+; ===================================================================
+[node name="ResultCard" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -70.0
+offset_right = 240.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"g7_result_dark"
+mouse_filter = 2
+
+[node name="ResultVBox" type="VBoxContainer" parent="ResultCard"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="GradeLabel" type="Label" parent="ResultCard/ResultVBox"]
+layout_mode = 2
+theme_type_variation = &"hero_on_dark_gold"
+theme_override_font_sizes/font_size = 30
+text = "PERFECT"
+horizontal_alignment = 1
+
+[node name="DeltaRow" type="HBoxContainer" parent="ResultCard/ResultVBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 30
+
+[node name="YouCol" type="VBoxContainer" parent="ResultCard/ResultVBox/DeltaRow"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="YouCaption" type="Label" parent="ResultCard/ResultVBox/DeltaRow/YouCol"]
+layout_mode = 2
+theme_type_variation = &"caption_on_dark_muted"
+theme_override_font_sizes/font_size = 10
+text = "自分"
+horizontal_alignment = 1
+
+[node name="YouDelta" type="Label" parent="ResultCard/ResultVBox/DeltaRow/YouCol"]
+layout_mode = 2
+theme_type_variation = &"display_on_dark_green"
+theme_override_font_sizes/font_size = 28
+text = "—"
+horizontal_alignment = 1
+
+[node name="GhostCol" type="VBoxContainer" parent="ResultCard/ResultVBox/DeltaRow"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="GhostCaption" type="Label" parent="ResultCard/ResultVBox/DeltaRow/GhostCol"]
+layout_mode = 2
+theme_type_variation = &"caption_on_dark_muted"
+theme_override_font_sizes/font_size = 10
+text = "ゴースト"
+horizontal_alignment = 1
+
+[node name="GhostDelta" type="Label" parent="ResultCard/ResultVBox/DeltaRow/GhostCol"]
+layout_mode = 2
+theme_type_variation = &"display_on_dark_slate"
+theme_override_font_sizes/font_size = 28
+text = "—"
+horizontal_alignment = 1
+
+[node name="VerdictLabel" type="Label" parent="ResultCard/ResultVBox"]
+layout_mode = 2
+theme_type_variation = &"caption_on_dark"
+theme_override_font_sizes/font_size = 12
+text = "○ プレイヤー勝利    TAP で 次"
+horizontal_alignment = 1
+
+; ===================================================================
+; DONE オーバーレイ
+; ===================================================================
+[node name="DoneOverlay" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="DoneVBox" type="VBoxContainer" parent="DoneOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -500.0
+offset_top = -220.0
+offset_right = 500.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+theme_override_constants/separation = 14
+
+[node name="DoneHeader" type="Label" parent="DoneOverlay/DoneVBox"]
+layout_mode = 2
+theme_type_variation = &"caption_on_dark_gold"
+theme_override_font_sizes/font_size = 14
+text = "決着"
+horizontal_alignment = 1
+
+[node name="DoneScoreRow" type="HBoxContainer" parent="DoneOverlay/DoneVBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 36
+
+[node name="DoneYouWins" type="Label" parent="DoneOverlay/DoneVBox/DoneScoreRow"]
+layout_mode = 2
+theme_type_variation = &"display_on_dark"
+theme_override_font_sizes/font_size = 160
+text = "0"
+horizontal_alignment = 1
+
+[node name="DoneVs" type="Label" parent="DoneOverlay/DoneVBox/DoneScoreRow"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"caption_on_dark_muted"
+theme_override_font_sizes/font_size = 36
+text = "vs"
+horizontal_alignment = 1
+
+[node name="DoneGhostWins" type="Label" parent="DoneOverlay/DoneVBox/DoneScoreRow"]
+layout_mode = 2
+theme_type_variation = &"display_on_dark_slate"
+theme_override_font_sizes/font_size = 160
+text = "0"
+horizontal_alignment = 1
+
+[node name="DoneVerdict" type="Label" parent="DoneOverlay/DoneVBox"]
+layout_mode = 2
+theme_type_variation = &"hero_on_dark"
+theme_override_font_sizes/font_size = 24
+text = "互角"
+horizontal_alignment = 1
+
+[node name="DoneHint" type="Label" parent="DoneOverlay/DoneVBox"]
+layout_mode = 2
+theme_type_variation = &"caption_on_dark_muted"
+theme_override_font_sizes/font_size = 13
+text = "TAP で もう一度"
+horizontal_alignment = 1
+
+; ===================================================================
+; Timers
+; ===================================================================
+[node name="MissTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="AnnounceTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="ResultAdvanceTimer" type="Timer" parent="."]
+one_shot = true
+wait_time = 0.3
+
+[connection signal="gui_input" from="TapArea" to="." method="_on_tap_area_input"]
+[connection signal="timeout" from="MissTimer" to="." method="_on_miss_timer_timeout"]
+[connection signal="timeout" from="AnnounceTimer" to="." method="_on_announce_timer_timeout"]

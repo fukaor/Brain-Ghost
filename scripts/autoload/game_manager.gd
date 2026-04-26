@@ -16,6 +16,7 @@ const GAME_SCENES: Dictionary = {
     "reflex_tap": "res://scenes/games/reflex_tap.tscn",
     "flash_calc": "res://scenes/games/flash_calc.tscn",
     "sequence_memory": "res://scenes/games/sequence_memory.tscn",
+    "ghost_7ban_shobu": "res://scenes/games/ghost_7ban_shobu/ghost_7ban_shobu.tscn",
 }
 
 enum PlayMode { NONE, ONBOARDING, DAILY, FREE }
@@ -188,6 +189,10 @@ func _build_play_data_for(log) -> Dictionary:
         "sequence_memory":
             var max_level: int = _extract_max_level(log)
             return {"max_reached_level": max_level}
+        "ghost_7ban_shobu":
+            var deltas: Array = _extract_round_deltas(log)
+            var wins: int = _count_wins_from_events(log)
+            return {"round_deltas_ms": deltas, "wins": wins}
         _:
             push_warning("[GameManager] _build_play_data_for: unknown game_type %s" % log.game_type)
             return {}
@@ -211,6 +216,35 @@ func _extract_remaining_sec(log) -> int:
         if evt != null and evt.event_type == "session_end":
             return int(evt.value)
     return 0
+
+
+## ghost_7ban_shobu の round_result イベント（value=delta_ms）を配列化
+func _extract_round_deltas(log) -> Array:
+    var result: Array = []
+    if log == null or log.events == null:
+        return result
+    for evt in log.events:
+        if evt != null and evt.event_type == "round_result":
+            result.append(int(evt.value))
+    return result
+
+
+## ghost_7ban_shobu の勝利数は PlayLog から復元できないため GhostData から取得する
+func _count_wins_from_events(log) -> int:
+    if log == null:
+        return 0
+    # GhostData は直近のプレイを 1 件保存済み。その wins を参照。
+    var svc := get_node_or_null("/root/GhostData")
+    if svc == null:
+        return 0
+    var dict: Dictionary = DataStore.load_dict(DataStore.StoreKey.GHOST_CACHE)
+    var games: Dictionary = dict.get("games", {})
+    var entry: Dictionary = games.get(String(log.game_type), {})
+    var plays: Array = entry.get("plays", [])
+    if plays.is_empty():
+        return 0
+    var last: Dictionary = plays[plays.size() - 1]
+    return int(last.get("wins", 0))
 
 
 ## sequence_memory の level_cleared イベントの最大値を取得

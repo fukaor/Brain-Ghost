@@ -845,6 +845,96 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g7_hud"]
+bg_color = Color(0, 0, 0, 0.35)
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.12)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g7_result_dark"]
+bg_color = Color(0.03, 0.06, 0.16, 0.82)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.28)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 20
+shadow_offset = Vector2(0, 8)
+content_margin_left = 26.0
+content_margin_top = 14.0
+content_margin_right = 26.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g7_tile_idle"]
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g7_tile_current"]
+bg_color = Color(1, 1, 1, 0.08)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(1, 1, 1, 0.2)
+shadow_size = 12
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g7_tile_win"]
+bg_color = Color(0.133, 0.773, 0.369, 0.25)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.718, 0.961, 0.784, 0.5)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g7_tile_lose"]
+bg_color = Color(0.58, 0.639, 0.722, 0.18)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.796, 0.835, 0.882, 0.25)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
 [resource]
 default_font = ExtResource("1_sx0q5")
 default_font_size = 18
@@ -1099,3 +1189,67 @@ pill_action_grey/base_type = &"PanelContainer"
 pill_action_grey/styles/panel = SubResource("StyleBoxFlat_pill_action_grey")
 win_bar/base_type = &"PanelContainer"
 win_bar/styles/panel = SubResource("StyleBoxFlat_tgrl3")
+
+; ------------------------------------------------------------
+; ゴースト7番勝負 専用：ダーク背景用 Label variation
+; docs/ideas/games/ghost-7ban-shobu-spec.md §3 の暗背景レイアウト対応。
+; 色は ColorPaletteUtil と対応:
+;   - on_primary (#F0F2FF)       : 基本の明テキスト
+;   - positive_gold (#FACC15)    : 強調・ラウンド番号・PERFECT
+;   - bright green (#B7F5C8)     : プレイヤー側・勝利
+;   - slate bright (#CBD5E1)     : ゴースト側・負け
+;   - slate muted (#94A3B8)      : 補助情報
+; ------------------------------------------------------------
+caption_on_dark/base_type = &"Label"
+caption_on_dark/colors/font_color = Color(0.941, 0.949, 1, 0.75)
+caption_on_dark/font_sizes/font_size = 13
+caption_on_dark_strong/base_type = &"Label"
+caption_on_dark_strong/colors/font_color = Color(0.941, 0.949, 1, 1)
+caption_on_dark_strong/font_sizes/font_size = 13
+caption_on_dark_muted/base_type = &"Label"
+caption_on_dark_muted/colors/font_color = Color(0.941, 0.949, 1, 0.5)
+caption_on_dark_muted/font_sizes/font_size = 11
+caption_on_dark_gold/base_type = &"Label"
+caption_on_dark_gold/colors/font_color = Color(0.98, 0.8, 0.082, 1)
+caption_on_dark_gold/font_sizes/font_size = 12
+caption_on_dark_green/base_type = &"Label"
+caption_on_dark_green/colors/font_color = Color(0.718, 0.961, 0.784, 1)
+caption_on_dark_green/font_sizes/font_size = 13
+caption_on_dark_slate/base_type = &"Label"
+caption_on_dark_slate/colors/font_color = Color(0.796, 0.835, 0.882, 1)
+caption_on_dark_slate/font_sizes/font_size = 13
+display_on_dark/base_type = &"Label"
+display_on_dark/colors/font_color = Color(0.941, 0.949, 1, 1)
+display_on_dark/font_sizes/font_size = 64
+display_on_dark_gold/base_type = &"Label"
+display_on_dark_gold/colors/font_color = Color(0.98, 0.8, 0.082, 1)
+display_on_dark_gold/font_sizes/font_size = 64
+display_on_dark_green/base_type = &"Label"
+display_on_dark_green/colors/font_color = Color(0.718, 0.961, 0.784, 1)
+display_on_dark_green/font_sizes/font_size = 32
+display_on_dark_slate/base_type = &"Label"
+display_on_dark_slate/colors/font_color = Color(0.796, 0.835, 0.882, 1)
+display_on_dark_slate/font_sizes/font_size = 32
+hero_on_dark/base_type = &"Label"
+hero_on_dark/colors/font_color = Color(0.941, 0.949, 1, 1)
+hero_on_dark/font_sizes/font_size = 40
+hero_on_dark_gold/base_type = &"Label"
+hero_on_dark_gold/colors/font_color = Color(0.98, 0.8, 0.082, 1)
+hero_on_dark_gold/font_sizes/font_size = 44
+announce_on_dark/base_type = &"Label"
+announce_on_dark/colors/font_color = Color(0.98, 0.8, 0.082, 1)
+announce_on_dark/colors/font_outline_color = Color(0, 0, 0, 0.6)
+announce_on_dark/constants/outline_size = 6
+announce_on_dark/font_sizes/font_size = 50
+g7_hud/base_type = &"PanelContainer"
+g7_hud/styles/panel = SubResource("StyleBoxFlat_g7_hud")
+g7_result_dark/base_type = &"PanelContainer"
+g7_result_dark/styles/panel = SubResource("StyleBoxFlat_g7_result_dark")
+g7_tile_idle/base_type = &"PanelContainer"
+g7_tile_idle/styles/panel = SubResource("StyleBoxFlat_g7_tile_idle")
+g7_tile_current/base_type = &"PanelContainer"
+g7_tile_current/styles/panel = SubResource("StyleBoxFlat_g7_tile_current")
+g7_tile_win/base_type = &"PanelContainer"
+g7_tile_win/styles/panel = SubResource("StyleBoxFlat_g7_tile_win")
+g7_tile_lose/base_type = &"PanelContainer"
+g7_tile_lose/styles/panel = SubResource("StyleBoxFlat_g7_tile_lose")

@@ -24,13 +24,30 @@ extends HBoxContainer
 ## 最低透明度。精度 0% でも完全透明だと存在感が消えるため、25% 残す。
 const MIN_ACCURACY_ALPHA := 0.25
 
+## ゴースト7番勝負など決闘モード時の色味補正（わずかにクール寄りに倒す）
+const MODE_DUELIST_TINT := Color(0.92, 0.94, 1.00)
+const MODE_COMPANION_TINT := Color(1, 1, 1)
+
 @onready var _portrait: TextureRect = $Portrait
 @onready var _bubble_text: Label = $SpeechBubble/BubbleVBox/BubbleText
+
+var _current_alpha: float = 1.0
+var _current_tint: Color = MODE_COMPANION_TINT
 
 
 func _ready() -> void:
     # デフォルトはフル不透明。set_accuracy() が呼ばれれば上書きされる。
     _portrait.modulate = Color(1, 1, 1, 1)
+
+
+## ポートレートのテクスチャを差し替える。
+## 画面ごとに違うポーズ／表情を使いたい場合に呼ぶ（例: Ready 画面では構えポーズ、
+## 結果画面では勝敗に応じたポーズ、など）。
+## 渡された Texture2D が null の場合は差し替えをスキップする。
+func set_portrait(texture: Texture2D) -> void:
+    if texture == null:
+        return
+    _portrait.texture = texture
 
 
 ## 精度 (0.0〜1.0) をゴーストの不透明度に反映する。
@@ -39,8 +56,8 @@ func _ready() -> void:
 ## GDD FR-05 の「精度 100% でゴースト対戦機能解放」を視覚的に表現する。
 func set_accuracy(accuracy: float) -> void:
     var clamped: float = clampf(accuracy, 0.0, 1.0)
-    var alpha: float = MIN_ACCURACY_ALPHA + clamped * (1.0 - MIN_ACCURACY_ALPHA)
-    _portrait.modulate = Color(1, 1, 1, alpha)
+    _current_alpha = MIN_ACCURACY_ALPHA + clamped * (1.0 - MIN_ACCURACY_ALPHA)
+    _apply_modulate()
 
 
 ## ゴーストのセリフを設定する。即時テキスト更新。
@@ -65,3 +82,25 @@ func set_streak(_days: int) -> void:
 ## v1.0 では no-op。v1.1 でポーズ SVG バリエーション発注後に実装。
 func set_mood(_mood: String) -> void:
     pass  # TODO(v1.1): 表情変化。アセット発注後に実装
+
+
+## 対戦モード切替 (docs/ideas/games/ghost-7ban-shobu-spec.md §7-1)。
+## - "duelist":   ゲーム前〜プレイ中。わずかにクール寄りの色味で「本気モード」を示唆
+## - "companion": 通常モード（ホーム・結果画面など）
+## v1.1 で表情 SVG 差分に拡張予定。現状は modulate のティント成分のみ変更。
+## 例外扱いの根拠は docs/design/patterns.md §7 に準拠（data-driven modulate、
+## alpha と同列に mode もデータ駆動で色成分を振る）。
+func set_mode(mode: String) -> void:
+    match mode:
+        "duelist":
+            _current_tint = MODE_DUELIST_TINT
+        "companion":
+            _current_tint = MODE_COMPANION_TINT
+        _:
+            push_warning("[GhostCharacter] set_mode: unknown mode '%s'" % mode)
+            _current_tint = MODE_COMPANION_TINT
+    _apply_modulate()
+
+
+func _apply_modulate() -> void:
+    _portrait.modulate = Color(_current_tint.r, _current_tint.g, _current_tint.b, _current_alpha)

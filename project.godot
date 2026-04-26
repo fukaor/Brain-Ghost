@@ -25,6 +25,7 @@ AudioService="*res://scripts/autoload/audio_service.gd"
 AdService="*res://scripts/autoload/ad_service.gd"
 BillingService="*res://scripts/autoload/billing_service.gd"
 GameManager="*res://scripts/autoload/game_manager.gd"
+GhostData="*res://scripts/autoload/ghost_data.gd"
 
 [display]
 

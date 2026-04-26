@@ -1,11 +1,10 @@
 ## GameListController
 ##
 ## 脳トレ一覧画面のコントローラ。
-## ポケポケ風 3D ルーレットカルーセル。
+## Stitch準拠 3D パースペクティブ風カルーセル。
 ##
-## 6 種のミニゲームを楕円軌道上に配置し、
-## 全カードが常に見える状態で前後に回転する。
-## 手前のカードが最も大きく、奥へ行くほど縮小・暗転する。
+## 6 種のミニゲームを水平ストリップ上に配置し、
+## 中央のカードが最も大きく、隣接カードは縮小・減光して奥行きを演出する。
 ##
 ## [b]設計原則:[/b]
 ## - 色・フォント・サイズは Theme 一任（GDScript ハードコード禁止）
@@ -17,40 +16,36 @@ extends Control
 # ゲームカード定義（データ駆動）
 # ---------------------------------------------------------------------------
 
-## Material Symbols Rounded のアイコン名をテキストとして使用
 const GAME_CARDS: Array[Dictionary] = [
-	{"id": "reflex_tap",       "icon": "touch_app",  "name": "反射タップ",     "desc": "出現するターゲットを即座にタップ！\n反応速度を測定します。",             "metric_caption": "High Score"},
-	{"id": "flash_calc",       "icon": "calculate",  "name": "フラッシュ暗算", "desc": "次々と表示される数字を暗算。\n計算力を鍛えます。",                     "metric_caption": "High Score"},
-	{"id": "sequence_memory",  "icon": "graphic_eq", "name": "順番記憶",       "desc": "パネルが光る順番を記憶して再現。\n短期記憶をトレーニング。",           "metric_caption": "High Score"},
-	{"id": "stroop",           "icon": "palette",    "name": "色文字テスト",   "desc": "文字の内容ではなく「色」を回答。\n注意力を磨きます。",                 "metric_caption": "High Score"},
-	{"id": "card_match",       "icon": "layers",     "name": "神経衰弱",       "desc": "ペアのカードを素早く見つける。\n判断力と記憶力の勝負。",               "metric_caption": "High Score"},
-	{"id": "number_search",    "icon": "visibility",  "name": "数字さがし",     "desc": "1 から順番に数字をタップ。\n周辺視野と集中力を強化。",                "metric_caption": "Best Time"},
+	{"id": "reflex_tap",       "icon": "touch_app",  "category": "REACTION",    "name": "反射タップ",     "desc": "出現するターゲットを即座にタップ！\n反応速度を測定します。",  "metric_caption": "High Score"},
+	{"id": "flash_calc",       "icon": "calculate",  "category": "CALCULATION", "name": "フラッシュ暗算", "desc": "次々と表示される数字を暗算。\n計算力を鍛えます。",          "metric_caption": "High Score"},
+	{"id": "sequence_memory",  "icon": "graphic_eq", "category": "MEMORY",      "name": "順番記憶",       "desc": "パネルが光る順番を記憶して再現。\n短期記憶をトレーニング。","metric_caption": "High Score"},
+	{"id": "stroop",           "icon": "palette",    "category": "ATTENTION",   "name": "色文字テスト",   "desc": "文字の内容ではなく「色」を回答。\n注意力を磨きます。",      "metric_caption": "High Score"},
+	{"id": "card_match",       "icon": "layers",     "category": "JUDGMENT",    "name": "神経衰弱",       "desc": "ペアのカードを素早く見つける。\n判断力と記憶力の勝負。",    "metric_caption": "High Score"},
+	{"id": "number_search",    "icon": "visibility",  "category": "OBSERVATION", "name": "数字さがし",     "desc": "1 から順番に数字をタップ。\n周辺視野と集中力を強化。",     "metric_caption": "Best Time"},
 ]
 
-## GameManager.GAME_SCENES に登録済みのゲーム = プレイ可能
 var _implemented_games: Array[String] = []
 
 # ---------------------------------------------------------------------------
-# 3D ルーレット設定
+# カルーセル設定（水平ストリップ方式）
 # ---------------------------------------------------------------------------
-const CARD_WIDTH: float = 340.0
-const CARD_HEIGHT: float = 480.0
+const CARD_WIDTH: float = 400.0
+const CARD_HEIGHT: float = 600.0
 
-## 楕円軌道の半径（X方向=横幅、Y方向=奥行き感）
-const ELLIPSE_RX: float = 240.0
-const ELLIPSE_RY: float = 90.0
+## 隣接カード: 中心からのオフセットとスケール
+const ADJACENT_OFFSET_X: float = 300.0
+const ADJACENT_SCALE: float = 0.72
+const ADJACENT_BRIGHTNESS: float = 0.70
+const ADJACENT_ALPHA: float = 0.60
 
-## スケール範囲: 最前面=1.0, 最背面=BACK_SCALE
-const FRONT_SCALE: float = 1.0
-const BACK_SCALE: float = 0.45
+## 遠方カード（2 つ先）
+const FAR_OFFSET_X: float = 480.0
+const FAR_SCALE: float = 0.52
+const FAR_BRIGHTNESS: float = 0.50
+const FAR_ALPHA: float = 0.25
 
-## 明るさ範囲: 最前面=1.0, 最背面=BACK_BRIGHTNESS
-const FRONT_BRIGHTNESS: float = 1.0
-const BACK_BRIGHTNESS: float = 0.35
-
-const TWEEN_DURATION: float = 0.45
-
-## スワイプ閾値（px）
+const TWEEN_DURATION: float = 0.5
 const SWIPE_THRESHOLD: float = 60.0
 
 var _current_index: int = 0
@@ -63,8 +58,6 @@ var _carousel_tween: Tween = null
 # ---------------------------------------------------------------------------
 @onready var _carousel_area: Control = $SafeAreaMargin/MainColumn/CarouselArea
 @onready var _dot_container: HBoxContainer = $SafeAreaMargin/MainColumn/DotRow/DotIndicators
-@onready var _play_button: Button = $SafeAreaMargin/MainColumn/PlayButton
-@onready var _coming_soon_badge: PanelContainer = $SafeAreaMargin/MainColumn/ComingSoonBadge
 
 # ボトムナビ
 @onready var _nav_train: Button = $BottomNavPanel/BottomNavBar/NavTrainActive/NavTrainButton
@@ -83,7 +76,6 @@ func _ready() -> void:
 	_wire_signals()
 	_update_dots()
 	_update_play_button()
-	# レイアウト確定後にカルーセル配置（size.x が 0 のまま計算されるのを防ぐ）
 	await get_tree().process_frame
 	_apply_carousel_layout(false)
 
@@ -109,14 +101,17 @@ func _populate_cards() -> void:
 		var data: Dictionary = GAME_CARDS[i]
 		var card: PanelContainer = _cards[i]
 
-		var icon_label: Label = card.get_node_or_null("CardMargin/CardVBox/IconLabel")
+		var icon_label: Label = card.get_node_or_null("CardMargin/CardVBox/IconCircle/IconLabel")
+		var category_label: Label = card.get_node_or_null("CardMargin/CardVBox/CategoryLabel")
 		var name_label: Label = card.get_node_or_null("CardMargin/CardVBox/GameNameLabel")
 		var desc_label: Label = card.get_node_or_null("CardMargin/CardVBox/DescriptionLabel")
-		var metric_caption: Label = card.get_node_or_null("CardMargin/CardVBox/MetricRow/MetricCaption")
-		var metric_value: Label = card.get_node_or_null("CardMargin/CardVBox/MetricRow/MetricValue")
+		var metric_caption: Label = card.get_node_or_null("CardMargin/CardVBox/MetricPanel/MetricVBox/MetricCaption")
+		var metric_value: Label = card.get_node_or_null("CardMargin/CardVBox/MetricPanel/MetricVBox/MetricValue")
 
 		if icon_label != null:
 			icon_label.text = data["icon"]
+		if category_label != null:
+			category_label.text = data["category"]
 		if name_label != null:
 			name_label.text = data["name"]
 		if desc_label != null:
@@ -142,13 +137,12 @@ func _load_best_score_text(game_type: String) -> String:
 # ---------------------------------------------------------------------------
 
 func _wire_signals() -> void:
-	_play_button.pressed.connect(_on_play_pressed)
-
-	# カードタップ
 	for i in range(_cards.size()):
 		_cards[i].gui_input.connect(_on_card_gui_input.bind(i))
+		var play_btn: Button = _cards[i].get_node_or_null("CardMargin/CardVBox/CardPlayButton")
+		if play_btn != null:
+			play_btn.pressed.connect(_on_play_pressed)
 
-	# ボトムナビ
 	_nav_home.pressed.connect(_on_nav_home)
 	_nav_train.pressed.connect(func(): pass)  # 既にこの画面
 	_nav_analytics.pressed.connect(func(): print("[GameList] NavAnalytics (TODO)"))
@@ -163,7 +157,6 @@ func _on_card_gui_input(event: InputEvent, card_index: int) -> void:
 		if card_index == _current_index:
 			_try_start_game()
 		else:
-			# 他のカードタップ → そのカードを手前に回転
 			_current_index = card_index
 			_apply_carousel_layout(true)
 			_update_dots()
@@ -171,7 +164,7 @@ func _on_card_gui_input(event: InputEvent, card_index: int) -> void:
 
 
 # ---------------------------------------------------------------------------
-# 3D ルーレット操作
+# カルーセル操作（水平ストリップ）
 # ---------------------------------------------------------------------------
 
 func _input(event: InputEvent) -> void:
@@ -209,9 +202,8 @@ func _navigate_carousel(direction: int) -> void:
 	_update_play_button()
 
 
-## 全カードを楕円軌道上に配置する 3D ルーレットレイアウト。
-## 各カードの角度: angle = (i - _current_index) * (2π / N)
-## 手前（angle=0）が最大、奥（angle=π）が最小。
+## 全カードを水平ストリップ上に配置する。
+## diff=0 が中央（最大）、±1 が隣接（縮小+減光）、±2 が遠方、それ以上は非表示。
 func _apply_carousel_layout(animate: bool) -> void:
 	if _carousel_tween != null and _carousel_tween.is_running():
 		_carousel_tween.kill()
@@ -219,44 +211,71 @@ func _apply_carousel_layout(animate: bool) -> void:
 	var center_x: float = _carousel_area.size.x / 2.0
 	var center_y: float = _carousel_area.size.y / 2.0
 	var n: int = _cards.size()
-	var angle_step: float = TAU / float(n)
 
 	if animate:
 		_carousel_tween = create_tween().set_parallel(true)
-		_carousel_tween.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+		_carousel_tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
-	# 各カードの depth（cos値）を計算して Z-order 用にソート
 	var depth_order: Array[Dictionary] = []
 
 	for i in range(n):
 		var card: PanelContainer = _cards[i]
-		# 角度: 選択中カードが手前（角度 0 = 画面下手前）
-		var angle: float = float(i - _current_index) * angle_step
 
-		# 深度: cos(angle) が 1.0 = 最前面、-1.0 = 最背面
-		var depth: float = cos(angle)
-		# 0.0〜1.0 に正規化（0=最背面, 1=最前面）
-		var depth_norm: float = (depth + 1.0) / 2.0
+		# ループ対応の相対距離
+		var diff: int = i - _current_index
+		if diff > n / 2:
+			diff -= n
+		if diff < -(n / 2):
+			diff += n
+		var abs_diff: int = absi(diff)
 
-		# 楕円上の位置（手前=下、奥=上で俯瞰視点の円柱感）
-		var offset_x: float = sin(angle) * ELLIPSE_RX
-		var offset_y: float = cos(angle) * ELLIPSE_RY
+		var target_pos: Vector2
+		var target_sc: Vector2
+		var target_color: Color
+		var z_depth: int
 
-		# スケール: 背面→前面で BACK_SCALE → FRONT_SCALE
-		var target_scale: float = lerpf(BACK_SCALE, FRONT_SCALE, depth_norm)
+		if abs_diff == 0:
+			# 中央（アクティブ）
+			target_pos = Vector2(
+				center_x - CARD_WIDTH / 2.0,
+				center_y - CARD_HEIGHT / 2.0)
+			target_sc = Vector2(1.0, 1.0)
+			target_color = Color.WHITE
+			z_depth = 100
+		elif abs_diff == 1:
+			# 隣接
+			var dir: float = signf(float(diff))
+			var sx: float = CARD_WIDTH * ADJACENT_SCALE
+			var sy: float = CARD_HEIGHT * ADJACENT_SCALE
+			target_pos = Vector2(
+				center_x + dir * ADJACENT_OFFSET_X - sx / 2.0,
+				center_y - sy / 2.0)
+			target_sc = Vector2(ADJACENT_SCALE, ADJACENT_SCALE)
+			target_color = Color(
+				ADJACENT_BRIGHTNESS, ADJACENT_BRIGHTNESS, ADJACENT_BRIGHTNESS,
+				ADJACENT_ALPHA)
+			z_depth = 50
+		elif abs_diff == 2:
+			# 遠方
+			var dir: float = signf(float(diff))
+			var sx: float = CARD_WIDTH * FAR_SCALE
+			var sy: float = CARD_HEIGHT * FAR_SCALE
+			target_pos = Vector2(
+				center_x + dir * FAR_OFFSET_X - sx / 2.0,
+				center_y - sy / 2.0)
+			target_sc = Vector2(FAR_SCALE, FAR_SCALE)
+			target_color = Color(
+				FAR_BRIGHTNESS, FAR_BRIGHTNESS, FAR_BRIGHTNESS,
+				FAR_ALPHA)
+			z_depth = 10
+		else:
+			# 非表示
+			card.visible = false
+			depth_order.append({"index": i, "depth": 0})
+			continue
 
-		# 明るさ: modulate で暗くする（alpha ではなく RGB を下げて奥行き感）
-		var brightness: float = lerpf(BACK_BRIGHTNESS, FRONT_BRIGHTNESS, depth_norm)
-
-		# カード中心位置
-		var target_x: float = center_x + offset_x - CARD_WIDTH * target_scale / 2.0
-		var target_y: float = center_y + offset_y - CARD_HEIGHT * target_scale / 2.0
-		var target_pos := Vector2(target_x, target_y)
-		var target_sc := Vector2(target_scale, target_scale)
-		var target_color := Color(brightness, brightness, brightness, 1.0)
-
-		card.pivot_offset = Vector2(CARD_WIDTH / 2.0, CARD_HEIGHT / 2.0)
 		card.visible = true
+		card.pivot_offset = Vector2(CARD_WIDTH / 2.0, CARD_HEIGHT / 2.0)
 
 		if animate:
 			_carousel_tween.tween_property(card, "position", target_pos, TWEEN_DURATION)
@@ -267,9 +286,9 @@ func _apply_carousel_layout(animate: bool) -> void:
 			card.scale = target_sc
 			card.modulate = target_color
 
-		depth_order.append({"index": i, "depth": depth})
+		depth_order.append({"index": i, "depth": z_depth})
 
-	# Z-order: 奥のカードを先に描画、手前のカードを最後に描画
+	# Z-order: 奥のカードを先に描画、手前を最後に
 	depth_order.sort_custom(func(a, b): return a["depth"] < b["depth"])
 	for z in range(depth_order.size()):
 		_carousel_area.move_child(_cards[depth_order[z]["index"]], z)
@@ -287,7 +306,7 @@ func _update_dots() -> void:
 		if dot == null:
 			continue
 		if i == _current_index:
-			dot.custom_minimum_size.x = 24
+			dot.custom_minimum_size.x = 32
 			dot.modulate.a = 1.0
 		else:
 			dot.custom_minimum_size.x = 11
@@ -299,10 +318,17 @@ func _update_dots() -> void:
 # ---------------------------------------------------------------------------
 
 func _update_play_button() -> void:
-	var game_id: String = GAME_CARDS[_current_index]["id"]
-	var is_implemented: bool = game_id in _implemented_games
-	_play_button.visible = is_implemented
-	_coming_soon_badge.visible = not is_implemented
+	for i in range(_cards.size()):
+		var card: PanelContainer = _cards[i]
+		var play_btn: Button = card.get_node_or_null("CardMargin/CardVBox/CardPlayButton")
+		var coming_soon: PanelContainer = card.get_node_or_null("CardMargin/CardVBox/CardComingSoon")
+		var is_active: bool = (i == _current_index)
+		var game_id: String = GAME_CARDS[i]["id"]
+		var is_implemented: bool = game_id in _implemented_games
+		if play_btn != null:
+			play_btn.visible = is_active and is_implemented
+		if coming_soon != null:
+			coming_soon.visible = is_active and not is_implemented
 
 
 func _try_start_game() -> void:

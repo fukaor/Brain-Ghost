@@ -90,6 +90,19 @@ const RULES: Dictionary = {
         "card2_action": "速いほど高得点",
         "card2_style": "active",
     },
+    "ghost_7ban_shobu": {
+        "title": "ゴースト7番勝負",
+        "speech": "「ゴースト7番勝負」は 7 ラウンドの決闘だよ。ターゲットが GHOST LINE を通る瞬間にタップ。ゴーストより先に当てれば 1 勝！",
+        "subtitle_icon": "bolt",
+        "subtitle": "7 ラウンド / 約 30 秒",
+        "card1_title": "TIMING",
+        "card1_icon": "center_focus_strong",
+        "card1_action": "ラインで TAP",
+        "card2_title": "GHOST",
+        "card2_icon": "swords",
+        "card2_action": "先に当てる",
+        "card2_style": "active",
+    },
 }
 
 # ---------------------------------------------------------------------------

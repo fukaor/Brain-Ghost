@@ -18,6 +18,7 @@ const ALL_GAMES: Array[String] = [
     "stroop",
     "sequence_memory",
     "card_match",
+    "ghost_7ban_shobu",
 ]
 
 ## ゲーム種別から能力軸へのマッピング（レーダーチャート用）
@@ -26,6 +27,7 @@ const GAME_TO_ABILITY: Dictionary = {
     "sequence_memory": "memory",
     "stroop": "attention",
     "reflex_tap": "reflex",
+    "ghost_7ban_shobu": "reflex",
     "number_search": "observation",
     "card_match": "judgment",
 }
@@ -81,6 +83,12 @@ func calculate_score(game_type: String, play_data: Dictionary) -> int:
             # TODO: Week 2 で実装
             var clear_sec := int(play_data.get("clear_time_sec", 0))
             return max(0, 3000 - clear_sec * 100)
+        "ghost_7ban_shobu":
+            # docs/ideas/games/ghost-7ban-shobu-spec.md §5:
+            #   (1000 / 中央5発平均ms) × 300 + 勝利数 × 50
+            var deltas: Array = play_data.get("round_deltas_ms", [])
+            var wins := int(play_data.get("wins", 0))
+            return Ghost7BanShobu.calculate_total_score(deltas, wins)
         _:
             push_warning("ScoreSystem.calculate_score: unknown game_type: %s" % game_type)
             return 0

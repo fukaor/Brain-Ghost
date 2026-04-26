@@ -112,16 +112,18 @@ func test_accuracy_empty():
     assert_eq(ss.calculate_accuracy([]), 0.0)
 
 func test_accuracy_half():
-    assert_eq(ss.calculate_accuracy(["reflex_tap", "flash_calc", "stroop"]), 0.5)
+    # ALL_GAMES = 7 なので 3/7 ≈ 0.4286
+    assert_almost_eq(ss.calculate_accuracy(["reflex_tap", "flash_calc", "stroop"]), 3.0 / 7.0, 0.001)
 
 func test_accuracy_full():
     assert_eq(ss.calculate_accuracy([
         "reflex_tap", "flash_calc", "number_search",
-        "stroop", "sequence_memory", "card_match"
+        "stroop", "sequence_memory", "card_match", "ghost_7ban_shobu"
     ]), 1.0)
 
 func test_accuracy_dedups():
-    assert_almost_eq(ss.calculate_accuracy(["reflex_tap", "reflex_tap", "flash_calc"]), 2.0 / 6.0, 0.001)
+    # ALL_GAMES = 7 なので 2 種（重複除外後）/ 7
+    assert_almost_eq(ss.calculate_accuracy(["reflex_tap", "reflex_tap", "flash_calc"]), 2.0 / 7.0, 0.001)
 
 # --- 能力軸 ---
 
