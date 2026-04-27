@@ -1,6 +1,6 @@
 # 機能設計書 (Functional Design Document)
 
-> **プロダクト**: Brain Boost
+> **プロダクト**: ブレインゴースト
 > **バージョン**: v1.0 (MVP)
 > **最終更新**: 2026-04-10
 > **出典PRD**: `docs/product-requirements.md`
@@ -11,7 +11,7 @@ PRDで定義された機能要件（FR-01 〜 FR-13）を、Godot 4 / GDScript �
 
 ## システム構成図
 
-Brain Boost は**サーバレスのクライアント単体アプリ**として構成される。Web版と Android版 は単一の Godot 4 プロジェクトから同時エクスポートされ、プラットフォーム固有の処理（広告・データ保存）のみ `OS.get_name()` で分岐する。
+ブレインゴースト は**サーバレスのクライアント単体アプリ**として構成される。Web版と Android版 は単一の Godot 4 プロジェクトから同時エクスポートされ、プラットフォーム固有の処理（広告・データ保存）のみ `OS.get_name()` で分岐する。
 
 ```mermaid
 graph TB
@@ -299,9 +299,17 @@ const GAME_TO_ABILITY = {
 }
 
 func calculate_score(game_type: String, play_data: Dictionary) -> int
-func calculate_brain_age(total_score: int, age_group: String) -> int
-func calculate_accuracy(played_game_types: Array[String]) -> float  # 0.0 - 1.0
-func calculate_radar(logs: Array[PlayLog]) -> Dictionary  # 6能力のスコア
+
+## 初回補正（`is_first_play` の場合に甘め）とシード付き RNG 注入をサポート
+func calculate_brain_age(
+    total_score: int,
+    age_group: String,
+    is_first_play: bool = false,
+    rng: RandomNumberGenerator = null
+) -> int
+
+func calculate_accuracy(played_game_types: Array) -> float  # 0.0 - 1.0
+func get_ability(game_type: String) -> String  # 能力軸マッピング
 ```
 
 **脳年齢アルゴリズム詳細は「アルゴリズム設計」セクション参照。**
@@ -320,11 +328,20 @@ class_name GhostSystem
 extends Node
 
 func is_feature_unlocked(accuracy: float) -> bool  # 第1段階: 精度 100% 判定
-func is_ready_for_game(game_type: String) -> bool  # 第2段階: そのゲームで5件以上 PlayLog があるか
-func get_ghost_for_game(game_type: String) -> GhostData
+
+## 第2段階: そのゲームの PlayLog 件数が 5 以上か
+## 注: 引数はカウント（int）を直接渡す設計にしている。
+## DataStore への逆依存を避けるため、呼び出し側（GameManager）でカウント済みの値を渡す
+func is_ready_for_game(play_log_count: int) -> bool
+
+## 「あと○回でゴーストが生まれます」用の残り回数（同上、カウントを渡す設計）
+func get_plays_until_ready(play_log_count: int) -> int
+
+## 直近 5 件の PlayLog からゴーストデータを生成する
+func compute_ghost(game_type: String, recent_logs: Array) -> GhostData
+
 func simulate_ghost_progress(ghost: GhostData, elapsed_ms: int) -> Dictionary
-func judge_result(game_type: String, self_value: float, ghost: GhostData) -> GhostResult
-func get_plays_until_ready(game_type: String) -> int  # 育成メッセージ用
+func judge_result(game_type: String, self_value: float, ghost: GhostData) -> Dictionary  # GhostResult
 ```
 
 ### core/DailySeed（日付シード生成）
@@ -396,7 +413,32 @@ func load(key: StoreKey) -> Dictionary
 func exists(key: StoreKey) -> bool
 func clear(key: StoreKey) -> void
 func migrate_if_needed(current_version: int) -> void
+
+# 高レベル API: PlayLog 操作 (20260413-game-data-persistence で追加)
+func append_play_log(log: PlayLog) -> bool
+func load_play_logs(game_type: String = "", limit: int = -1) -> Array[PlayLog]
+func count_play_logs(game_type: String = "") -> int
+
+# 高レベル API: GameBest 操作 (20260413-game-data-persistence で追加)
+func load_best(game_type: String) -> GameBest             # 不在時は score=0 の空 GameBest
+func save_best(best: GameBest) -> bool                    # 既存の他ゲーム分はマージで保持
+func update_best_if_better(log: PlayLog) -> bool          # ベスト更新時のみ true。total_play_count は常に +1
 ```
+
+**保存スキーマ** (高レベル API 対応):
+
+```json
+// PLAY_LOGS
+{ "schemaVersion": 1, "logs": [PlayLog dicts...] }
+
+// GAME_BESTS
+{ "schemaVersion": 1, "bests": { "reflex_tap": GameBest dict, ... } }
+```
+
+**設計判断**:
+- `update_best_if_better` がベスト判定とインクリメンタル更新の唯一の窓口。各 GameManager.on_<game>_finished から呼ぶ
+- `load_play_logs(game_type, limit)` の `limit` は **末尾 N 件**（直近 N 件）を返す。ゴースト対戦の「直近 5 回平均」生成に使う想定
+- ベスト不在時に空 GameBest を返すのは、呼び出し側の null チェックを省くため
 
 **プラットフォーム分岐**:
 
@@ -407,7 +449,7 @@ func _get_native_path(key: StoreKey) -> String:
     return "user://%s.json" % StoreKey.keys()[key].to_lower()
 
 func _get_web_key(key: StoreKey) -> String:
-    return "brainboost_%s" % StoreKey.keys()[key].to_lower()
+    return "brainghost_%s" % StoreKey.keys()[key].to_lower()
 
 func save(key: StoreKey, data: Dictionary) -> bool:
     var json_text: String = JSON.stringify(data)
@@ -436,7 +478,7 @@ func _save_native(key: StoreKey, json_text: String) -> bool:
 func _save_web(key: StoreKey, json_text: String) -> bool:
     # JavaScriptBridge.eval の文字列埋め込みは脆弱なため、
     # JavaScript オブジェクト経由で localStorage.setItem を呼ぶ。
-    # window.brainboostBridge に Godot 側から Variant を渡して JS 側でアクセスする。
+    # window.brainghostBridge に Godot 側から Variant を渡して JS 側でアクセスする。
     var js_key: String = _get_web_key(key)
     # Godot 4: create_object / set_value を使って安全に値を渡す
     JavaScriptBridge.eval("""
@@ -493,6 +535,92 @@ func record_event(event_type: String, value = null) -> void
 ### ui/HomeScreen, ui/GameResult, ui/Onboarding, ui/ShareUrl 他
 
 **責務**: 各画面の UI ロジック。詳細は「画面遷移図」「ユースケース図」参照。
+
+### ui/GhostCharacter（第 3 の独自要素: ゴースト生霊キャラクタ / FR-14）
+
+**責務**:
+- ゴースト対戦システム（FR-02）のデータを、視覚・対話層として全画面で表示する
+- ユーザの精度 / 脳年齢 / ストリークを、生霊キャラクタの **不透明度 / 見た目年齢 / オーラ** として視覚化する
+- 画面文脈に応じたセリフを吹き出しで表示する
+
+**ファイル**:
+- `scenes/ui/ghost_character.tscn`
+- `scripts/ui/ghost_character.gd` (`class_name GhostCharacter`)
+- アセット: `assets/characters/ghost_placeholder.svg`（v1.0 ダミー、v1.1 で本番アセット差し替え）
+
+**ノード構造**:
+```
+GhostCharacter (HBoxContainer, class_name GhostCharacter)
+ ├─ Portrait (TextureRect, ghost_placeholder.svg)
+ └─ SpeechBubble (PanelContainer, theme_type_variation="speech_bubble")
+     └─ BubbleVBox (VBoxContainer)
+         └─ BubbleText (Label)
+```
+
+**API（v1.0 / v1.1 境界）**:
+
+```gdscript
+class_name GhostCharacter
+extends HBoxContainer
+
+# v1.0 MVP 実装範囲
+func set_accuracy(accuracy: float) -> void
+    # 精度 (0.0〜1.0) を Portrait.modulate.a に反映
+    # alpha = 0.25 + accuracy * 0.75 (最低 25% は確保して存在感を残す)
+
+func set_dialogue(text: String) -> void
+    # 吹き出しのテキストを即時更新 (将来はタイプライタ演出予定)
+
+# v1.1 予約（現状 no-op）
+func set_brain_age(age: int) -> void  # TODO v1.1: 見た目年齢反映（要カスタムアセット）
+func set_streak(days: int) -> void    # TODO v1.1: オーラ強度反映（要シェーダ）
+func set_mood(mood: String) -> void   # TODO v1.1: 表情変化（idle/happy/tired/surprised/celebrating）
+```
+
+**使用パターン（各画面コントローラから）**:
+
+```gdscript
+# 画面シーンに ghost_character.tscn をインスタンスとして配置
+@onready var _ghost: GhostCharacter = $SafeAreaMargin/MainColumn/GhostCharacter
+
+func _ready() -> void:
+    # DataStore から現在の状態を取得
+    _ghost.set_accuracy(DataStore.get_accuracy())   # 0.0〜1.0
+    _ghost.set_brain_age(DataStore.get_brain_age()) # v1.1 で機能
+    _ghost.set_streak(DataStore.get_streak())       # v1.1 で機能
+    _ghost.set_dialogue(_compose_greeting_text())   # 画面文脈のセリフ
+```
+
+**登場画面**（v1.0 MVP）:
+- `scenes/main/home.tscn`（ログイン時の挨拶）
+- `scenes/main/onboarding.tscn`（初回自己紹介）
+- `scenes/ui/individual_result.tscn`（勝敗のセリフ）
+- `scenes/ui/overall_result.tscn`（ベスト更新時の祝福）
+
+**登場画面**（v1.1 以降）:
+- ルール説明画面
+- カウントダウン演出
+- ゲームプレイ中（小アバター化）
+- ストリーク復帰演出
+
+**セリフ管理**:
+- v1.0 MVP: 各画面コントローラが文字列を直接渡す（`_ghost.set_dialogue("おかえり！...")`）
+- v1.1+: `assets/dialogues/ghost_lines.json` のようなデータドリブン化を検討
+
+**データモデルとの関係**:
+- 本コンポーネントは **どのエンティティも直接参照しない**。呼び出し側（各画面コントローラ）が `DataStore` から値を取得し `set_*` 経由で渡す
+- `GhostData`（既存、A-03 参照）はゴースト対戦の **データ層** であり、本コンポーネントの **表示層** とは独立
+
+**制約事項**:
+- 色・フォント・サイズへの GDScript アクセスは禁止（Theme 一任。`docs/design/manifest.md` §9 準拠）
+- 例外: `Portrait.modulate.a` への書き込みは **データ駆動の不透明度制御** として正当化されている（`docs/design/patterns.md` §7）。色タプルは `(1, 1, 1, alpha)` 固定
+- セリフは赤色禁止ルール (GDD §6) と整合する **ポジティブ口調** のみ。敗北時も励ましに変換
+
+**詳細仕様**:
+- PRD: `docs/product-requirements.md` FR-14
+- GDD: `docs/ideas/brain_training_gdd.md` §5e
+- UI パターン: `docs/design/patterns.md` §5（画面への組み込み方）
+- Memory: `memory/project_ghost_character.md`（ナラティブとステート対応の完全版）
 
 ---
 
@@ -596,7 +724,7 @@ sequenceDiagram
     participant Visitor as 訪問ユーザー
     participant Browser as ブラウザ
     participant Web as brain.reigals.com
-    participant App as Brain Boost (Web版)
+    participant App as ブレインゴースト (Web版)
     participant DSeed as DailySeed
 
     Friend->>Web: 総合結果で [シェア] タップ
@@ -684,7 +812,7 @@ stateDiagram-v2
 
 ## API設計（該当する場合）
 
-Brain Boost はサーバ API を持たない。唯一の外部インターフェースは **Web版シェアURL**。
+ブレインゴースト はサーバ API を持たない。唯一の外部インターフェースは **Web版シェアURL**。
 
 ### Web版シェア URL スキーマ
 
@@ -713,7 +841,7 @@ https://brain.reigals.com/daily?d={date}&s={score}
 **OGPメタタグ**:
 ```html
 <meta property="og:title" content="今日の脳トレ: {score}pts - 勝てる？">
-<meta property="og:description" content="Brain Boost デイリーチャレンジ {YYYY/MM/DD}">
+<meta property="og:description" content="ブレインゴースト デイリーチャレンジ {YYYY/MM/DD}">
 <meta property="og:image" content="https://brain.reigals.com/ogp/default.png">
 <!-- v1.1 で動的生成: /ogp/daily/{date}/{score}.png -->
 ```
@@ -731,7 +859,7 @@ https://brain.reigals.com/daily?d={date}&s={score}
 | **フラッシュ暗算** | `score = correctCount * 100 + remainingSec * 10` | 0 〜 4,000 |
 | **順番記憶** | `score = maxReachedLevel * 150` | 0 〜 3,000 |
 | **ストループ** | `score = correctCount * 100 - incorrectCount * 50`（下限 0） | 0 〜 3,000 |
-| **反射タップ** | `score = (1000 / averageReactionMs) * 300`（上限 1,500） | 0 〜 1,500 |
+| **反射タップ** | `score = (1000 / averageReactionMs) * 300`（上限 1,500）。`averageReactionMs` は **正規タップの反応時間平均 + フェイクタップ数 × 50ms ペナルティ**。フェイクは 3-5 回に 1 回出現 | 0 〜 1,500 |
 | **神経衰弱** | `score = (pairCount / totalTapCount) * 1000 + max(0, timeBonus)` | 0 〜 2,500 |
 | **数字さがし** | `score = max(0, 3000 - clearTimeSec * 100)` | 0 〜 3,000 |
 
@@ -1040,11 +1168,11 @@ user://
 
 **Web版の保存先**: localStorage に同じキーで JSON 文字列として保存
 ```
-brainboost_user_config
-brainboost_play_logs
-brainboost_game_bests
-brainboost_streak_state
-brainboost_ghost_cache
+brainghost_user_config
+brainghost_play_logs
+brainghost_game_bests
+brainghost_streak_state
+brainghost_ghost_cache
 ```
 
 **ファイル内容例**（`user_config.json`）:

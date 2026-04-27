@@ -1,0 +1,203 @@
+[gd_scene load_steps=10 format=3 uid="uid://b0countdown001"]
+
+[ext_resource type="Script" path="res://scripts/ui/countdown_controller.gd" id="1_ctrl"]
+[ext_resource type="Texture2D" path="res://assets/characters/ghost_seirei.png" id="2_ghost"]
+[ext_resource type="Script" path="res://scripts/ui/speech_bubble.gd" id="3_bubble"]
+[ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="4_msym"]
+
+[sub_resource type="Gradient" id="Gradient_countbg"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.878, 0.949, 0.996, 1, 0.729, 0.902, 0.992, 1, 0.49, 0.827, 0.988, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_countbg"]
+gradient = SubResource("Gradient_countbg")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_loading_bg"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+bg_color = Color(1, 1, 1, 0.4)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.6)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_loading_fill"]
+bg_color = Color(0, 0.484, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chibi_bg"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.878, 0.949, 0.996, 0.3)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="Countdown" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ctrl")
+
+[node name="PageBackground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_countbg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MainContent" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="TopSpacer" type="Control" parent="MainContent"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
+
+[node name="ReadyLabel" type="Label" parent="MainContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_font_sizes/font_size = 32
+text = "まもなく開始！"
+horizontal_alignment = 1
+
+[node name="ReadyDecorLine" type="ColorRect" parent="MainContent"]
+custom_minimum_size = Vector2(85, 3)
+layout_mode = 2
+size_flags_horizontal = 4
+color = Color(0, 0.484, 1, 0.2)
+
+[node name="CountSpacer1" type="Control" parent="MainContent"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="CountCenter" type="CenterContainer" parent="MainContent"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.0
+
+[node name="CountLabel" type="Label" parent="MainContent/CountCenter"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_font_sizes/font_size = 300
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomSpacer" type="Control" parent="MainContent"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="ChibiArea" type="HBoxContainer" parent="MainContent"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ChibiSpacer" type="Control" parent="MainContent/ChibiArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ChibiColumn" type="VBoxContainer" parent="MainContent/ChibiArea"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SpeechBubble" type="PanelContainer" parent="MainContent/ChibiArea/ChibiColumn"]
+layout_mode = 2
+theme_type_variation = &"glass_bubble"
+script = ExtResource("3_bubble")
+tail_direction = 0
+tail_width = 14.0
+tail_height = 10.0
+tail_offset_x = 30.0
+
+[node name="BubbleMargin" type="MarginContainer" parent="MainContent/ChibiArea/ChibiColumn/SpeechBubble"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 10
+
+[node name="BubbleText" type="Label" parent="MainContent/ChibiArea/ChibiColumn/SpeechBubble/BubbleMargin"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "集中して！(Focus!)"
+
+[node name="ChibiBg" type="PanelContainer" parent="MainContent/ChibiArea/ChibiColumn"]
+custom_minimum_size = Vector2(280, 280)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_chibi_bg")
+
+[node name="ChibiTexture" type="TextureRect" parent="MainContent/ChibiArea/ChibiColumn/ChibiBg"]
+layout_mode = 2
+texture = ExtResource("2_ghost")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FooterMargin" type="MarginContainer" parent="MainContent"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="FooterVBox" type="VBoxContainer" parent="MainContent/FooterMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LoadingBarBg" type="PanelContainer" parent="MainContent/FooterMargin/FooterVBox"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_loading_bg")
+
+[node name="LoadingBarFill" type="PanelContainer" parent="MainContent/FooterMargin/FooterVBox/LoadingBarBg"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_loading_fill")
+
+[node name="LoadingTextRow" type="HBoxContainer" parent="MainContent/FooterMargin/FooterVBox"]
+layout_mode = 2
+
+[node name="LoadingLabel" type="Label" parent="MainContent/FooterMargin/FooterVBox/LoadingTextRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_font_sizes/font_size = 13
+text = "LOADING ASSETS..."
+
+[node name="ReadyLabel" type="Label" parent="MainContent/FooterMargin/FooterVBox/LoadingTextRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "33% READY"
+horizontal_alignment = 2

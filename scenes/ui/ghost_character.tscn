@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0ghost0000001"]
+
+[ext_resource type="Script" path="res://scripts/ui/ghost_character.gd" id="1_ghost"]
+[ext_resource type="Texture2D" path="res://assets/characters/ghost_placeholder.svg" id="2_sprite"]
+
+[node name="GhostCharacter" type="HBoxContainer"]
+script = ExtResource("1_ghost")
+theme_override_constants/separation = 12
+
+[node name="Portrait" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(170, 204)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_sprite")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SpeechBubble" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_type_variation = &"speech_bubble"
+
+[node name="BubbleVBox" type="VBoxContainer" parent="SpeechBubble"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="BubbleText" type="Label" parent="SpeechBubble/BubbleVBox"]
+layout_mode = 2
+text = "こんにちは！"
+autowrap_mode = 2

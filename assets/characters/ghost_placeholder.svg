@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ブレインゴースト - Ghost Character (Placeholder)
+
+  ゴースト = ユーザの生霊 (過去の自分の人格化)。
+  このファイルは本番アセット発注までのダミー。最終版は以下の仕様で発注予定:
+    - ポーズ: idle / happy / tired / surprised / celebrating (5 種)
+    - 年齢層: 子 / 中 / 老 (3 段階、脳年齢と連動)
+    - 合計 15 枚 + オーラレイヤー別
+  MVP では modulate.a (精度 % 連動) と set_dialogue() のみ実装。
+
+  Palette (manifest.md §2 と同期):
+    body fill:    #FFFFFF
+    body stroke:  #E2E8F0 (NEUTRAL_LIGHT_GRAY)
+    eyes:         #0F172A (BG_DARK)
+    blush:        #FACC15 (POSITIVE_GOLD) @ 0.5
+    spirit rim:   #94A3B8 (NEUTRAL_SLATE) @ 0.4
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="200" height="240">
+
+  <!-- Soft spirit aura glow -->
+  <ellipse cx="100" cy="120" rx="95" ry="110"
+           fill="#94A3B8" opacity="0.12"/>
+  <ellipse cx="100" cy="120" rx="85" ry="100"
+           fill="#FFFFFF" opacity="0.3"/>
+
+  <!-- Ghost body with wavy bottom hem (6 waves) -->
+  <path d="M 100 12
+           C 48 12, 22 58, 22 118
+           L 22 205
+           C 22 205, 32 228, 47 212
+           C 47 212, 58 228, 73 212
+           C 73 212, 84 228, 99 212
+           C 99 212, 110 228, 125 212
+           C 125 212, 136 228, 151 212
+           C 151 212, 164 228, 178 205
+           L 178 118
+           C 178 58, 152 12, 100 12 Z"
+        fill="#FFFFFF"
+        stroke="#E2E8F0"
+        stroke-width="3"
+        stroke-linejoin="round"/>
+
+  <!-- Subtle inner highlight (top of head) for soft dimensionality -->
+  <path d="M 100 18
+           C 65 18, 45 45, 40 75
+           C 40 75, 60 50, 100 48
+           C 140 50, 160 75, 160 75
+           C 155 45, 135 18, 100 18 Z"
+        fill="#FFFFFF" opacity="0.8"/>
+
+  <!-- Left eye -->
+  <ellipse cx="72" cy="108" rx="12" ry="16" fill="#0F172A"/>
+  <circle cx="76" cy="102" r="4" fill="#FFFFFF"/>
+  <circle cx="70" cy="114" r="1.8" fill="#FFFFFF" opacity="0.7"/>
+
+  <!-- Right eye -->
+  <ellipse cx="128" cy="108" rx="12" ry="16" fill="#0F172A"/>
+  <circle cx="132" cy="102" r="4" fill="#FFFFFF"/>
+  <circle cx="126" cy="114" r="1.8" fill="#FFFFFF" opacity="0.7"/>
+
+  <!-- Left cheek blush -->
+  <ellipse cx="56" cy="140" rx="13" ry="7" fill="#FACC15" opacity="0.55"/>
+
+  <!-- Right cheek blush -->
+  <ellipse cx="144" cy="140" rx="13" ry="7" fill="#FACC15" opacity="0.55"/>
+
+  <!-- Gentle smile -->
+  <path d="M 84 148 Q 100 164 116 148"
+        stroke="#0F172A"
+        stroke-width="4"
+        fill="none"
+        stroke-linecap="round"/>
+
+  <!-- Tiny arms (hands at sides, suggesting presence) -->
+  <ellipse cx="35" cy="155" rx="8" ry="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <ellipse cx="165" cy="155" rx="8" ry="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+
+  <!-- Spirit tail wisps (very faint, suggesting the character is a spirit) -->
+  <path d="M 22 205 Q 15 215 22 220" stroke="#94A3B8" stroke-width="2" fill="none" opacity="0.4" stroke-linecap="round"/>
+  <path d="M 178 205 Q 185 215 178 220" stroke="#94A3B8" stroke-width="2" fill="none" opacity="0.4" stroke-linecap="round"/>
+</svg>

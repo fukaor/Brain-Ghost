@@ -1,0 +1,61 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="ブレインゴースト - 脳トレ × 自分対戦"
+config/description="脳トレ × 自分対戦。毎日2分、昨日の自分に挑め — ミニゲーム詰め合わせ型の脳トレアプリ"
+config/version="0.1.0"
+run/main_scene="res://scenes/main/launch.tscn"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Platform="*res://scripts/autoload/platform.gd"
+DataStore="*res://scripts/autoload/data_store.gd"
+AudioService="*res://scripts/autoload/audio_service.gd"
+AdService="*res://scripts/autoload/ad_service.gd"
+BillingService="*res://scripts/autoload/billing_service.gd"
+GameManager="*res://scripts/autoload/game_manager.gd"
+GhostData="*res://scripts/autoload/ghost_data.gd"
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=1280
+window/size/window_width_override=360
+window/size/window_height_override=640
+window/stretch/mode="canvas_items"
+window/handheld/orientation=1
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[gui]
+
+theme/custom="res://assets/themes/default_theme.tres"
+
+[input]
+
+tap={
+"deadzone": 0.5,
+"events": [Object(InputEventScreenTouch,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"index":0,"position":Vector2(0, 0),"canceled":false,"pressed":true,"double_tap":false,"script":null)
+, Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.969, 0.961, 1, 1)

@@ -1,0 +1,1085 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/game_list_controller.gd" id="1_ctrl"]
+[ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="2_msym"]
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSansJP-Bold.otf" id="3_bold"]
+
+[sub_resource type="Gradient" id="Gradient_bg"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.878, 0.949, 0.996, 1, 0.729, 0.902, 0.992, 1, 0.49, 0.827, 0.988, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTex_bg"]
+gradient = SubResource("Gradient_bg")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="SBF_header"]
+content_margin_left = 24.0
+content_margin_top = 20.0
+content_margin_right = 24.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 1, 1, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.6)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+shadow_color = Color(0, 0.1, 0.3, 0.08)
+shadow_size = 12
+shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id="SBF_card"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 1, 1, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 53
+corner_radius_top_right = 53
+corner_radius_bottom_right = 53
+corner_radius_bottom_left = 53
+shadow_color = Color(0, 0.2, 0.5, 0.15)
+shadow_size = 24
+shadow_offset = Vector2(0, 12)
+
+[sub_resource type="StyleBoxFlat" id="SBF_icon"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(0, 0.484, 1, 0.1)
+corner_radius_top_left = 54
+corner_radius_top_right = 54
+corner_radius_bottom_right = 54
+corner_radius_bottom_left = 54
+
+[sub_resource type="StyleBoxFlat" id="SBF_metric"]
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+bg_color = Color(0.894, 0.906, 1, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="SBF_start_n"]
+content_margin_left = 20.0
+content_margin_top = 14.0
+content_margin_right = 20.0
+content_margin_bottom = 14.0
+bg_color = Color(0, 0.484, 1, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+shadow_color = Color(0, 0.484, 1, 0.35)
+shadow_size = 8
+shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id="SBF_start_p"]
+content_margin_left = 20.0
+content_margin_top = 14.0
+content_margin_right = 20.0
+content_margin_bottom = 14.0
+bg_color = Color(0, 0.38, 0.85, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="SBF_dot"]
+bg_color = Color(0, 0.484, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="SBF_nav"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 24.0
+bg_color = Color(1, 1, 1, 0.95)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+
+[sub_resource type="StyleBoxFlat" id="SBF_nav_act"]
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+bg_color = Color(0, 0.484, 1, 1)
+corner_radius_top_left = 21
+corner_radius_top_right = 21
+corner_radius_bottom_right = 21
+corner_radius_bottom_left = 21
+
+[sub_resource type="StyleBoxFlat" id="SBF_coming"]
+content_margin_left = 20.0
+content_margin_top = 10.0
+content_margin_right = 20.0
+content_margin_bottom = 10.0
+bg_color = Color(0.314, 0.353, 0.506, 0.7)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="GameList" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ctrl")
+
+[node name="BgTexture" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTex_bg")
+stretch_mode = 6
+
+[node name="SafeAreaMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -90.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderGlass" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_header")
+
+[node name="SubtitleLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderGlass"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 18
+text = "トレーニングを選んで記録を更新しましょう！
+左右にスワイプしてゲームを選択できます。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="TopSpacer" type="Control" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CarouselArea" type="Control" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 700)
+
+[node name="Card0" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
+custom_minimum_size = Vector2(400, 600)
+size = Vector2(400, 600)
+theme_override_styles/panel = SubResource("SBF_card")
+
+[node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 4
+
+[node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_icon")
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox/IconCircle"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 56
+text = "touch_app"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 14
+text = "REACTION"
+horizontal_alignment = 1
+
+[node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "反射タップ"
+horizontal_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_override_font_sizes/font_size = 14
+text = "出現するターゲットを即座にタップ！
+反応速度を測定します。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ExpandSpacer" type="Control" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_metric")
+
+[node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox/MetricPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 13
+text = "High Score"
+horizontal_alignment = 1
+
+[node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "--"
+horizontal_alignment = 1
+
+[node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("SBF_start_n")
+theme_override_styles/hover = SubResource("SBF_start_n")
+theme_override_styles/pressed = SubResource("SBF_start_p")
+text = "スタート"
+
+[node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_coming")
+
+[node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox/CardComingSoon"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 15
+text = "COMING SOON"
+horizontal_alignment = 1
+
+[node name="Card1" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
+custom_minimum_size = Vector2(400, 600)
+size = Vector2(400, 600)
+theme_override_styles/panel = SubResource("SBF_card")
+
+[node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 4
+
+[node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_icon")
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox/IconCircle"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 56
+text = "calculate"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 14
+text = "CALCULATION"
+horizontal_alignment = 1
+
+[node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "フラッシュ暗算"
+horizontal_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_override_font_sizes/font_size = 14
+text = "次々と表示される数字を暗算。
+計算力を鍛えます。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ExpandSpacer" type="Control" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_metric")
+
+[node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox/MetricPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 13
+text = "High Score"
+horizontal_alignment = 1
+
+[node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "--"
+horizontal_alignment = 1
+
+[node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("SBF_start_n")
+theme_override_styles/hover = SubResource("SBF_start_n")
+theme_override_styles/pressed = SubResource("SBF_start_p")
+text = "スタート"
+
+[node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_coming")
+
+[node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox/CardComingSoon"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 15
+text = "COMING SOON"
+horizontal_alignment = 1
+
+[node name="Card2" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
+custom_minimum_size = Vector2(400, 600)
+size = Vector2(400, 600)
+theme_override_styles/panel = SubResource("SBF_card")
+
+[node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 4
+
+[node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_icon")
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox/IconCircle"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 56
+text = "graphic_eq"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 14
+text = "MEMORY"
+horizontal_alignment = 1
+
+[node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "順番記憶"
+horizontal_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_override_font_sizes/font_size = 14
+text = "パネルが光る順番を記憶して再現。
+短期記憶をトレーニング。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ExpandSpacer" type="Control" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_metric")
+
+[node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox/MetricPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 13
+text = "High Score"
+horizontal_alignment = 1
+
+[node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "--"
+horizontal_alignment = 1
+
+[node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("SBF_start_n")
+theme_override_styles/hover = SubResource("SBF_start_n")
+theme_override_styles/pressed = SubResource("SBF_start_p")
+text = "スタート"
+
+[node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_coming")
+
+[node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox/CardComingSoon"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 15
+text = "COMING SOON"
+horizontal_alignment = 1
+
+[node name="Card3" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
+custom_minimum_size = Vector2(400, 600)
+size = Vector2(400, 600)
+theme_override_styles/panel = SubResource("SBF_card")
+
+[node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 4
+
+[node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_icon")
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox/IconCircle"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 56
+text = "palette"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 14
+text = "ATTENTION"
+horizontal_alignment = 1
+
+[node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "色文字テスト"
+horizontal_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_override_font_sizes/font_size = 14
+text = "文字の内容ではなく「色」を回答。
+注意力を磨きます。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ExpandSpacer" type="Control" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_metric")
+
+[node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox/MetricPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 13
+text = "High Score"
+horizontal_alignment = 1
+
+[node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "--"
+horizontal_alignment = 1
+
+[node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("SBF_start_n")
+theme_override_styles/hover = SubResource("SBF_start_n")
+theme_override_styles/pressed = SubResource("SBF_start_p")
+text = "スタート"
+
+[node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_coming")
+
+[node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox/CardComingSoon"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 15
+text = "COMING SOON"
+horizontal_alignment = 1
+
+[node name="Card4" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
+custom_minimum_size = Vector2(400, 600)
+size = Vector2(400, 600)
+theme_override_styles/panel = SubResource("SBF_card")
+
+[node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 4
+
+[node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_icon")
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox/IconCircle"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 56
+text = "layers"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 14
+text = "JUDGMENT"
+horizontal_alignment = 1
+
+[node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "神経衰弱"
+horizontal_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_override_font_sizes/font_size = 14
+text = "ペアのカードを素早く見つける。
+判断力と記憶力の勝負。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ExpandSpacer" type="Control" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_metric")
+
+[node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox/MetricPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 13
+text = "High Score"
+horizontal_alignment = 1
+
+[node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "--"
+horizontal_alignment = 1
+
+[node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("SBF_start_n")
+theme_override_styles/hover = SubResource("SBF_start_n")
+theme_override_styles/pressed = SubResource("SBF_start_p")
+text = "スタート"
+
+[node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_coming")
+
+[node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox/CardComingSoon"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 15
+text = "COMING SOON"
+horizontal_alignment = 1
+
+[node name="Card5" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
+custom_minimum_size = Vector2(400, 600)
+size = Vector2(400, 600)
+theme_override_styles/panel = SubResource("SBF_card")
+
+[node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 4
+
+[node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_icon")
+
+[node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox/IconCircle"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 56
+text = "visibility"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 14
+text = "OBSERVATION"
+horizontal_alignment = 1
+
+[node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "数字さがし"
+horizontal_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_override_font_sizes/font_size = 14
+text = "1 から順番に数字をタップ。
+周辺視野と集中力を強化。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ExpandSpacer" type="Control" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_metric")
+
+[node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox/MetricPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 13
+text = "Best Time"
+horizontal_alignment = 1
+
+[node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox/MetricPanel/MetricVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 36
+text = "--"
+horizontal_alignment = 1
+
+[node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("SBF_start_n")
+theme_override_styles/hover = SubResource("SBF_start_n")
+theme_override_styles/pressed = SubResource("SBF_start_p")
+text = "スタート"
+
+[node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("SBF_coming")
+
+[node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox/CardComingSoon"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_bold")
+theme_override_font_sizes/font_size = 15
+text = "COMING SOON"
+horizontal_alignment = 1
+
+[node name="DotRow" type="CenterContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+
+[node name="DotIndicators" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/DotRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Dot0" type="PanelContainer" parent="SafeAreaMargin/MainColumn/DotRow/DotIndicators"]
+custom_minimum_size = Vector2(32, 11)
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_dot")
+
+[node name="Dot1" type="PanelContainer" parent="SafeAreaMargin/MainColumn/DotRow/DotIndicators"]
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_dot")
+
+[node name="Dot2" type="PanelContainer" parent="SafeAreaMargin/MainColumn/DotRow/DotIndicators"]
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_dot")
+
+[node name="Dot3" type="PanelContainer" parent="SafeAreaMargin/MainColumn/DotRow/DotIndicators"]
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_dot")
+
+[node name="Dot4" type="PanelContainer" parent="SafeAreaMargin/MainColumn/DotRow/DotIndicators"]
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_dot")
+
+[node name="Dot5" type="PanelContainer" parent="SafeAreaMargin/MainColumn/DotRow/DotIndicators"]
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_dot")
+
+[node name="BottomSpacer" type="Control" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BottomNavPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("SBF_nav")
+
+[node name="BottomNavBar" type="HBoxContainer" parent="BottomNavPanel"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="NavTrainActive" type="PanelContainer" parent="BottomNavPanel/BottomNavBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("SBF_nav_act")
+
+[node name="NavTrainButton" type="Button" parent="BottomNavPanel/BottomNavBar/NavTrainActive"]
+layout_mode = 2
+flat = true
+
+[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavTrainActive/NavTrainButton"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavTrainActive/NavTrainButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 32
+text = "psychology"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavTrainActive/NavTrainButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "脳トレ"
+horizontal_alignment = 1
+
+[node name="NavAnalyticsButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+
+[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavAnalyticsButton"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavAnalyticsButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 32
+text = "analytics"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavAnalyticsButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_font_sizes/font_size = 13
+text = "分析"
+horizontal_alignment = 1
+
+[node name="NavHomeButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+
+[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavHomeButton"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavHomeButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 32
+text = "home"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavHomeButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_font_sizes/font_size = 13
+text = "ホーム"
+horizontal_alignment = 1
+
+[node name="NavAwardButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+
+[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavAwardButton"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavAwardButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 32
+text = "emoji_events"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavAwardButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_font_sizes/font_size = 13
+text = "アワード"
+horizontal_alignment = 1
+
+[node name="NavSettingsButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+
+[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavSettingsButton"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavSettingsButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 32
+text = "settings"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavSettingsButton/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_font_sizes/font_size = 13
+text = "設定"
+horizontal_alignment = 1

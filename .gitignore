@@ -1,0 +1,74 @@
+# ================================================================
+# ブレインゴースト — .gitignore
+# docs/repository-structure.md の「除外設定」に準拠
+# ================================================================
+
+# --- Godot 固有 ---
+.godot/
+*.import
+*.import.md5
+*.translation
+export.cfg
+.DS_Store
+
+# addons 配下（サードパーティプラグイン）の .import はコミット対象
+!addons/**/*.import
+
+# --- エクスポート成果物 ---
+web/dist/
+android/build/
+build/
+dist/
+*.pck
+*.apk
+*.aab
+
+# --- MCP 設定（APIキー含む） ---
+.mcp.json
+
+# --- 秘匿情報 ---
+export_presets.cfg.local
+*.keystore
+android/release.keystore
+.env
+.env.local
+secrets.cfg
+
+# --- エディタ ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- ログ・一時ファイル ---
+*.log
+logs/
+tmp/
+
+# --- Node.js（補助スクリプト用） ---
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# --- Claude Code セッションキャッシュ ---
+.claude/cache/
+
+# --- ユーザー固有のステアリングメモ（履歴は残す） ---
+.steering/**/*.local.md
+
+# Citadel plugin auto-generated
+.citadel/scripts/
+.citadel/version.txt
+.citadel/plugin-root.txt
+.citadel/project.md
+
+# Citadel planning
+.planning/
+
+# Claude Code temp state
+.claude/agent-context/
+.claude/circuit-breaker-state.json
+.claude/compact-state.json

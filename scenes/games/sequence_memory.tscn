@@ -1,0 +1,225 @@
+[gd_scene load_steps=4 format=3 uid="uid://b0seqmemory001"]
+
+[ext_resource type="Script" path="res://scripts/ui/sequence_memory_view.gd" id="1_view"]
+[ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="2_msym"]
+
+[sub_resource type="Gradient" id="Gradient_seqbg"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.878, 0.949, 0.996, 1, 0.729, 0.902, 0.992, 1, 0.49, 0.827, 0.988, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_seqbg"]
+gradient = SubResource("Gradient_seqbg")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
+[node name="SequenceMemory" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_view")
+
+[node name="PageBackground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_seqbg")
+expand_mode = 1
+stretch_mode = 6
+
+; === タイマー（右上） ===
+
+[node name="TimerRing" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = 64.0
+grow_horizontal = 0
+theme_type_variation = &"glass_bubble"
+
+[node name="TimerLabel" type="Label" parent="TimerRing"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.137, 0.173, 0.318, 1)
+theme_override_font_sizes/font_size = 28
+text = "—"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+; === メインコンテンツ ===
+
+[node name="SafeAreaMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+; === ラウンド表示 + 指示テキスト ===
+
+[node name="HeaderArea" type="VBoxContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="RoundBadgeCenter" type="CenterContainer" parent="SafeAreaMargin/MainColumn/HeaderArea"]
+layout_mode = 2
+
+[node name="RoundBadge" type="PanelContainer" parent="SafeAreaMargin/MainColumn/HeaderArea/RoundBadgeCenter"]
+layout_mode = 2
+theme_type_variation = &"pill_chip"
+
+[node name="RoundLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderArea/RoundBadgeCenter/RoundBadge"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "ROUND 01"
+
+[node name="InstructionLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderArea"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.137, 0.173, 0.318, 1)
+theme_override_font_sizes/font_size = 32
+text = "覚えてください"
+horizontal_alignment = 1
+
+; === 4x4 メモリーグリッド ===
+
+[node name="GridCenter" type="CenterContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MemoryGrid" type="GridContainer" parent="SafeAreaMargin/MainColumn/GridCenter"]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 4
+
+[node name="Panel0" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel1" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel2" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel3" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel4" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel5" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel6" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel7" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel8" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel9" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel10" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel11" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel12" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel13" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel14" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "
+
+[node name="Panel15" type="Button" parent="SafeAreaMargin/MainColumn/GridCenter/MemoryGrid"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"memory_panel"
+text = " "

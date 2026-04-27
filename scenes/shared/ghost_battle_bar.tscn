@@ -1,0 +1,93 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0ghostbar00001"]
+
+[ext_resource type="Script" path="res://scripts/ui/ghost_battle_bar_controller.gd" id="1_ctrl"]
+
+[node name="GhostBattleBar" type="PanelContainer"]
+layout_mode = 2
+theme_type_variation = &"glass_bubble"
+script = ExtResource("1_ctrl")
+
+[node name="BattleMargin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="BattleVBox" type="VBoxContainer" parent="BattleMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BattleHeaderRow" type="HBoxContainer" parent="BattleMargin/BattleVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BattleIcon" type="Label" parent="BattleMargin/BattleVBox/BattleHeaderRow"]
+layout_mode = 2
+theme_type_variation = &"icon_nav_v2"
+theme_override_font_sizes/font_size = 20
+text = "swords"
+
+[node name="BattleTitle" type="Label" parent="BattleMargin/BattleVBox/BattleHeaderRow"]
+layout_mode = 2
+theme_type_variation = &"headline_v2"
+theme_override_font_sizes/font_size = 14
+text = "ゴーストバトル"
+
+[node name="BattleSpacer" type="Control" parent="BattleMargin/BattleVBox/BattleHeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LiveSyncBadge" type="PanelContainer" parent="BattleMargin/BattleVBox/BattleHeaderRow"]
+layout_mode = 2
+theme_type_variation = &"pill_chip"
+
+[node name="LiveSyncLabel" type="Label" parent="BattleMargin/BattleVBox/BattleHeaderRow/LiveSyncBadge"]
+layout_mode = 2
+theme_type_variation = &"caption_v2"
+theme_override_font_sizes/font_size = 10
+text = "LIVE SYNC"
+
+[node name="ScoreRow" type="HBoxContainer" parent="BattleMargin/BattleVBox"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="PlayerLabel" type="Label" parent="BattleMargin/BattleVBox/ScoreRow"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"caption_v2"
+theme_override_font_sizes/font_size = 11
+text = "自分"
+
+[node name="PlayerBar" type="PanelContainer" parent="BattleMargin/BattleVBox/ScoreRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"bar_win_v2"
+
+[node name="PlayerScore" type="Label" parent="BattleMargin/BattleVBox/ScoreRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"headline_v2"
+theme_override_font_sizes/font_size = 14
+text = "0"
+
+[node name="GhostLabel" type="Label" parent="BattleMargin/BattleVBox/ScoreRow"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"caption_v2"
+theme_override_font_sizes/font_size = 11
+text = "ゴースト"
+
+[node name="GhostBar" type="PanelContainer" parent="BattleMargin/BattleVBox/ScoreRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"bar_loss_v2"
+
+[node name="GhostScore" type="Label" parent="BattleMargin/BattleVBox/ScoreRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"headline_v2"
+theme_override_font_sizes/font_size = 14
+text = "—"
