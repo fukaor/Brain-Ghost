@@ -6,6 +6,147 @@
 [ext_resource type="Texture2D" path="res://assets/textures/gradients/cta_gold_pressed.png" id="2_q3wao"]
 [ext_resource type="Texture2D" path="res://assets/textures/gradients/cta_gold.png" id="3_3ccda"]
 [ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="4_cytoj"]
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSerifJP-Bold.otf" id="5_mcserif"]
+
+; ============================================================
+; --- Midnight Cat (v3) StyleBoxes ---
+; 漆黒 void + シアン発光 + 明朝。home/rule/ghost_7ban_shobu 用。
+; ============================================================
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mc_void"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mc_card"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(0.039, 0.043, 0.067, 0.6)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.49, 0.827, 0.988, 0.18)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mc_pill_glow"]
+content_margin_left = 28.0
+content_margin_top = 22.0
+content_margin_right = 28.0
+content_margin_bottom = 22.0
+bg_color = Color(0.039, 0.067, 0.137, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.49, 0.827, 0.988, 0.95)
+corner_radius_top_left = 9999
+corner_radius_top_right = 9999
+corner_radius_bottom_right = 9999
+corner_radius_bottom_left = 9999
+shadow_color = Color(0.49, 0.827, 0.988, 0.55)
+shadow_size = 28
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mc_pill_glow_pressed"]
+content_margin_left = 28.0
+content_margin_top = 24.0
+content_margin_right = 28.0
+content_margin_bottom = 20.0
+bg_color = Color(0.063, 0.114, 0.196, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.729, 0.902, 0.992, 1)
+corner_radius_top_left = 9999
+corner_radius_top_right = 9999
+corner_radius_bottom_right = 9999
+corner_radius_bottom_left = 9999
+shadow_color = Color(0.49, 0.827, 0.988, 0.35)
+shadow_size = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mc_streak_ribbon"]
+content_margin_left = 18.0
+content_margin_top = 6.0
+content_margin_right = 18.0
+content_margin_bottom = 6.0
+bg_color = Color(0.106, 0.082, 0.039, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.98, 0.8, 0.082, 0.7)
+corner_radius_top_left = 9999
+corner_radius_top_right = 9999
+corner_radius_bottom_right = 9999
+corner_radius_bottom_left = 9999
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mc_score_pill"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.039, 0.043, 0.067, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.157, 0.196, 0.275, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mc_speech"]
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+bg_color = Color(0.063, 0.075, 0.118, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.49, 0.827, 0.988, 0.55)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mc_step_card"]
+content_margin_left = 16.0
+content_margin_top = 14.0
+content_margin_right = 16.0
+content_margin_bottom = 14.0
+bg_color = Color(0.027, 0.035, 0.063, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.157, 0.196, 0.275, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mc_back_btn"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 18.0
+content_margin_bottom = 8.0
+bg_color = Color(0.063, 0.075, 0.118, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.49, 0.827, 0.988, 0.4)
+corner_radius_top_left = 9999
+corner_radius_top_right = 9999
+corner_radius_bottom_right = 9999
+corner_radius_bottom_left = 9999
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vqm40"]
 content_margin_left = 24.0
@@ -1253,3 +1394,129 @@ g7_tile_win/base_type = &"PanelContainer"
 g7_tile_win/styles/panel = SubResource("StyleBoxFlat_g7_tile_win")
 g7_tile_lose/base_type = &"PanelContainer"
 g7_tile_lose/styles/panel = SubResource("StyleBoxFlat_g7_tile_lose")
+
+; ============================================================
+; --- Midnight Cat (v3) Type Variations ---
+; ============================================================
+
+mc_void/base_type = &"PanelContainer"
+mc_void/styles/panel = SubResource("StyleBoxFlat_mc_void")
+
+mc_card/base_type = &"PanelContainer"
+mc_card/styles/panel = SubResource("StyleBoxFlat_mc_card")
+
+mc_score_pill/base_type = &"PanelContainer"
+mc_score_pill/styles/panel = SubResource("StyleBoxFlat_mc_score_pill")
+
+mc_streak_ribbon/base_type = &"PanelContainer"
+mc_streak_ribbon/styles/panel = SubResource("StyleBoxFlat_mc_streak_ribbon")
+
+mc_speech/base_type = &"PanelContainer"
+mc_speech/styles/panel = SubResource("StyleBoxFlat_mc_speech")
+
+mc_step_card/base_type = &"PanelContainer"
+mc_step_card/styles/panel = SubResource("StyleBoxFlat_mc_step_card")
+
+mc_cta_glow/base_type = &"Button"
+mc_cta_glow/colors/font_color = Color(0.949, 0.957, 0.98, 1)
+mc_cta_glow/colors/font_hover_color = Color(0.949, 0.957, 0.98, 1)
+mc_cta_glow/colors/font_pressed_color = Color(0.729, 0.902, 0.992, 1)
+mc_cta_glow/fonts/font = ExtResource("5_mcserif")
+mc_cta_glow/font_sizes/font_size = 38
+mc_cta_glow/styles/normal = SubResource("StyleBoxFlat_mc_pill_glow")
+mc_cta_glow/styles/hover = SubResource("StyleBoxFlat_mc_pill_glow")
+mc_cta_glow/styles/pressed = SubResource("StyleBoxFlat_mc_pill_glow_pressed")
+mc_cta_glow/styles/disabled = SubResource("StyleBoxFlat_mc_pill_glow")
+
+mc_back_btn/base_type = &"Button"
+mc_back_btn/colors/font_color = Color(0.682, 0.722, 0.812, 1)
+mc_back_btn/colors/font_hover_color = Color(0.949, 0.957, 0.98, 1)
+mc_back_btn/colors/font_pressed_color = Color(0.49, 0.827, 0.988, 1)
+mc_back_btn/font_sizes/font_size = 16
+mc_back_btn/styles/normal = SubResource("StyleBoxFlat_mc_back_btn")
+mc_back_btn/styles/hover = SubResource("StyleBoxFlat_mc_back_btn")
+mc_back_btn/styles/pressed = SubResource("StyleBoxFlat_mc_back_btn")
+
+mc_h1/base_type = &"Label"
+mc_h1/colors/font_color = Color(0.949, 0.957, 0.98, 1)
+mc_h1/fonts/font = ExtResource("5_mcserif")
+mc_h1/font_sizes/font_size = 44
+
+mc_h1_lg/base_type = &"Label"
+mc_h1_lg/colors/font_color = Color(0.949, 0.957, 0.98, 1)
+mc_h1_lg/fonts/font = ExtResource("5_mcserif")
+mc_h1_lg/font_sizes/font_size = 56
+
+mc_h2/base_type = &"Label"
+mc_h2/colors/font_color = Color(0.949, 0.957, 0.98, 1)
+mc_h2/fonts/font = ExtResource("5_mcserif")
+mc_h2/font_sizes/font_size = 32
+
+mc_subtitle/base_type = &"Label"
+mc_subtitle/colors/font_color = Color(0.49, 0.827, 0.988, 0.85)
+mc_subtitle/font_sizes/font_size = 18
+
+mc_body/base_type = &"Label"
+mc_body/colors/font_color = Color(0.682, 0.722, 0.812, 1)
+mc_body/font_sizes/font_size = 17
+
+mc_body_strong/base_type = &"Label"
+mc_body_strong/colors/font_color = Color(0.949, 0.957, 0.98, 1)
+mc_body_strong/font_sizes/font_size = 17
+
+mc_caption/base_type = &"Label"
+mc_caption/colors/font_color = Color(0.42, 0.467, 0.561, 1)
+mc_caption/font_sizes/font_size = 14
+
+mc_score_value/base_type = &"Label"
+mc_score_value/colors/font_color = Color(0.949, 0.957, 0.98, 1)
+mc_score_value/font_sizes/font_size = 36
+
+mc_score_unit/base_type = &"Label"
+mc_score_unit/colors/font_color = Color(0.682, 0.722, 0.812, 1)
+mc_score_unit/font_sizes/font_size = 18
+
+mc_score_delta/base_type = &"Label"
+mc_score_delta/colors/font_color = Color(0.49, 0.827, 0.988, 1)
+mc_score_delta/font_sizes/font_size = 18
+
+mc_brain_age/base_type = &"Label"
+mc_brain_age/colors/font_color = Color(0.949, 0.957, 0.98, 1)
+mc_brain_age/fonts/font = ExtResource("5_mcserif")
+mc_brain_age/font_sizes/font_size = 40
+
+mc_brain_age_label/base_type = &"Label"
+mc_brain_age_label/colors/font_color = Color(0.682, 0.722, 0.812, 1)
+mc_brain_age_label/font_sizes/font_size = 16
+
+mc_streak_text/base_type = &"Label"
+mc_streak_text/colors/font_color = Color(0.98, 0.8, 0.082, 1)
+mc_streak_text/font_sizes/font_size = 16
+
+mc_step_index/base_type = &"Label"
+mc_step_index/colors/font_color = Color(0.49, 0.827, 0.988, 1)
+mc_step_index/fonts/font = ExtResource("5_mcserif")
+mc_step_index/font_sizes/font_size = 32
+
+mc_step_title/base_type = &"Label"
+mc_step_title/colors/font_color = Color(0.949, 0.957, 0.98, 1)
+mc_step_title/fonts/font = ExtResource("5_mcserif")
+mc_step_title/font_sizes/font_size = 30
+
+mc_step_body/base_type = &"Label"
+mc_step_body/colors/font_color = Color(0.682, 0.722, 0.812, 1)
+mc_step_body/font_sizes/font_size = 18
+
+mc_icon/base_type = &"Label"
+mc_icon/colors/font_color = Color(0.682, 0.722, 0.812, 1)
+mc_icon/fonts/font = ExtResource("4_cytoj")
+mc_icon/font_sizes/font_size = 26
+
+mc_icon_cyan/base_type = &"Label"
+mc_icon_cyan/colors/font_color = Color(0.49, 0.827, 0.988, 1)
+mc_icon_cyan/fonts/font = ExtResource("4_cytoj")
+mc_icon_cyan/font_sizes/font_size = 26
+
+mc_link/base_type = &"Label"
+mc_link/colors/font_color = Color(0.682, 0.722, 0.812, 1)
+mc_link/font_sizes/font_size = 16

@@ -35,18 +35,24 @@ extends BaseGame
 ## 7 ラウンド固定
 const TOTAL_ROUNDS: int = 7
 
-## CFG_B — 基礎値。ラウンドごとの {move, pre, dir}。
+## CFG_B — 基礎値。ラウンドごとの {move, pre, shape, dir}。
+##
+## 2026-05-02 仕様変更（Midnight Cat / 1 レーン正面衝突）:
+## - YOU 左→右、GHOST 右→左 で固定。`dir` は互換のため残すが view 側では未使用
+## - `shape` を追加: "line"/"s_curve"/"sine_wave"/"zigzag"/"arc" でラウンドごとローテ
+##
 ## move: ターゲット移動時間 (ms)
 ## pre:  予告フェーズ長 (ms) = announce 時間
-## dir:  "left" | "right" — ターゲットの移動方向
+## shape: レーン形状（LaneShapes.SHAPES のいずれか）
+## dir:   旧 2 レーン互換用（"left"/"right"）。新規ロジックは無視。
 const CFG_BASE: Array[Dictionary] = [
-    {"move": 2200, "pre": 1500, "dir": "left"},
-    {"move": 2000, "pre": 1200, "dir": "right"},
-    {"move": 1500, "pre": 1000, "dir": "left"},
-    {"move": 1200, "pre":  900, "dir": "right"},
-    {"move": 1000, "pre":  800, "dir": "left"},
-    {"move":  900, "pre":  700, "dir": "right"},
-    {"move":  900, "pre": 1000, "dir": "left"},
+    {"move": 2200, "pre": 1500, "shape": "line",       "dir": "left"},
+    {"move": 2000, "pre": 1200, "shape": "s_curve",    "dir": "right"},
+    {"move": 1500, "pre": 1000, "shape": "sine_wave",  "dir": "left"},
+    {"move": 1200, "pre":  900, "shape": "zigzag",     "dir": "right"},
+    {"move": 1000, "pre":  800, "shape": "arc",        "dir": "left"},
+    {"move":  900, "pre":  700, "shape": "line",       "dir": "right"},
+    {"move":  900, "pre": 1000, "shape": "s_curve",    "dir": "left"},
 ]
 
 ## classifyDelta しきい値 (ms) — variant-b.jsx からそのまま移植
@@ -279,9 +285,10 @@ static func generate_rounds(seed_value: int) -> Array[Dictionary]:
         var move_jitter: float = local_rng.randf_range(-0.10, 0.10)
         var pre_jitter: float = local_rng.randf_range(-0.20, 0.20)
         result.append({
-            "move": max(400, int(round(move_base * (1.0 + move_jitter)))),
-            "pre":  max(400, int(round(pre_base  * (1.0 + pre_jitter)))),
-            "dir":  String(cfg.dir),
+            "move":  max(400, int(round(move_base * (1.0 + move_jitter)))),
+            "pre":   max(400, int(round(pre_base  * (1.0 + pre_jitter)))),
+            "shape": String(cfg.get("shape", "line")),
+            "dir":   String(cfg.get("dir", "left")),
         })
     return result
 

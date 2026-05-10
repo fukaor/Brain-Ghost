@@ -1,0 +1,194 @@
+/* ============================================================
+ * ブレインゴースト — Colors, Type, Spacing tokens
+ * Source of truth: fukaor/Brain-Ghost `docs/design/manifest.md`
+ *                  + `scripts/utils/color_palette.gd` (ColorPaletteUtil)
+ *
+ * Two palettes coexist:
+ *   v2 "Animated Intellectual" (PRIMARY)  — blues, surfaces, text
+ *   v1 "Legacy Gold"  (DEMOTED)            — achievement / best-update only
+ * RED is intentionally undefined — the system forbids it.
+ * ============================================================ */
+
+@font-face {
+  font-family: "Noto Sans JP";
+  src: url("fonts/NotoSansJP-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Material Symbols Rounded — icons. Shipped from Google Fonts CDN in UI kits. */
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,-25..200");
+
+:root {
+  /* ---------------- v2 Animated Intellectual — Primary Blue -------------- */
+  --bg-primary-blue:        #0058BA;   /* CTA face, active, 3D button top */
+  --bg-primary-dim:         #004DA4;   /* 3D button bottom-stroke, pressed */
+  --bg-primary-container:   #6C9FFF;   /* gradient terminus, accent */
+  --bg-primary-fixed-dim:   #5091FF;   /* hover / mid tone */
+  --bg-on-primary:          #F0F2FF;   /* text on primary fills */
+
+  /* ---------------- Surface stack (elevation by surface color, not border) */
+  --bg-background:          #F7F5FF;   /* Level 0 — page canvas */
+  --bg-surface-low:         #EFEFFF;   /* Level 1 — subsection */
+  --bg-surface-lowest:      #FFFFFF;   /* Level 2 — active card */
+  --bg-surface-container:   #E4E7FF;
+  --bg-surface-high:        #DDE1FF;
+
+  /* ---------------- Text colors --------------------------------------- */
+  --fg-on-surface:          #232C51;   /* strong heads + numbers */
+  --fg-on-surface-variant:  #505A81;   /* body */
+  --fg-outline-variant:     #A2ABD7;   /* barely-there divider */
+
+  /* ---------------- Legacy gold — achievement / best only ------------- */
+  --bg-gold:                #FACC15;   /* best update, hanko stamp */
+  --bg-gold-pressed:        #E0B412;
+  --bg-green-win:           #22C55E;   /* win state */
+
+  /* ---------------- Neutrals / legacy slate -------------------------- */
+  --fg-neutral-gray:        #64748B;   /* loss state, disabled fg */
+  --fg-neutral-slate:       #94A3B8;   /* caption fallback */
+  --bg-neutral-light:       #E2E8F0;   /* disabled bg */
+  --bg-dark:                #0F172A;   /* v1.1 dark mode reserved */
+
+  /* ---------------- Accent (info, links only — NOT CTA) -------------- */
+  --bg-accent-blue:         #3B82F6;
+
+  /* ---------------- Semantic aliases --------------------------------- */
+  --color-win:              var(--bg-green-win);
+  --color-lose:             var(--fg-neutral-gray);      /* NEVER red */
+  --color-best:             var(--bg-gold);
+  --color-link:             var(--bg-accent-blue);
+
+  /* Text aliases */
+  --fg1:                    var(--fg-on-surface);         /* headings, numbers */
+  --fg2:                    var(--fg-on-surface-variant); /* body */
+  --fg3:                    var(--fg-outline-variant);    /* caption / subtle */
+  --fg-on-cta:              var(--bg-on-primary);
+  --fg-on-gold:             var(--bg-dark);               /* gold is light → dark text */
+
+  /* ---------------- Type --------------------------------------------- */
+  --font-family-sans:       "Noto Sans JP", -apple-system, BlinkMacSystemFont,
+                            "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  --font-family-icon:       "Material Symbols Rounded";
+  --font-weight-bold:       700;          /* the only weight that ships */
+
+  /* Scale — ONLY these 5 sizes exist. No 20, 22, 28, etc. */
+  --type-caption:           14px;
+  --type-body:              18px;
+  --type-h2:                24px;
+  --type-h1:                32px;
+  --type-hero-big:          40px;
+  --type-value:             26px;
+  --type-display:           64px;
+
+  --leading-tight:          1.15;
+  --leading-body:           1.5;         /* body gets 8px line_spacing in Godot */
+
+  /* ---------------- Spacing — strict 8pt grid ------------------------ */
+  --space-xs:               4px;
+  --space-sm:               8px;
+  --space-md:               16px;
+  --space-lg:               24px;
+  --space-xl:               32px;
+  --space-2xl:              48px;
+  --space-3xl:              64px;
+
+  /* Screen defaults */
+  --screen-margin-x:        var(--space-lg);   /* 24 */
+  --screen-safe-top:        var(--space-2xl);  /* 48 */
+  --screen-safe-bottom:     96px;              /* thumb reach */
+
+  /* ---------------- Radii -------------------------------------------- */
+  --radius-sm:              8px;
+  --radius-md:              16px;   /* cards */
+  --radius-lg:              24px;   /* primary CTA (bigger = tap-me) */
+  --radius-pill:            9999px;
+
+  /* ---------------- Shadows (pure black + alpha only) ---------------- */
+  --shadow-card:            0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-card-elevated:   0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-hero:            0 6px 18px rgba(0, 0, 0, 0.22);
+  --shadow-pill:            0 2px 8px rgba(0, 0, 0, 0.12),
+                            inset 0 2px 0 rgba(255, 255, 255, 0.6);
+  --shadow-bubble:          0 3px 10px rgba(0, 0, 0, 0.15);
+
+  /* ---------------- Motion ------------------------------------------- */
+  --ease-out:               cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast:               80ms;     /* press collapse */
+  --dur-base:               180ms;    /* fades, nav */
+  --dur-slow:               400ms;    /* ghost opacity */
+}
+
+/* ============================================================
+ * Semantic element defaults
+ * ============================================================ */
+html, body {
+  background: var(--bg-background);
+  color: var(--fg2);
+  font-family: var(--font-family-sans);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--type-body);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, .h1 {
+  font-size: var(--type-h1);
+  color: var(--fg1);
+  line-height: var(--leading-tight);
+  margin: 0;
+}
+h2, .h2 {
+  font-size: var(--type-h2);
+  color: var(--fg1);
+  line-height: var(--leading-tight);
+  margin: 0;
+}
+.hero-big {
+  font-size: var(--type-hero-big);
+  color: var(--fg1);
+  line-height: var(--leading-tight);
+}
+.display {
+  font-size: var(--type-display);
+  color: var(--fg1);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.body, p {
+  font-size: var(--type-body);
+  color: var(--fg2);
+  line-height: var(--leading-body);
+  margin: 0;
+}
+.caption {
+  font-size: var(--type-caption);
+  color: var(--fg3);
+  line-height: var(--leading-tight);
+}
+.value {
+  font-size: var(--type-value);
+  color: var(--fg1);
+  line-height: var(--leading-tight);
+}
+
+/* Material Symbols Rounded helper */
+.icon {
+  font-family: var(--font-family-icon);
+  font-weight: 400;                                 /* axis — not 700 */
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
+  font-size: 24px;
+  line-height: 1;
+  display: inline-block;
+  color: var(--fg2);
+  user-select: none;
+  vertical-align: middle;
+}
+.icon--nav   { font-size: 28px; color: var(--fg-neutral-gray); }
+.icon--pill  { font-size: 20px; color: var(--bg-gold); }
+.icon--card  { font-size: 32px; color: var(--fg1); }
+.icon--hero  { font-size: 24px; color: var(--fg1); }
+.icon--tip   { font-size: 24px; color: var(--bg-accent-blue); }
+.icon--filled { font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24; }

@@ -1,85 +1,46 @@
 [gd_scene load_steps=12 format=3 uid="uid://b0home0000001"]
 
 [ext_resource type="Script" path="res://scripts/ui/home_controller.gd" id="1_home"]
-[ext_resource type="Texture2D" path="res://assets/characters/ghost_seirei.png" id="3_ghost"]
-[ext_resource type="Script" path="res://scripts/ui/speech_bubble.gd" id="4_bubble"]
-[ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="5_msym"]
+[ext_resource type="Script" path="res://scripts/ui/radar_chart.gd" id="2_radar"]
+[ext_resource type="Texture2D" path="res://assets/characters/catboy_electric.png" id="3_mascot"]
+[ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="4_msym"]
+[ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="5_stars"]
+[ext_resource type="Script" path="res://scripts/ui/effects/glow_cta.gd" id="6_glowcta"]
 
-[sub_resource type="Gradient" id="Gradient_homebg"]
-offsets = PackedFloat32Array(0, 0.5, 1)
-colors = PackedColorArray(0.878, 0.949, 0.996, 1, 0.729, 0.902, 0.992, 1, 0.49, 0.827, 0.988, 1)
+; ----- 背景：漆黒 + 中央付近に微シアンの放射 -----
+[sub_resource type="Gradient" id="Gradient_nebula"]
+offsets = PackedFloat32Array(0, 0.4, 1)
+colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_homebg"]
-gradient = SubResource("Gradient_homebg")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_nebula"]
+gradient = SubResource("Gradient_nebula")
 fill = 1
-fill_from = Vector2(0.5, 0.5)
+fill_from = Vector2(0.5, 0.35)
 fill_to = Vector2(1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_header_pill"]
-content_margin_left = 27.0
-content_margin_top = 21.0
-content_margin_right = 27.0
-content_margin_bottom = 21.0
-bg_color = Color(1, 1, 1, 0.8)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 0.5)
-corner_radius_top_left = 27
-corner_radius_top_right = 27
-corner_radius_bottom_right = 27
-corner_radius_bottom_left = 27
+; ----- 設定ボタンの非ホバー時 styleBox（透明） -----
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_settings"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ability_card"]
-content_margin_left = 27.0
-content_margin_top = 27.0
-content_margin_right = 27.0
-content_margin_bottom = 27.0
-bg_color = Color(1, 1, 1, 0.7)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 0.4)
-corner_radius_top_left = 40
-corner_radius_top_right = 40
-corner_radius_bottom_right = 40
-corner_radius_bottom_left = 40
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_settings_hover"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.063, 0.075, 0.118, 0.6)
+corner_radius_top_left = 9999
+corner_radius_top_right = 9999
+corner_radius_bottom_right = 9999
+corner_radius_bottom_left = 9999
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghost_chibi_bg"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.878, 0.949, 0.996, 0.5)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cta_invisible"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav_bg"]
-content_margin_left = 12.0
-content_margin_top = 10.0
-content_margin_right = 12.0
-content_margin_bottom = 24.0
-bg_color = Color(1, 1, 1, 0.95)
-corner_radius_top_left = 40
-corner_radius_top_right = 40
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav_active"]
-content_margin_left = 12.0
-content_margin_top = 6.0
-content_margin_right = 12.0
-content_margin_bottom = 6.0
-bg_color = Color(0, 0.484, 1, 1)
-corner_radius_top_left = 21
-corner_radius_top_right = 21
-corner_radius_bottom_right = 21
-corner_radius_bottom_left = 21
-
+; ====================================================================
+; ルート
+; ====================================================================
 [node name="Home" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -89,648 +50,289 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_home")
 
-[node name="PageBackground" type="TextureRect" parent="."]
+[node name="VoidBg" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("GradientTexture2D_homebg")
+color = Color(0, 0, 0, 1)
+mouse_filter = 2
+
+[node name="NebulaBg" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_nebula")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="GhostChibiCenter" type="TextureRect" parent="."]
-layout_mode = 1
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -300.0
-offset_right = 300.0
-offset_bottom = 300.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_ghost")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="SafeAreaMargin" type="MarginContainer" parent="."]
+[node name="StarLayer" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 43
-theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 130
+mouse_filter = 2
+script = ExtResource("5_stars")
 
-[node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
+[node name="SafeArea" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 56
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 48
+
+[node name="MainColumn" type="VBoxContainer" parent="SafeArea"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="HeaderRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
+; -------------------- TopRow: 脳年齢 + 設定 --------------------
+[node name="TopRow" type="HBoxContainer" parent="SafeArea/MainColumn"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 8
 
-[node name="BrainAgePanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/HeaderRow"]
+[node name="BrainAgeBlock" type="HBoxContainer" parent="SafeArea/MainColumn/TopRow"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_header_pill")
+theme_override_constants/separation = 8
 
-[node name="BrainAgeVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/BrainAgePanel"]
-layout_mode = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="BrainAgeCaption" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/BrainAgePanel/BrainAgeVBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "現在の脳年齢"
-horizontal_alignment = 1
-
-[node name="BrainAgeRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/BrainAgePanel/BrainAgeVBox"]
-layout_mode = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="BrainAgeValue" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/BrainAgePanel/BrainAgeVBox/BrainAgeRow"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
-theme_override_font_sizes/font_size = 48
-text = "24"
-
-[node name="BrainAgeUnit" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/BrainAgePanel/BrainAgeVBox/BrainAgeRow"]
+[node name="Caption" type="Label" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock"]
 layout_mode = 2
 size_flags_vertical = 8
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
-theme_override_font_sizes/font_size = 20
+theme_type_variation = &"mc_brain_age_label"
+text = "脳年齢"
+
+[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Value" type="Label" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Row"]
+layout_mode = 2
+theme_type_variation = &"mc_brain_age"
+text = "31"
+
+[node name="Unit" type="Label" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Row"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_type_variation = &"mc_brain_age_label"
 text = "歳"
 
-[node name="GhostBattlePanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/HeaderRow"]
+[node name="Spacer" type="Control" parent="SafeArea/MainColumn/TopRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_header_pill")
 
-[node name="BattleVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel"]
+[node name="SettingsButton" type="Button" parent="SafeArea/MainColumn/TopRow"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_settings")
+theme_override_styles/hover = SubResource("StyleBoxFlat_settings_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_settings_hover")
+theme_override_colors/font_color = Color(0.682, 0.722, 0.812, 1)
+theme_override_fonts/font = ExtResource("4_msym")
+theme_override_font_sizes/font_size = 24
+text = "settings"
+flat = false
+
+; -------------------- HeroRow: マスコット + 隣接吹き出し --------------------
+[node name="HeroRow" type="HBoxContainer" parent="SafeArea/MainColumn"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="SpeechWrap" type="Control" parent="SafeArea/MainColumn/HeroRow"]
+custom_minimum_size = Vector2(180, 80)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="SpeechBubble" type="PanelContainer" parent="SafeArea/MainColumn/HeroRow/SpeechWrap"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -176.0
+offset_top = -28.0
+offset_right = 0.0
+offset_bottom = 28.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_type_variation = &"mc_speech"
+
+[node name="Margin" type="MarginContainer" parent="SafeArea/MainColumn/HeroRow/SpeechWrap/SpeechBubble"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 8
+
+[node name="SpeechText" type="Label" parent="SafeArea/MainColumn/HeroRow/SpeechWrap/SpeechBubble/Margin"]
+layout_mode = 2
+theme_type_variation = &"mc_body_strong"
+theme_override_font_sizes/font_size = 18
+text = "おかえり！
+今日もやる？"
+horizontal_alignment = 1
+
+[node name="MascotImage" type="TextureRect" parent="SafeArea/MainColumn/HeroRow"]
+custom_minimum_size = Vector2(220, 260)
+layout_mode = 2
+size_flags_horizontal = 0
+texture = ExtResource("3_mascot")
+expand_mode = 1
+stretch_mode = 5
+
+; -------------------- ScoreRow: ポイントピル + 戦績ピル --------------------
+[node name="ScoreRow" type="HBoxContainer" parent="SafeArea/MainColumn"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ScorePill" type="PanelContainer" parent="SafeArea/MainColumn/ScoreRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+theme_type_variation = &"mc_score_pill"
+
+[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/ScoreRow/ScorePill"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Value" type="Label" parent="SafeArea/MainColumn/ScoreRow/ScorePill/Row"]
+layout_mode = 2
+theme_type_variation = &"mc_score_value"
+text = "3,230"
+
+[node name="Unit" type="Label" parent="SafeArea/MainColumn/ScoreRow/ScorePill/Row"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_type_variation = &"mc_score_unit"
+text = "pts"
+
+[node name="Delta" type="Label" parent="SafeArea/MainColumn/ScoreRow/ScorePill/Row"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"mc_score_delta"
+text = "+285"
+
+[node name="BattlePill" type="PanelContainer" parent="SafeArea/MainColumn/ScoreRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+theme_type_variation = &"mc_score_pill"
+
+[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/ScoreRow/BattlePill"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Caption" type="Label" parent="SafeArea/MainColumn/ScoreRow/BattlePill/Row"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"mc_caption"
+text = "通算"
+
+[node name="Wins" type="Label" parent="SafeArea/MainColumn/ScoreRow/BattlePill/Row"]
+layout_mode = 2
+theme_type_variation = &"mc_score_unit"
+text = "15勝"
+
+[node name="Losses" type="Label" parent="SafeArea/MainColumn/ScoreRow/BattlePill/Row"]
+layout_mode = 2
+theme_type_variation = &"mc_caption"
+text = "8敗"
+
+; -------------------- CTA (GlowCTA wrapper + Button) --------------------
+[node name="CTAWrap" type="Control" parent="SafeArea/MainColumn"]
+custom_minimum_size = Vector2(0, 88)
+layout_mode = 2
+
+[node name="GlowFx" type="Control" parent="SafeArea/MainColumn/CTAWrap"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_glowcta")
+
+[node name="CTAButton" type="Button" parent="SafeArea/MainColumn/CTAWrap"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"mc_cta_glow"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_cta_invisible")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_cta_invisible")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_cta_invisible")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cta_invisible")
+text = "今日のチャレンジ  ›"
+
+; -------------------- Streak ribbon (centered) --------------------
+[node name="StreakRow" type="HBoxContainer" parent="SafeArea/MainColumn"]
+layout_mode = 2
+alignment = 1
+
+[node name="StreakRibbon" type="PanelContainer" parent="SafeArea/MainColumn/StreakRow"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"mc_streak_ribbon"
+
+[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/StreakRow/StreakRibbon"]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="BattleHeaderRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox"]
+[node name="Text" type="Label" parent="SafeArea/MainColumn/StreakRow/StreakRibbon/Row"]
 layout_mode = 2
-theme_override_constants/separation = 5
-alignment = 1
-
-[node name="BattleIcon" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleHeaderRow"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 1)
-theme_override_fonts/font = ExtResource("5_msym")
-theme_override_font_sizes/font_size = 21
-text = "swords"
-
-[node name="BattleCaption" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleHeaderRow"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "ゴーストバトル"
-
-[node name="BattleBarRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="WinSide" type="PanelContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleBarRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 15.0
-theme_type_variation = &"bar_win_v2"
-
-[node name="WinLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleBarRow/WinSide"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
-text = "15勝"
-horizontal_alignment = 1
-
-[node name="LossSide" type="PanelContainer" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleBarRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 8.0
-theme_type_variation = &"bar_loss_v2"
-
-[node name="LossLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderRow/GhostBattlePanel/BattleVBox/BattleBarRow/LossSide"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
-text = "8敗"
-horizontal_alignment = 1
-
-[node name="StreakBadge" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
-visible = false
-layout_mode = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="StreakIcon" type="Label" parent="SafeAreaMargin/MainColumn/StreakBadge"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("5_msym")
-theme_override_font_sizes/font_size = 24
-text = "local_fire_department"
-
-[node name="StreakLabel" type="Label" parent="SafeAreaMargin/MainColumn/StreakBadge"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_type_variation = &"mc_streak_text"
 text = "5日連続！"
 
-[node name="SpeechBubblePanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
+; -------------------- Radar Chart (やや小さめ) --------------------
+[node name="RadarCard" type="PanelContainer" parent="SafeArea/MainColumn"]
 layout_mode = 2
-theme_type_variation = &"glass_bubble"
-script = ExtResource("4_bubble")
-tail_direction = 0
-tail_width = 20.0
-tail_height = 14.0
-tail_offset_x = 0.0
+size_flags_horizontal = 3
+theme_type_variation = &"mc_card"
 
-[node name="BubbleMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/SpeechBubblePanel"]
+[node name="Radar" type="Control" parent="SafeArea/MainColumn/RadarCard"]
+custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
-theme_override_constants/margin_left = 21
-theme_override_constants/margin_top = 18
-theme_override_constants/margin_right = 21
-theme_override_constants/margin_bottom = 18
+size_flags_horizontal = 3
+script = ExtResource("2_radar")
 
-[node name="SpeechText" type="Label" parent="SafeAreaMargin/MainColumn/SpeechBubblePanel/BubbleMargin"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "おかえり！今日もトレーニングしよう！"
-horizontal_alignment = 1
-autowrap_mode = 2
-
-[node name="FlexSpacer" type="Control" parent="SafeAreaMargin/MainColumn"]
+; -------------------- FlexSpacer --------------------
+[node name="FlexSpacer" type="Control" parent="SafeArea/MainColumn"]
+custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="AbilityCard" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ability_card")
-
-[node name="AbilityVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard"]
-layout_mode = 2
-theme_override_constants/separation = 18
-
-[node name="AbilityHeaderRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="AbilityIcon" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityHeaderRow"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
-theme_override_fonts/font = ExtResource("5_msym")
-theme_override_font_sizes/font_size = 32
-text = "analytics"
-
-[node name="AbilityTitle" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityHeaderRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 21
-text = "あなたの脳の得意分野"
-
-[node name="AbilityGrid" type="GridContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox"]
-layout_mode = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 10
-columns = 3
-
-[node name="CellCalculation" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellCalculation"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellCalculation/CellVBox"]
-custom_minimum_size = Vector2(70, 70)
+; -------------------- 全ゲーム一覧リンク --------------------
+[node name="AllGamesLink" type="Button" parent="SafeArea/MainColumn"]
 layout_mode = 2
 size_flags_horizontal = 4
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellCalculation/CellVBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_font_sizes/font_size = 13
-text = "計算"
-horizontal_alignment = 1
-
-[node name="CellMemory" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellMemory"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellMemory/CellVBox"]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-size_flags_horizontal = 4
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellMemory/CellVBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_font_sizes/font_size = 13
-text = "記憶"
-horizontal_alignment = 1
-
-[node name="CellAttention" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellAttention"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellAttention/CellVBox"]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-size_flags_horizontal = 4
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellAttention/CellVBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_font_sizes/font_size = 13
-text = "注意"
-horizontal_alignment = 1
-
-[node name="CellReflex" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellReflex"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellReflex/CellVBox"]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-size_flags_horizontal = 4
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellReflex/CellVBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_font_sizes/font_size = 13
-text = "反応"
-horizontal_alignment = 1
-
-[node name="CellObservation" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellObservation"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellObservation/CellVBox"]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-size_flags_horizontal = 4
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellObservation/CellVBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_font_sizes/font_size = 13
-text = "観察"
-horizontal_alignment = 1
-
-[node name="CellJudgment" type="Button" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="CellVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellJudgment"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="IconRect" type="TextureRect" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellJudgment/CellVBox"]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-size_flags_horizontal = 4
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="TextLabel" type="Label" parent="SafeAreaMargin/MainColumn/AbilityCard/AbilityVBox/AbilityGrid/CellJudgment/CellVBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_font_sizes/font_size = 13
-text = "判断"
-horizontal_alignment = 1
-
-[node name="StartButton" type="Button" parent="SafeAreaMargin/MainColumn"]
-custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"cta_blue"
-text = " "
-
-[node name="ButtonContent" type="HBoxContainer" parent="SafeAreaMargin/MainColumn/StartButton"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 14
-alignment = 1
-
-[node name="BtnIcon" type="Label" parent="SafeAreaMargin/MainColumn/StartButton/ButtonContent"]
-layout_mode = 2
-size_flags_vertical = 4
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_msym")
-theme_override_font_sizes/font_size = 48
-text = "psychology"
-
-[node name="BtnText" type="Label" parent="SafeAreaMargin/MainColumn/StartButton/ButtonContent"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 32
-text = "今日の脳トレを開始する"
-
-[node name="BottomNavPanel" type="PanelContainer" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_nav_bg")
-
-[node name="BottomNavBar" type="HBoxContainer" parent="BottomNavPanel"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="NavTrainButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavTrainButton"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavTrainButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_fonts/font = ExtResource("5_msym")
-theme_override_font_sizes/font_size = 32
-text = "psychology"
-horizontal_alignment = 1
-
-[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavTrainButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 13
-text = "脳トレ"
-horizontal_alignment = 1
-
-[node name="NavAnalyticsButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavAnalyticsButton"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavAnalyticsButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_fonts/font = ExtResource("5_msym")
-theme_override_font_sizes/font_size = 32
-text = "analytics"
-horizontal_alignment = 1
-
-[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavAnalyticsButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 13
-text = "分析"
-horizontal_alignment = 1
-
-[node name="NavHomeActive" type="PanelContainer" parent="BottomNavPanel/BottomNavBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_nav_active")
-
-[node name="NavHomeButton" type="Button" parent="BottomNavPanel/BottomNavBar/NavHomeActive"]
-layout_mode = 2
-flat = true
-
-[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavHomeActive/NavHomeButton"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavHomeActive/NavHomeButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_msym")
-theme_override_font_sizes/font_size = 32
-text = "home"
-horizontal_alignment = 1
-
-[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavHomeActive/NavHomeButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 13
-text = "ホーム"
-horizontal_alignment = 1
-
-[node name="NavAwardButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavAwardButton"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavAwardButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_fonts/font = ExtResource("5_msym")
-theme_override_font_sizes/font_size = 32
-text = "emoji_events"
-horizontal_alignment = 1
-
-[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavAwardButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 13
-text = "アワード"
-horizontal_alignment = 1
-
-[node name="NavSettingsButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavSettingsButton"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavSettingsButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_fonts/font = ExtResource("5_msym")
-theme_override_font_sizes/font_size = 32
-text = "settings"
-horizontal_alignment = 1
-
-[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavSettingsButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 13
-text = "設定"
-horizontal_alignment = 1
-
-[node name="AdBannerArea" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -60.0
-grow_horizontal = 2
-grow_vertical = 0
-visible = false
-
-[node name="AdPlaceholder" type="Label" parent="AdBannerArea"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "[ Ad Banner (Android only) ]"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_settings")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_settings")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_settings")
+theme_override_colors/font_color = Color(0.682, 0.722, 0.812, 1)
+theme_override_colors/font_hover_color = Color(0.949, 0.957, 0.98, 1)
+theme_override_font_sizes/font_size = 14
+text = "全ゲーム一覧  ›"
+flat = false

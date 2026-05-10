@@ -337,7 +337,96 @@ GUT の `before_each` でゲームインスタンスを seed 付きで setup す
 
 ---
 
-## 10. 参照ドキュメント
+## 10. ルール説明画面のフォーマット (RULES Dict)
+
+> 2026-05-02 追加。Midnight Cat (v3) リデザインで rule_explain.tscn をデータドリブン化。
+
+### 設計目的
+
+ルール説明画面 (`scenes/ui/rule_explain.tscn`) は **すべてのミニゲームで再利用可能** な単一画面。
+ゲームの追加・差し替えは **`scripts/ui/rule_explain_controller.gd` の `RULES` Dict にエントリを 1 件追加** するだけで完結する。
+
+### RULES Dict スキーマ
+
+```gdscript
+const RULES: Dictionary = {
+    "<game_type>": {
+        "title":         "<明朝大見出し>",         # 例: "ゴースト7番勝負"
+        "ability_label": "鍛える能力：<能力軸>",  # 例: "鍛える能力：反射速度"
+        "steps": [
+            {
+                "index":           "1.",
+                "title":           "<ステップ見出し>",
+                "body":            "<2-3 行の説明>",
+                "preview_variant": "ready" | "tap" | "compare",
+            },
+            { ... step 2 ... },
+            { ... step 3 ... },
+        ],
+    },
+}
+```
+
+- `<game_type>` は `GameManager.GAME_SCENES` のキーと一致させる（"ghost_7ban_shobu" / "flash_calc" / "sequence_memory" など）。
+- `steps` は **必ず 3 件**。promo `game_tap_rule.png` 仕様＋画面密度のバランスから固定。
+- `preview_variant` は `scripts/ui/rule_step_preview.gd` の描画パターンを切り替える:
+  | variant | 描画内容 |
+  |---|---|
+  | `"ready"` | 第N戦/7 ヘッダ + 進捗ドット + YOU/GHOST 球 + 中央ゲート（構え・初期状態） |
+  | `"tap"` | 中央発光 + 「TAP!」テキスト（タップ瞬間） |
+  | `"compare"` | YOU 球 + GHOST 球 + ms 値（結果比較） |
+
+### 新ゲーム追加時の手順
+
+1. **`GameManager.GAME_SCENES` にシーン登録**
+   ```gdscript
+   const GAME_SCENES: Dictionary = {
+       ...,
+       "<new_game>": "res://scenes/games/<new_game>.tscn",
+   }
+   ```
+
+2. **`rule_explain_controller.gd` の `RULES` に 3 ステップを追加**
+   ```gdscript
+   "<new_game>": {
+       "title":         "<ゲーム名 (mincho)>",
+       "ability_label": "鍛える能力：<軸>",
+       "steps": [
+           {"index": "1.", "title": "...", "body": "...", "preview_variant": "ready"},
+           {"index": "2.", "title": "...", "body": "...", "preview_variant": "tap"},
+           {"index": "3.", "title": "...", "body": "...", "preview_variant": "compare"},
+       ],
+   },
+   ```
+
+3. **home などから `GameManager.start_game("<new_game>")` を呼べば自動的に rule_explain → countdown → game に流れる**
+
+4. **既存 3 種の preview variant で表現できないなら** `rule_step_preview.gd` に新 variant を実装し、`@export_enum` に追加する。原則として既存 3 種で表現する想定。
+
+### 視覚仕様（Midnight Cat v3）
+
+- 漆黒 void + シアン放射 nebula 背景
+- 上部: 「📖 ルール説明」`mc_back_btn`（中央配置）
+- タイトル: `mc_h1_lg` (明朝 56px、白)
+- サブタイトル: `mc_subtitle` (シアン 18px)
+- ステップカード: `mc_step_card`、左に preview ミニ図 (180×90) + 右にテキスト
+- スタート CTA: `mc_cta_glow` 大ピル（明朝、シアン発光）
+
+### 実装例（既存登録一覧）
+
+| game_type | title | ability_label |
+|---|---|---|
+| `ghost_7ban_shobu` | ゴースト7番勝負 | 反射速度 |
+| `flash_calc` | フラッシュ暗算 | 計算力 |
+| `sequence_memory` | 順番記憶 | 記憶力 |
+
+実装本体: `scripts/ui/rule_explain_controller.gd`。
+プレビュー描画: `scripts/ui/rule_step_preview.gd`。
+キャプチャ: `.steering/20260502-MidnightCatリデザイン/captures/rule_explain_*.png`。
+
+---
+
+## 11. 参照ドキュメント
 
 - `docs/design/manifest.md` — カラートークン・タイポ・スペーシング仕様
 - `docs/design/references/competitor-research.md` — 競合 7 アプリ UI リサーチ
