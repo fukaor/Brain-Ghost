@@ -9,6 +9,7 @@
 extends Control
 
 const TapBurstScript := preload("res://scripts/ui/effects/tap_burst.gd")
+const TapResidueScript := preload("res://scripts/ui/effects/tap_residue.gd")
 const SideLaserScript := preload("res://scripts/ui/effects/side_laser.gd")
 const LaneShapesScript := preload("res://scripts/games/ghost_7ban_shobu/lane_shapes.gd")
 
@@ -286,6 +287,15 @@ func _spawn_burst_and_lasers(grade: String, win: bool) -> void:
     burst.position = hit_pos - _effects_layer.size * 0.5
     _effects_layer.add_child(burst)
     burst.start()
+
+    # 残滓ダスト粒子（promotion の余韻）
+    var residue := TapResidueScript.new()
+    residue.hot_color = hot
+    residue.mid_color = mid
+    residue.size = _effects_layer.size
+    residue.position = Vector2.ZERO
+    _effects_layer.add_child(residue)
+    residue.start(hit_pos)
 
     # YOU laser to left
     var laser_left := SideLaserScript.new()

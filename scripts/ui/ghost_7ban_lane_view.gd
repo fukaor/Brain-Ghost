@@ -239,21 +239,36 @@ func _draw_you_star(pos: Vector2) -> void:
     # 1) 中央のグロー（大）
     _draw_orb_glow(pos, COL_YOU_GLOW, 56.0, 1.0)
 
-    # 2) 4 本の長軸 ray（上下左右）— 先細りの三角形
-    var dirs_long := [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]
-    for d in dirs_long:
+    # 2) 4 本の主軸 ray（上下左右）— 一番長い、太い
+    var dirs_main := [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]
+    for d in dirs_main:
         _draw_tapered_ray(pos, d, RAY_LONG_LENGTH, 6.0, COL_YOU_RAY)
 
-    # 3) 4 本の短対角 ray（先細り、より控えめ）
-    var diag := Vector2(0.7071, 0.7071)
-    var dirs_short := [
-        Vector2( diag.x, -diag.y),
-        Vector2(-diag.x, -diag.y),
-        Vector2( diag.x,  diag.y),
-        Vector2(-diag.x,  diag.y),
-    ]
-    for d in dirs_short:
-        _draw_tapered_ray(pos, d, RAY_SHORT_LENGTH, 4.0, Color(COL_YOU_RAY.r, COL_YOU_RAY.g, COL_YOU_RAY.b, 0.7))
+    # 3) 副軸 ray 群（promo の不揃いなスターバースト感）
+    #   — 主軸の間に 5 本ずつ、計 20 本。角度・長さ・太さに決定論的ジッタ
+    var ray_color_dim := Color(COL_YOU_RAY.r, COL_YOU_RAY.g, COL_YOU_RAY.b, 0.55)
+    var ray_color_mid := Color(COL_YOU_RAY.r, COL_YOU_RAY.g, COL_YOU_RAY.b, 0.7)
+    # 16 本の副 ray を 360° 等間隔の少し外側に配置（22.5° おき、主軸 4 本を避ける）
+    var sub_count: int = 16
+    for i in sub_count:
+        var t: float = float(i) / float(sub_count)
+        var ang: float = t * TAU + 0.0982  # 5.6° オフセットで主軸から離す
+        # 長さは主軸の 35〜70% にジッタ（i に基づく決定論ハッシュ）
+        var jitter: float = sin(float(i) * 7.91 + 1.7) * 0.5 + 0.5  # 0..1
+        var length: float
+        var width: float
+        var color: Color
+        # 8 本は中尺、8 本は短尺
+        if i % 2 == 0:
+            length = lerpf(RAY_LONG_LENGTH * 0.55, RAY_LONG_LENGTH * 0.85, jitter)
+            width = 3.5 + jitter * 1.5
+            color = ray_color_mid
+        else:
+            length = lerpf(RAY_SHORT_LENGTH * 0.7, RAY_SHORT_LENGTH * 1.4, jitter)
+            width = 2.0 + jitter * 1.5
+            color = ray_color_dim
+        var dir := Vector2(cos(ang), sin(ang))
+        _draw_tapered_ray(pos, dir, length, width, color)
 
     # 4) 中心の白核
     draw_circle(pos, 9.0, COL_YOU_GLOW)
