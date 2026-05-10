@@ -266,8 +266,9 @@ func _spawn_burst_and_lasers(grade: String, win: bool) -> void:
         hot = Color(0.722, 0.878, 1.0, 1.0)
         mid = Color(0.435, 0.706, 1.0, 1.0)
     else:
-        hot = Color(0.898, 0.353, 0.353, 1.0)
-        mid = Color(0.78, 0.231, 0.231, 1.0)
+        # 負け = グレー (GDD: ネガティブ色禁止)。INK_60 / INK_40 ベース
+        hot = Color(0.533, 0.588, 0.690, 1.0)
+        mid = Color(0.290, 0.333, 0.439, 1.0)
 
     # Tap position from lane view (rect center y, hit_x from you_tap_t)
     var lane_rect: Rect2 = _get_lane_rect()
