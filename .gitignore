@@ -23,6 +23,10 @@ dist/
 *.apk
 *.aab
 
+# --- Android デプロイ補助 ---
+.android-port
+android/.build_version
+
 # --- MCP 設定（APIキー含む） ---
 .mcp.json
 
