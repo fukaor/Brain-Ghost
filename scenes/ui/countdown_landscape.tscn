@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b0countdown001"]
+[gd_scene load_steps=9 format=3 uid="uid://b0countdownlsc01"]
 
 [ext_resource type="Script" path="res://scripts/ui/countdown_controller.gd" id="1_ctrl"]
 [ext_resource type="Texture2D" path="res://assets/characters/catboy_electric.png" id="2_catboy"]
@@ -6,7 +6,6 @@
 [ext_resource type="FontFile" path="res://assets/fonts/NotoSerifJP-Bold.otf" id="4_serif"]
 [ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="5_stars"]
 
-; ----- 背景：漆黒 + 微シアン nebula (rule_explain / ghost_7ban_shobu と同じ) -----
 [sub_resource type="Gradient" id="Gradient_nebula"]
 offsets = PackedFloat32Array(0, 0.4, 1)
 colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
@@ -14,7 +13,7 @@ colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_nebula"]
 gradient = SubResource("Gradient_nebula")
 fill = 1
-fill_from = Vector2(0.5, 0.35)
+fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chibi_bg"]
@@ -37,9 +36,10 @@ corner_radius_bottom_left = 20
 bg_color = Color(0.7, 0.93, 1, 0.6)
 
 ; ====================================================================
-; ルート
+; ルート (1280x720)
 ; ====================================================================
-[node name="Countdown" type="Control"]
+[node name="CountdownLandscape" type="Control"]
+custom_minimum_size = Vector2(1280, 720)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -80,68 +80,34 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("5_stars")
 
-[node name="MainContent" type="VBoxContainer" parent="."]
+[node name="SafeArea" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 0
+theme_override_constants/margin_left = 56
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 56
+theme_override_constants/margin_bottom = 32
 
-[node name="TopSpacer" type="Control" parent="MainContent"]
+[node name="MainContent" type="HBoxContainer" parent="SafeArea"]
 layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.3
+theme_override_constants/separation = 32
+alignment = 1
 
-[node name="ReadyLabel" type="Label" parent="MainContent"]
+; -------------------- 左半分: catboy + 吹き出し --------------------
+[node name="ChibiArea" type="VBoxContainer" parent="SafeArea/MainContent"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
-theme_override_font_sizes/font_size = 32
-theme_override_fonts/font = ExtResource("4_serif")
-text = "まもなく開始！"
-horizontal_alignment = 1
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 12
+alignment = 1
 
-[node name="ReadyDecorLine" type="Panel" parent="MainContent"]
-custom_minimum_size = Vector2(85, 3)
+[node name="SpeechBubble" type="PanelContainer" parent="SafeArea/MainContent/ChibiArea"]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_decor_line")
-
-[node name="CountSpacer1" type="Control" parent="MainContent"]
-custom_minimum_size = Vector2(0, 16)
-layout_mode = 2
-
-[node name="CountCenter" type="CenterContainer" parent="MainContent"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 1.0
-
-[node name="CountLabel" type="Label" parent="MainContent/CountCenter"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
-theme_override_font_sizes/font_size = 280
-theme_override_fonts/font = ExtResource("4_serif")
-text = "3"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="BottomSpacer" type="Control" parent="MainContent"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.4
-
-[node name="ChibiArea" type="HBoxContainer" parent="MainContent"]
-layout_mode = 2
-alignment = 1
-theme_override_constants/separation = 0
-
-[node name="ChibiColumn" type="VBoxContainer" parent="MainContent/ChibiArea"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="SpeechBubble" type="PanelContainer" parent="MainContent/ChibiArea/ChibiColumn"]
-layout_mode = 2
 theme_type_variation = &"glass_bubble"
 script = ExtResource("3_bubble")
 tail_direction = 0
@@ -149,31 +115,62 @@ tail_width = 14.0
 tail_height = 10.0
 tail_offset_x = 30.0
 
-[node name="BubbleMargin" type="MarginContainer" parent="MainContent/ChibiArea/ChibiColumn/SpeechBubble"]
+[node name="BubbleMargin" type="MarginContainer" parent="SafeArea/MainContent/ChibiArea/SpeechBubble"]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 10
 
-[node name="BubbleText" type="Label" parent="MainContent/ChibiArea/ChibiColumn/SpeechBubble/BubbleMargin"]
+[node name="BubbleText" type="Label" parent="SafeArea/MainContent/ChibiArea/SpeechBubble/BubbleMargin"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 22
 text = "集中して！(Focus!)"
 
-[node name="ChibiBg" type="PanelContainer" parent="MainContent/ChibiArea/ChibiColumn"]
-custom_minimum_size = Vector2(280, 280)
+[node name="ChibiBg" type="PanelContainer" parent="SafeArea/MainContent/ChibiArea"]
+custom_minimum_size = Vector2(360, 360)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_chibi_bg")
 
-[node name="ChibiTexture" type="TextureRect" parent="MainContent/ChibiArea/ChibiColumn/ChibiBg"]
+[node name="ChibiTexture" type="TextureRect" parent="SafeArea/MainContent/ChibiArea/ChibiBg"]
 layout_mode = 2
 texture = ExtResource("2_catboy")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="FooterSpacer" type="Control" parent="MainContent"]
-custom_minimum_size = Vector2(0, 32)
+; -------------------- 右半分: ReadyLabel + 巨大カウント --------------------
+[node name="RightColumn" type="VBoxContainer" parent="SafeArea/MainContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="ReadyLabel" type="Label" parent="SafeArea/MainContent/RightColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
+theme_override_font_sizes/font_size = 36
+theme_override_fonts/font = ExtResource("4_serif")
+text = "まもなく開始！"
+horizontal_alignment = 1
+
+[node name="ReadyDecorLine" type="Panel" parent="SafeArea/MainContent/RightColumn"]
+custom_minimum_size = Vector2(100, 3)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_decor_line")
+
+[node name="CountCenter" type="CenterContainer" parent="SafeArea/MainContent/RightColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CountLabel" type="Label" parent="SafeArea/MainContent/RightColumn/CountCenter"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
+theme_override_font_sizes/font_size = 320
+theme_override_fonts/font = ExtResource("4_serif")
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1

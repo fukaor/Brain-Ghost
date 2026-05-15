@@ -47,7 +47,6 @@ var _phase: String = "ready"
 var _round_index: int = 0
 var _tap_consumed_this_round: bool = false
 var _miss_timer_id: int = 0
-var _saved_orientation: int = -1
 
 
 # ---------------------------------------------------------------------------
@@ -58,7 +57,7 @@ func _ready() -> void:
     _hide(_announce_label)
     _hide(_result_overlay)
     _hide(_done_overlay)
-    _show(_ready_overlay)
+    _hide(_ready_overlay)  # countdown 経由で来るので待機画面は不要
     _lane_view.clear_state()
 
     _game = Ghost7BanShobu.new()
@@ -68,7 +67,14 @@ func _ready() -> void:
     _game.start()
 
     _tap_area.gui_input.connect(_on_tap_input)
-    _enter_ready()
+
+    # 初期化 + 即第 1 戦開始 (旧 _enter_ready の overlay 表示は省略)
+    _round_index = 0
+    _hud_score_you.text = "0"
+    _hud_score_ghost.text = "0"
+    _hud_round.text = "第 1 戦 ／ 7"
+    _set_progress_dots(0, [])
+    _begin_round(0)
 
 
 func _on_tap_input(event: InputEvent) -> void:
@@ -224,21 +230,25 @@ func _set_progress_dots(active_index: int, results: Array) -> void:
 func _setup_headline(grade: String, win: bool) -> void:
     if _result_headline == null:
         return
+    # Headline (PERFECT/GREAT/GOOD/MISS) は grade 別の演出色を維持
     var color: Color
     var glow: Color
-    var subtitle_color: Color
     if grade == "PERFECT":
         color = Color(1.0, 0.914, 0.659, 1.0)        # gold300
         glow = Color(0.961, 0.780, 0.416, 0.7)
-        subtitle_color = Color(1.0, 0.914, 0.659, 1.0)
     elif win:
         color = Color(0.722, 0.878, 1.0, 1.0)        # cyan300
         glow = Color(0.435, 0.706, 1.0, 0.6)
-        subtitle_color = Color(0.722, 0.878, 1.0, 1.0)
     else:
         color = Color(0.78, 0.824, 0.91, 1.0)        # ink80
         glow = Color(0.78, 0.824, 0.91, 0.4)
-        subtitle_color = Color(0.78, 0.824, 0.91, 1.0)
+
+    # Subtitle (WIN/LOSE/MISS) は grade に関わらず統一: 勝ち=黄金、負け=青~灰色
+    var subtitle_color: Color
+    if win:
+        subtitle_color = Color(1.0, 0.914, 0.659, 1.0)   # 黄金
+    else:
+        subtitle_color = Color(0.60, 0.70, 0.85, 1.0)    # コールドグレー (青~灰)
 
     if "text" in _result_headline:
         _result_headline.text = grade
@@ -364,15 +374,8 @@ func _exit_tree() -> void:
 
 
 func _force_landscape() -> void:
-    if not DisplayServer.has_feature(DisplayServer.FEATURE_ORIENTATION):
-        return
-    _saved_orientation = DisplayServer.screen_get_orientation()
-    DisplayServer.screen_set_orientation(DisplayServer.SCREEN_LANDSCAPE)
+    OrientationHelper.enter_landscape()
 
 
 func _restore_orientation() -> void:
-    if _saved_orientation < 0:
-        return
-    if not DisplayServer.has_feature(DisplayServer.FEATURE_ORIENTATION):
-        return
-    DisplayServer.screen_set_orientation(_saved_orientation)
+    OrientationHelper.enter_portrait()

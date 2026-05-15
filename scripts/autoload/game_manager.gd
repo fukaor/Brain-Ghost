@@ -19,6 +19,29 @@ const GAME_SCENES: Dictionary = {
     "ghost_7ban_shobu": "res://scenes/games/ghost_7ban_shobu/ghost_7ban_shobu.tscn",
 }
 
+## 横画面で動作するゲーム種別。ここに登録すると rule_explain / countdown も横版を使う。
+const LANDSCAPE_GAMES: Array = ["ghost_7ban_shobu"]
+
+## game_type の向き → rule_explain シーンパスマップ
+const RULE_EXPLAIN_SCENES: Dictionary = {
+    "portrait": "res://scenes/ui/rule_explain.tscn",
+    "landscape": "res://scenes/ui/rule_explain_landscape.tscn",
+}
+
+## game_type の向き → countdown シーンパスマップ
+const COUNTDOWN_SCENES: Dictionary = {
+    "portrait": "res://scenes/ui/countdown.tscn",
+    "landscape": "res://scenes/ui/countdown_landscape.tscn",
+}
+
+
+func _is_landscape_game(game_type: String) -> bool:
+    return game_type in LANDSCAPE_GAMES
+
+
+func _orientation_key(game_type: String) -> String:
+    return "landscape" if _is_landscape_game(game_type) else "portrait"
+
 enum PlayMode { NONE, ONBOARDING, DAILY, FREE }
 
 signal onboarding_started
@@ -99,7 +122,7 @@ func start_game(game_type: String) -> void:
     _current_game_type = game_type
     current_mode = PlayMode.FREE
     _previous_score = DataStore.load_best(game_type).best_score
-    _safe_change_scene("res://scenes/ui/rule_explain.tscn")
+    _safe_change_scene(RULE_EXPLAIN_SCENES[_orientation_key(game_type)])
 
 
 ## 後方互換: 反射タップ専用ラッパ。新規呼び出しは start_game("reflex_tap") を推奨。
@@ -109,7 +132,7 @@ func start_reflex_tap(_mode: String = "free") -> void:
 
 ## ルール説明画面の [スタート] / [スキップ] が押された
 func on_rule_explain_confirmed() -> void:
-    _safe_change_scene("res://scenes/ui/countdown.tscn")
+    _safe_change_scene(COUNTDOWN_SCENES[_orientation_key(_current_game_type)])
 
 
 ## ルール説明画面の [← 戻る] が押された (やっぱり別のゲームをやりたい場合)

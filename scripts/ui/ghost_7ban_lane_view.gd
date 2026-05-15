@@ -130,28 +130,27 @@ func _draw() -> void:
             _draw_result(rect)
 
 
-# ─── レーン（薄い水平光線、端でフェード） ───
+# ─── レーン（shape に沿った導線、端でフェード） ───
 func _draw_lane(rect: Rect2) -> void:
-    var y: float = rect.position.y + rect.size.y * 0.5
-    var x_start: float = rect.position.x
-    var x_end: float = rect.position.x + rect.size.x
-    # 中心 80% を主区間、外側 10% は減衰
-    var inner_l: float = lerpf(x_start, x_end, 0.08)
-    var inner_r: float = lerpf(x_start, x_end, 0.92)
-    # ハロー（薄い太線）
-    draw_line(Vector2(inner_l, y), Vector2(inner_r, y), Color(COL_LANE.r, COL_LANE.g, COL_LANE.b, 0.18), 6.0, true)
-    # コア（細い線）
-    draw_line(Vector2(inner_l, y), Vector2(inner_r, y), Color(COL_LANE.r, COL_LANE.g, COL_LANE.b, 0.55), 1.2, true)
-    # フェード端：細い外延
-    draw_line(Vector2(x_start, y), Vector2(inner_l, y), Color(COL_LANE.r, COL_LANE.g, COL_LANE.b, 0.15), 1.0, true)
-    draw_line(Vector2(inner_r, y), Vector2(x_end, y), Color(COL_LANE.r, COL_LANE.g, COL_LANE.b, 0.15), 1.0, true)
+    # マーカーが実際に通る軌道を polyline で描画 (line / s_curve / sine_wave / zigzag / arc)
+    var pts: PackedVector2Array = LaneShapes.sample_polyline(_shape, rect, 64)
+    if pts.size() < 2:
+        return
+    var halo := Color(COL_LANE.r, COL_LANE.g, COL_LANE.b, 0.18)
+    var core := Color(COL_LANE.r, COL_LANE.g, COL_LANE.b, 0.55)
+    # ハロー (太め、薄い)
+    draw_polyline(pts, halo, 6.0, true)
+    # コア (細く明るい)
+    draw_polyline(pts, core, 1.2, true)
 
 
 # ─── GATE：細い縦光柱（variant-b CenterGate 準拠 — gold thin beam + halo） ───
+# レーン rect の上下端まで延伸し、arc/sine_wave/zigzag 等 振幅の大きい shape でも
+# マーカーが Gate 上で衝突するように。
 func _draw_gate(rect: Rect2) -> void:
     var x: float = rect.position.x + rect.size.x * 0.5
-    var y_top: float = rect.position.y + rect.size.y * 0.20
-    var y_bot: float = rect.position.y + rect.size.y * 0.80
+    var y_top: float = rect.position.y
+    var y_bot: float = rect.position.y + rect.size.y
     var top: Vector2 = Vector2(x, y_top)
     var bot: Vector2 = Vector2(x, y_bot)
     # halo wide soft (16px)

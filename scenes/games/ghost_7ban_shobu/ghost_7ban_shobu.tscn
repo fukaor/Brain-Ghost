@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://scripts/ui/ghost_7ban_lane_view.gd" id="2_lane"]
 [ext_resource type="FontFile" path="res://assets/fonts/NotoSerifJP-Bold.otf" id="3_mcserif"]
 [ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="4_msym"]
-[ext_resource type="Texture2D" uid="uid://euwhtemlkao3" path="res://assets/characters/Sleek_black_cat_with_icy_accents.png" id="5_ghostcat"]
+[ext_resource type="Texture2D" path="res://assets/characters/catboy_confident.png" id="5_ghostcat"]
 [ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="6_stars"]
 [ext_resource type="Script" path="res://scripts/ui/effects/progress_dots.gd" id="7_dots"]
 [ext_resource type="Script" path="res://scripts/ui/effects/headline_serif.gd" id="8_headline"]
@@ -248,19 +248,23 @@ font_size_px = 64
 
 [node name="Subtitle" type="Label" parent="ResultOverlay"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 7
 anchor_left = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-offset_left = -200.0
-offset_top = 116.0
-offset_right = 200.0
-offset_bottom = 144.0
+anchor_bottom = 1.0
+offset_left = -280.0
+offset_top = -120.0
+offset_right = 280.0
+offset_bottom = -40.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.722, 0.878, 1.0, 0.95)
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 64
 text = "WIN"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 ; ---------- YOU 標識 (左下) ----------
 [node name="YouMarker" type="VBoxContainer" parent="."]

@@ -87,26 +87,33 @@ const RULES: Dictionary = {
     },
 }
 
-# ノード参照 -----------------------------------------------------------------
-@onready var _title_label: Label = $SafeArea/MainColumn/TitleBlock/TitleLabel
-@onready var _ability_label: Label = $SafeArea/MainColumn/TitleBlock/AbilityLabel
-@onready var _step1_index: Label = $SafeArea/MainColumn/StepsColumn/Step1/Row/TextBlock/IndexRow/Index
-@onready var _step1_title: Label = $SafeArea/MainColumn/StepsColumn/Step1/Row/TextBlock/IndexRow/Title
-@onready var _step1_body: Label = $SafeArea/MainColumn/StepsColumn/Step1/Row/TextBlock/Body
-@onready var _step1_preview: Control = $SafeArea/MainColumn/StepsColumn/Step1/Row/Preview
-@onready var _step2_index: Label = $SafeArea/MainColumn/StepsColumn/Step2/Row/TextBlock/IndexRow/Index
-@onready var _step2_title: Label = $SafeArea/MainColumn/StepsColumn/Step2/Row/TextBlock/IndexRow/Title
-@onready var _step2_body: Label = $SafeArea/MainColumn/StepsColumn/Step2/Row/TextBlock/Body
-@onready var _step2_preview: Control = $SafeArea/MainColumn/StepsColumn/Step2/Row/Preview
-@onready var _step3_index: Label = $SafeArea/MainColumn/StepsColumn/Step3/Row/TextBlock/IndexRow/Index
-@onready var _step3_title: Label = $SafeArea/MainColumn/StepsColumn/Step3/Row/TextBlock/IndexRow/Title
-@onready var _step3_body: Label = $SafeArea/MainColumn/StepsColumn/Step3/Row/TextBlock/Body
-@onready var _step3_preview: Control = $SafeArea/MainColumn/StepsColumn/Step3/Row/Preview
-@onready var _start_button: Button = $SafeArea/MainColumn/StartCTAWrap/StartButton
-@onready var _back_button: Button = $SafeArea/MainColumn/Header/BackButton
+# ノード参照 (縦/横シーン共通、find_child でパス非依存に解決) ------------------
+@onready var _title_label: Label = find_child("TitleLabel") as Label
+@onready var _ability_label: Label = find_child("AbilityLabel") as Label
+# 各 Step は Step1/Step2/Step3 ノード起点で find_child することで Index/Title/Body/Preview の名前重複を解決
+@onready var _step1_index: Label = find_child("Step1").find_child("Index") as Label
+@onready var _step1_title: Label = find_child("Step1").find_child("Title") as Label
+@onready var _step1_body: Label = find_child("Step1").find_child("Body") as Label
+@onready var _step1_preview: Control = find_child("Step1").find_child("Preview") as Control
+@onready var _step2_index: Label = find_child("Step2").find_child("Index") as Label
+@onready var _step2_title: Label = find_child("Step2").find_child("Title") as Label
+@onready var _step2_body: Label = find_child("Step2").find_child("Body") as Label
+@onready var _step2_preview: Control = find_child("Step2").find_child("Preview") as Control
+@onready var _step3_index: Label = find_child("Step3").find_child("Index") as Label
+@onready var _step3_title: Label = find_child("Step3").find_child("Title") as Label
+@onready var _step3_body: Label = find_child("Step3").find_child("Body") as Label
+@onready var _step3_preview: Control = find_child("Step3").find_child("Preview") as Control
+@onready var _start_button: Button = find_child("StartButton") as Button
+@onready var _back_button: Button = find_child("BackButton") as Button
 
 
 func _ready() -> void:
+    # SENSOR orientation 副作用対策: 縦/横をシーン名で確定する
+    if scene_file_path.ends_with("_landscape.tscn"):
+        OrientationHelper.enter_landscape()
+    else:
+        OrientationHelper.enter_portrait()
+
     _wire_signals()
     var game_type: String = "ghost_7ban_shobu"
     var gm := get_node_or_null("/root/GameManager")
