@@ -181,7 +181,7 @@ theme_override_styles/panel = SubResource("SBF_header")
 layout_mode = 2
 theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 text = "トレーニングを選んで記録を更新しましょう！
 左右にスワイプしてゲームを選択できます。"
 horizontal_alignment = 1
@@ -230,7 +230,7 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.484, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "REACTION"
 horizontal_alignment = 1
 
@@ -245,7 +245,7 @@ horizontal_alignment = 1
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 24
 text = "出現するターゲットを即座にタップ！
 反応速度を測定します。"
 horizontal_alignment = 1
@@ -268,7 +268,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 18
 text = "High Score"
 horizontal_alignment = 1
 
@@ -301,7 +301,7 @@ theme_override_styles/panel = SubResource("SBF_coming")
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 18
 text = "COMING SOON"
 horizontal_alignment = 1
 
@@ -340,7 +340,7 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.484, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "CALCULATION"
 horizontal_alignment = 1
 
@@ -355,7 +355,7 @@ horizontal_alignment = 1
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 24
 text = "次々と表示される数字を暗算。
 計算力を鍛えます。"
 horizontal_alignment = 1
@@ -378,7 +378,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 18
 text = "High Score"
 horizontal_alignment = 1
 
@@ -411,7 +411,7 @@ theme_override_styles/panel = SubResource("SBF_coming")
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 18
 text = "COMING SOON"
 horizontal_alignment = 1
 
@@ -450,7 +450,7 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.484, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "MEMORY"
 horizontal_alignment = 1
 
@@ -465,7 +465,7 @@ horizontal_alignment = 1
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 24
 text = "パネルが光る順番を記憶して再現。
 短期記憶をトレーニング。"
 horizontal_alignment = 1
@@ -488,7 +488,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 18
 text = "High Score"
 horizontal_alignment = 1
 
@@ -521,7 +521,7 @@ theme_override_styles/panel = SubResource("SBF_coming")
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 18
 text = "COMING SOON"
 horizontal_alignment = 1
 
@@ -560,7 +560,7 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.484, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "ATTENTION"
 horizontal_alignment = 1
 
@@ -575,7 +575,7 @@ horizontal_alignment = 1
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 24
 text = "文字の内容ではなく「色」を回答。
 注意力を磨きます。"
 horizontal_alignment = 1
@@ -598,7 +598,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 18
 text = "High Score"
 horizontal_alignment = 1
 
@@ -631,7 +631,7 @@ theme_override_styles/panel = SubResource("SBF_coming")
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 18
 text = "COMING SOON"
 horizontal_alignment = 1
 
@@ -670,7 +670,7 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.484, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "JUDGMENT"
 horizontal_alignment = 1
 
@@ -685,7 +685,7 @@ horizontal_alignment = 1
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 24
 text = "ペアのカードを素早く見つける。
 判断力と記憶力の勝負。"
 horizontal_alignment = 1
@@ -708,7 +708,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 18
 text = "High Score"
 horizontal_alignment = 1
 
@@ -741,7 +741,7 @@ theme_override_styles/panel = SubResource("SBF_coming")
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 18
 text = "COMING SOON"
 horizontal_alignment = 1
 
@@ -780,7 +780,7 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.484, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "OBSERVATION"
 horizontal_alignment = 1
 
@@ -795,7 +795,7 @@ horizontal_alignment = 1
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 24
 text = "1 から順番に数字をタップ。
 周辺視野と集中力を強化。"
 horizontal_alignment = 1
@@ -818,7 +818,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 18
 text = "Best Time"
 horizontal_alignment = 1
 
@@ -851,7 +851,7 @@ theme_override_styles/panel = SubResource("SBF_coming")
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 18
 text = "COMING SOON"
 horizontal_alignment = 1
 
@@ -907,7 +907,7 @@ grow_vertical = 0
 theme_override_styles/panel = SubResource("SBF_nav")
 
 [node name="BottomNavBar" type="HBoxContainer" parent="BottomNavPanel"]
-custom_minimum_size = Vector2(0, 64)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_constants/separation = 4
 
@@ -936,7 +936,7 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "psychology"
 horizontal_alignment = 1
 
@@ -944,7 +944,7 @@ horizontal_alignment = 1
 layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 22
 text = "脳トレ"
 horizontal_alignment = 1
 
@@ -970,7 +970,7 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
 theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "analytics"
 horizontal_alignment = 1
 
@@ -978,7 +978,7 @@ horizontal_alignment = 1
 layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 22
 text = "分析"
 horizontal_alignment = 1
 
@@ -1004,7 +1004,7 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
 theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "home"
 horizontal_alignment = 1
 
@@ -1012,7 +1012,7 @@ horizontal_alignment = 1
 layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 22
 text = "ホーム"
 horizontal_alignment = 1
 
@@ -1038,7 +1038,7 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
 theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "emoji_events"
 horizontal_alignment = 1
 
@@ -1046,7 +1046,7 @@ horizontal_alignment = 1
 layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 22
 text = "アワード"
 horizontal_alignment = 1
 
@@ -1072,7 +1072,7 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
 theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "settings"
 horizontal_alignment = 1
 
@@ -1080,6 +1080,6 @@ horizontal_alignment = 1
 layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 22
 text = "設定"
 horizontal_alignment = 1

@@ -10,12 +10,12 @@ config_version=5
 
 [application]
 
-config/name="ブレインゴースト - 脳トレ × 自分対戦"
+config/name="Brain Ghost"
 config/description="脳トレ × 自分対戦。毎日2分、昨日の自分に挑め — ミニゲーム詰め合わせ型の脳トレアプリ"
 config/version="0.1.0"
 run/main_scene="res://scenes/main/launch.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://assets/icons/game_icon.png"
 
 [autoload]
 
@@ -34,7 +34,7 @@ window/size/viewport_height=1280
 window/size/window_width_override=360
 window/size/window_height_override=640
 window/stretch/mode="canvas_items"
-window/handheld/orientation=6
+window/handheld/orientation=1
 
 [editor_plugins]
 

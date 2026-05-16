@@ -351,6 +351,7 @@ func _commit_round_result(result: Dictionary) -> void:
     else:
         _ghost_wins += 1
     record_event("round_result", float(int(result.get("delta", MISS_RECORDED_MS))))
+    record_event("round_win", 1.0 if bool(result.get("win", false)) else 0.0)
     _phase = "result"
 
 

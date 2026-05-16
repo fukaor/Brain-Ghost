@@ -17,21 +17,11 @@ fill = 1
 fill_from = Vector2(0.5, 0.35)
 fill_to = Vector2(1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chibi_bg"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxFlat_chibi_bg"]
 content_margin_left = 8.0
 content_margin_top = 8.0
 content_margin_right = 8.0
 content_margin_bottom = 8.0
-bg_color = Color(0, 0, 0, 0.4)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.4, 0.85, 1.0, 0.3)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_decor_line"]
 bg_color = Color(0.7, 0.93, 1, 0.6)

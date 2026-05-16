@@ -133,7 +133,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="SettingsButton" type="Button" parent="SafeArea/MainColumn/TopRow"]
-custom_minimum_size = Vector2(48, 48)
+custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_settings")
@@ -141,7 +141,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_settings_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_settings_hover")
 theme_override_colors/font_color = Color(0.682, 0.722, 0.812, 1)
 theme_override_fonts/font = ExtResource("4_msym")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 44
 text = "settings"
 flat = false
 
@@ -184,7 +184,7 @@ theme_override_constants/margin_bottom = 8
 [node name="SpeechText" type="Label" parent="SafeArea/MainColumn/HeroRow/SpeechWrap/SpeechBubble/Margin"]
 layout_mode = 2
 theme_type_variation = &"mc_body_strong"
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 text = "おかえり！
 今日もやる？"
 horizontal_alignment = 1
@@ -326,6 +326,7 @@ size_flags_vertical = 3
 
 ; -------------------- 全ゲーム一覧リンク --------------------
 [node name="AllGamesLink" type="Button" parent="SafeArea/MainColumn"]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/normal = SubResource("StyleBoxEmpty_settings")
@@ -333,6 +334,6 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_settings")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_settings")
 theme_override_colors/font_color = Color(0.682, 0.722, 0.812, 1)
 theme_override_colors/font_hover_color = Color(0.949, 0.957, 0.98, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 28
 text = "全ゲーム一覧  ›"
 flat = false

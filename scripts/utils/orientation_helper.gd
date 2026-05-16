@@ -7,14 +7,19 @@
 ## 画面中央 56% しか見えなくなる。enter_landscape / enter_portrait で
 ## DisplayServer の向きと get_window().content_scale_size の両方を切替する。
 ##
-## project.godot で `window/handheld/orientation=6` (SENSOR) が前提。
+## project.godot は `window/handheld/orientation=1` (PORTRAIT) で固定。
+## アプリ全体は縦画面を既定とし、landscape にしたいゲームシーンだけが
+## 明示的に enter_landscape() を呼ぶ。シーン離脱時は _exit_tree() で
+## enter_portrait() を呼んで縦画面に戻すこと。
 ##
 ## 使い方:
 ##   func _ready() -> void:
 ##       if scene_file_path.ends_with("_landscape.tscn"):
 ##           OrientationHelper.enter_landscape()
-##       else:
-##           OrientationHelper.enter_portrait()
+##       # portrait の場合は呼ばなくてもよい（プロジェクト既定）
+##
+##   func _exit_tree() -> void:
+##       OrientationHelper.enter_portrait()
 class_name OrientationHelper
 extends Object
 
