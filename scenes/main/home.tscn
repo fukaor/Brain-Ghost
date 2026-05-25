@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b0home0000001"]
+[gd_scene load_steps=13 format=3 uid="uid://b0home0000001"]
 
 [ext_resource type="Script" path="res://scripts/ui/home_controller.gd" id="1_home"]
 [ext_resource type="Script" path="res://scripts/ui/radar_chart.gd" id="2_radar"]
@@ -6,6 +6,7 @@
 [ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="4_msym"]
 [ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="5_stars"]
 [ext_resource type="Script" path="res://scripts/ui/effects/glow_cta.gd" id="6_glowcta"]
+[ext_resource type="PackedScene" uid="uid://b0navlinkbtn001" path="res://scenes/ui/components/nav_link_button.tscn" id="7_navlink"]
 
 ; ----- 背景：漆黒 + 中央付近に微シアンの放射 -----
 [sub_resource type="Gradient" id="Gradient_nebula"]
@@ -324,16 +325,10 @@ custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
 size_flags_vertical = 3
 
-; -------------------- 全ゲーム一覧リンク --------------------
-[node name="AllGamesLink" type="Button" parent="SafeArea/MainColumn"]
-custom_minimum_size = Vector2(0, 56)
+; -------------------- 全ゲーム一覧リンク (NavLinkButton コンポーネント) --------------------
+[node name="AllGamesLink" parent="SafeArea/MainColumn" instance=ExtResource("7_navlink")]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/normal = SubResource("StyleBoxEmpty_settings")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_settings")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_settings")
-theme_override_colors/font_color = Color(0.682, 0.722, 0.812, 1)
-theme_override_colors/font_hover_color = Color(0.949, 0.957, 0.98, 1)
-theme_override_font_sizes/font_size = 28
-text = "全ゲーム一覧  ›"
-flat = false
+icon_name = "sports_esports"
+label_text = "全ゲーム一覧"
+direction = "forward"

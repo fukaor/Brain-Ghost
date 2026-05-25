@@ -6,7 +6,7 @@
 ## VerdictTitle (勝ち越し！等) + ScoreBlock (score + delta + BEST pill) +
 ## CompareCards (YOU vs GHOST or YOU vs 自己ベスト) + SpeechBubble + ボタン。
 ##
-## [b]対応ゲーム:[/b] reflex_tap, flash_calc, stroop, sequence_memory,
+## [b]対応ゲーム:[/b] flash_calc, stroop, sequence_memory,
 ## card_match, number_search, ghost_7ban_shobu
 ##
 ## [b]前提:[/b] GameManager._current_play_log + _previous_score を読む。
@@ -19,11 +19,10 @@ extends Control
 ## ゲーム種別ラベル (subtitle に表示)
 const GAME_SUBTITLE: Dictionary = {
     "ghost_7ban_shobu": "7ラウンド対決",
-    "reflex_tap": "反射タップ",
     "flash_calc": "フラッシュ暗算",
-    "stroop": "ストループ",
+    "stroop": "色文字ストループ",
     "sequence_memory": "順番記憶",
-    "card_match": "神経衰弱",
+    "card_match": "神経衰弱ライト",
     "number_search": "数字さがし",
 }
 
@@ -58,18 +57,6 @@ const TOTAL_ROUNDS: int = 7
 ## - ghost_score_format: ghost_score_placeholder のフォーマット ("time" / "int")
 static func _get_display_config(game_type: String) -> Dictionary:
     match game_type:
-        "reflex_tap":
-            return {
-                "score_unit": "s",
-                "score_format": "time",
-                "compare_mode": "ghost",
-                "compare_caption_you": "平均",
-                "compare_caption_opponent": "平均",
-                "compare_value_format": "time_ms",  # 表示: "112ms"
-                "you_event_for_avg": "target_tapped",
-                "ghost_score_placeholder": 450.0,
-                "ghost_score_format": "time_ms",
-            }
         "ghost_7ban_shobu":
             return {
                 "score_unit": "pts",
@@ -197,8 +184,8 @@ func _load_from_game_manager() -> void:
     if gm == null:
         _show_dummy_result()
         return
-    var log = gm._current_play_log if "_current_play_log" in gm else null
-    var prev_score: int = int(gm._previous_score) if "_previous_score" in gm else 0
+    var log = gm._current_play_log
+    var prev_score: int = int(gm._previous_score)
     if log == null:
         _show_dummy_result()
         return
@@ -237,15 +224,14 @@ func _build_dummy_log(case_name: String) -> Dictionary:
             _append_round_events(log, deltas_pattern, wins_pattern)
             prev_score = 950
         "new_best":
-            log.game_type = "reflex_tap"
-            log.score = 875
+            log.game_type = "number_search"
+            log.score = 1200
             log.is_new_best = true
-            for d in [320, 350, 305, 380, 340]:
-                var e := PlayEvent.new()
-                e.event_type = "target_tapped"
-                e.value = float(d)
-                log.events.append(e)
-            prev_score = 720
+            var clear_evt := PlayEvent.new()
+            clear_evt.event_type = "clear"
+            clear_evt.value = 24000.0
+            log.events.append(clear_evt)
+            prev_score = 900
         "improved":
             log.game_type = "flash_calc"
             log.score = 1020
@@ -494,7 +480,7 @@ func _apply_compare_cards(log: PlayLog, cfg: Dictionary) -> void:
     if mode == "ghost":
         var evt_name := String(cfg.get("you_event_for_avg", ""))
         you_value = _compute_avg_value(log, evt_name) if evt_name != "" else float(log.score)
-        opp_value = float(cfg.get("ghost_score_placeholder", 0.0))
+        opp_value = _load_ghost_avg(log.game_type, cfg)
         _opponent_header.text = "GHOST"
         _opponent_header.add_theme_color_override("font_color", COLOR_GRAY_DIM)
         _opponent_card.add_theme_stylebox_override("panel", _build_card_style(COLOR_GRAY_DIM, 0.4))
@@ -566,6 +552,22 @@ func _load_self_best(game_type: String) -> float:
     if best == null:
         return 0.0
     return float(best.best_score) if "best_score" in best else 0.0
+
+
+## ghost モードの比較値: GhostData.load_round_medians の各ラウンド中央値の平均 (ms)。
+## データ未保存時は GhostData.FALLBACK_DELTA_MS (= 273ms) ベースの fallback、
+## さらに GhostData が見つからなければ cfg の ghost_score_placeholder を返す。
+func _load_ghost_avg(game_type: String, cfg: Dictionary) -> float:
+    var ghost := get_node_or_null("/root/GhostData")
+    if ghost == null or not ghost.has_method("load_round_medians"):
+        return float(cfg.get("ghost_score_placeholder", 0.0))
+    var medians: Array = ghost.load_round_medians(game_type)
+    if medians.is_empty():
+        return float(cfg.get("ghost_score_placeholder", 0.0))
+    var total: int = 0
+    for m in medians:
+        total += int(m)
+    return float(total) / float(medians.size())
 
 
 func _format_compare_value(v: float, fmt: String) -> String:

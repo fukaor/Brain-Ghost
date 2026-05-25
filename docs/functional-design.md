@@ -111,7 +111,7 @@ interface UserConfig {
 ```typescript
 interface PlayLog {
   id: string;                    // UUID
-  gameType: GameType;            // "reflex_tap" | "flash_calc" | "number_search" | "stroop" | "sequence_memory" | "card_match"
+  gameType: GameType;            // "flash_calc" | "number_search" | "stroop" | "sequence_memory" | "card_match" | "ghost_7ban_shobu"
   mode: "daily" | "free" | "onboarding";  // プレイモード
   playedAt: string;              // プレイ日時（ISO8601）
   playedDate: string;            // プレイ日（YYYY-MM-DD、ローカルタイム UTC+9）
@@ -126,7 +126,7 @@ interface PlayLog {
 interface PlayEvent {
   timeMs: number;                // プレイ開始からの経過ミリ秒
   eventType: "correct" | "incorrect" | "tap" | "clear" | "miss";
-  value: number | null;          // ゲーム固有の数値（例: 反射タップの反応時間）
+  value: number | null;          // ゲーム固有の数値（例: ゴースト7番勝負のラウンド反応時間）
 }
 
 interface GhostResult {
@@ -136,7 +136,7 @@ interface GhostResult {
   diff: number;                  // 差分（自分 - ゴースト）
 }
 
-type GameType = "reflex_tap" | "flash_calc" | "number_search" | "stroop" | "sequence_memory" | "card_match";
+type GameType = "flash_calc" | "number_search" | "stroop" | "sequence_memory" | "card_match" | "ghost_7ban_shobu";
 ```
 
 **制約**:
@@ -293,7 +293,7 @@ const GAME_TO_ABILITY = {
     "flash_calc": "calculation",
     "sequence_memory": "memory",
     "stroop": "attention",
-    "reflex_tap": "reflex",
+    "ghost_7ban_shobu": "reflex",
     "number_search": "observation",
     "card_match": "judgment",
 }
@@ -356,7 +356,7 @@ func judge_result(game_type: String, self_value: float, ghost: GhostData) -> Dic
 class_name DailySeed
 extends Node
 
-const ALL_GAMES = ["reflex_tap", "flash_calc", "number_search", "stroop", "sequence_memory", "card_match"]
+const ALL_GAMES = ["flash_calc", "number_search", "stroop", "sequence_memory", "card_match", "ghost_7ban_shobu"]
 
 func get_daily_seed(date: Dictionary = Time.get_date_dict_from_system()) -> int
 # 例: 2026/04/15 -> 20260415
@@ -432,7 +432,7 @@ func update_best_if_better(log: PlayLog) -> bool          # ベスト更新時�
 { "schemaVersion": 1, "logs": [PlayLog dicts...] }
 
 // GAME_BESTS
-{ "schemaVersion": 1, "bests": { "reflex_tap": GameBest dict, ... } }
+{ "schemaVersion": 1, "bests": { "flash_calc": GameBest dict, ... } }
 ```
 
 **設計判断**:
@@ -642,13 +642,13 @@ sequenceDiagram
     DS-->>UI: 存在しない or onboardingCompleted=false
     UI->>GM: start_onboarding()
     GM->>UI: イントロ画面表示（2秒）
-    GM->>UI: 1種目: reflex_tap のルール説明
+    GM->>UI: 1種目: ghost_7ban_shobu のルール説明
     User->>UI: スタートタップ
     UI->>UI: カウントダウン 3,2,1
-    UI->>Games: reflex_tap.start()
-    User->>Games: 20回タップ
+    UI->>Games: ghost_7ban_shobu.start()
+    User->>Games: 7ラウンド対戦
     Games->>GM: on_game_finished(play_log)
-    GM->>SS: calculate_score(reflex_tap, play_data)
+    GM->>SS: calculate_score(ghost_7ban_shobu, play_data)
     SS-->>GM: スコア
     GM->>DS: save(PLAY_LOGS, log)
     GM->>UI: 個別結果画面表示（暫定スコア + 精度 17%）
@@ -690,7 +690,7 @@ sequenceDiagram
     GM->>DSeed: get_daily_seed()
     DSeed-->>GM: 20260415
     GM->>DSeed: get_daily_games(20260415)
-    DSeed-->>GM: [reflex_tap, stroop, card_match]
+    DSeed-->>GM: [ghost_7ban_shobu, stroop, card_match]
 
     loop 3 種類
         GM->>UI: ルール説明（スキップ可）
@@ -856,34 +856,45 @@ https://brain.reigals.com/daily?d={date}&s={score}
 
 | ゲーム | 計算式 | 範囲 |
 |---|---|---|
-| **フラッシュ暗算** | `score = correctCount * 100 + remainingSec * 10` | 0 〜 4,000 |
+| **フラッシュ暗算** | `score = precomputed_score`（flash_calc.gd 側で計算済み）。`max(0, ghost_delta_ms − response_time_ms) + 500` × ティア倍率 | 0 〜 6,000 |
 | **順番記憶** | `score = maxReachedLevel * 150` | 0 〜 3,000 |
-| **ストループ** | `score = correctCount * 100 - incorrectCount * 50`（下限 0） | 0 〜 3,000 |
-| **反射タップ** | `score = (1000 / averageReactionMs) * 300`（上限 1,500）。`averageReactionMs` は **正規タップの反応時間平均 + フェイクタップ数 × 50ms ペナルティ**。フェイクは 3-5 回に 1 回出現 | 0 〜 1,500 |
-| **神経衰弱** | `score = (pairCount / totalTapCount) * 1000 + max(0, timeBonus)` | 0 〜 2,500 |
-| **数字さがし** | `score = max(0, 3000 - clearTimeSec * 100)` | 0 〜 3,000 |
+| **色文字ストループ** | `score = precomputed_score`（stroop.gd 側で計算済み）。`max(0, 正答×100 − 誤答×50) × ティア倍率(1.0/1.2/1.5)` | 0 〜 4,500 |
+| **ゴースト7番勝負** | `(1000 / 中央 5 発平均ms) × 300 + 勝利数 × 50` | 0 〜 3,350 |
+| **神経衰弱ライト** | `((ペア数×2/総タップ数)×1000 + 残り時間比率×500) × ティア倍率` | 0 〜 4,200 |
+| **数字さがし** | `1500 × (制限時間 − クリアタイム) / 制限時間 × ティア倍率`（未クリア=0） | 0 〜 3,000 |
 
 **実装例**（GDScript）:
 ```gdscript
 func calculate_score(game_type: String, play_data: Dictionary) -> int:
     match game_type:
         "flash_calc":
-            return play_data.correct_count * 100 + play_data.remaining_sec * 10
+            # flash_calc.gd 内で計算済み (precomputed_score をパススルー)
+            return max(0, int(play_data.get("precomputed_score", 0)))
         "sequence_memory":
             return play_data.max_reached_level * 150
         "stroop":
-            return max(0, play_data.correct_count * 100 - play_data.incorrect_count * 50)
-        "reflex_tap":
-            if play_data.average_reaction_ms <= 0:
-                return 0
-            return min(1500, int((1000.0 / play_data.average_reaction_ms) * 300.0))
+            # stroop.gd 内でティア倍率込みで計算済み
+            return max(0, int(play_data.get("precomputed_score", 0)))
+        "ghost_7ban_shobu":
+            # 中央 5 発平均 × 300 + 勝利数 × 50（Ghost7BanShobu.calculate_total_score）
+            var deltas: Array = play_data.get("round_deltas_ms", [])
+            var wins: int = int(play_data.get("wins", 0))
+            return Ghost7BanShobu.calculate_total_score(deltas, wins)
         "card_match":
-            if play_data.total_tap_count == 0:
-                return 0
-            var efficiency = float(play_data.pair_count) / float(play_data.total_tap_count) * 1000.0
-            return int(efficiency + max(0, play_data.time_bonus))
+            var pair: int = int(play_data.get("pair_count", 0))
+            var tap: int = int(play_data.get("total_tap_count", 0))
+            if tap <= 0: return 0
+            var efficiency: float = float(pair * 2) / float(tap)
+            var time_remaining: float = max(0.0, float(play_data.get("time_limit_sec", 60.0)) - float(play_data.get("clear_time_sec", 60.0)))
+            var time_bonus: int = int((time_remaining / float(play_data.get("time_limit_sec", 60.0))) * 500.0)
+            return int(round((efficiency * 1000.0 + float(time_bonus)) * float(play_data.get("tier_multiplier", 1.0))))
         "number_search":
-            return max(0, 3000 - play_data.clear_time_sec * 100)
+            if not bool(play_data.get("is_clear", false)): return 0
+            var clear_sec: float = float(play_data.get("clear_time_sec", 60.0))
+            var time_limit: float = float(play_data.get("time_limit_sec", 60.0))
+            var tier_mult: float = float(play_data.get("tier_multiplier", 1.0))
+            var ratio: float = max(0.0, (time_limit - clear_sec) / time_limit)
+            return int(round(1500.0 * ratio * tier_mult))
         _:
             return 0
 ```
@@ -966,9 +977,9 @@ func calculate_brain_age(total_score: int, age_group: String, is_first_play: boo
 
 ### A-03: ゴースト生成（直近5回平均化）（FR-02）
 
-**目的**: 過去 5 プレイのイベント列を時間軸で平均化し、ゴーストの「各時点での正答数」を算出する。タイム系ゲーム（反射タップ・暗算・ストループ）で使用する。
+**目的**: 過去 5 プレイのイベント列を時間軸で平均化し、ゴーストの「各時点での正答数」を算出する。タイム系ゲーム（フラッシュ暗算 / ゴースト7番勝負 / 色文字ストループ）で使用する。
 
-**クリア系ゲーム（順番記憶・神経衰弱・数字さがし）の扱い**: クリア系ではプレイ中にゴーストバーを出さないため、`averageEvents` の計算は**スキップ可**（空配列のまま）。代わりに以下を計算して結果画面で比較表示に使う:
+**クリア系ゲーム（順番記憶・神経衰弱ライト・数字さがし）の扱い**: クリア系ではプレイ中にゴーストバーを出さないため、`averageEvents` の計算は**スキップ可**（空配列のまま）。代わりに以下を計算して結果画面で比較表示に使う:
 
 - `averageScore`: 直近5回のスコア平均
 - `averageDurationMs`: 直近5回のクリアタイム平均（クリアしきれなかったプレイは `durationMs` を打ち切り値として含める）
@@ -1235,7 +1246,7 @@ brainghost_ghost_cache
 - **テクスチャアトラス**: ミニゲームで使う小さな画像アセットは 1 枚のアトラスに統合し、ドローコールを減らす
 - **Web版の遅延ロード**: MVP では全アセットを初回ロードするが、20MB 以下を目標とする。超える場合は v1.1 で動的ロードに切り替える
 - **60fps 維持**: プレイ中は GC を避けるため、Dictionary / Array の再利用を徹底し、都度生成を避ける
-- **タイマー精度**: `Time.get_ticks_msec()` を使用（反射タップの反応時間計測は ±10ms 以内）
+- **タイマー精度**: `Time.get_ticks_msec()` を使用（ゴースト7番勝負の反応時間計測は ±10ms 以内）
 
 ---
 

@@ -8,7 +8,7 @@ extends RefCounted
 const CURRENT_SCHEMA_VERSION: int = 1
 
 var id: String = ""                    # UUID v4
-var game_type: String = ""             # "reflex_tap" | "flash_calc" | ...
+var game_type: String = ""             # "flash_calc" | "ghost_7ban_shobu" | ...
 var mode: String = "free"              # "daily" | "free" | "onboarding"
 var played_at: String = ""             # ISO8601
 var played_date: String = ""           # "YYYY-MM-DD"（JST）

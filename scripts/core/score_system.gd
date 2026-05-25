@@ -12,7 +12,6 @@ extends Node
 const MAX_TOTAL_SCORE: int = 17000
 
 const ALL_GAMES: Array[String] = [
-    "reflex_tap",
     "flash_calc",
     "number_search",
     "stroop",
@@ -26,7 +25,6 @@ const GAME_TO_ABILITY: Dictionary = {
     "flash_calc": "calculation",
     "sequence_memory": "memory",
     "stroop": "attention",
-    "reflex_tap": "reflex",
     "ghost_7ban_shobu": "reflex",
     "number_search": "observation",
     "card_match": "judgment",
@@ -47,42 +45,53 @@ const DEFAULT_CENTER_AGE: int = 30
 
 ## 指定ゲームのスコアを算出する（docs/functional-design.md A-01）
 ##
-## [param game_type] "flash_calc" / "reflex_tap" など
+## [param game_type] "flash_calc" / "ghost_7ban_shobu" など
 ## [param play_data] ゲーム固有のフィールド（correct_count, remaining_sec など）
 ## [return] 0 以上の整数スコア。不正な game_type なら 0
 func calculate_score(game_type: String, play_data: Dictionary) -> int:
     match game_type:
         "flash_calc":
-            var correct := int(play_data.get("correct_count", 0))
-            var remaining := int(play_data.get("remaining_sec", 0))
-            return max(0, correct * 100 + remaining * 10)
-        "reflex_tap":
-            var avg_ms := float(play_data.get("average_reaction_ms", 0.0))
-            if avg_ms <= 0.0:
-                return 0
-            return min(1500, int((1000.0 / avg_ms) * 300.0))
+            # v1.3: スコアは flash_calc.gd 内で算出済み (response_time × tier_mult + bonus)。
+            # GameManager から precomputed_score を渡してパススルーする。
+            return max(0, int(play_data.get("precomputed_score", 0)))
         "sequence_memory":
             # TODO: Week 3 で実装
             var max_level := int(play_data.get("max_reached_level", 0))
             return max(0, max_level * 150)
         "stroop":
-            # TODO: Week 2 で実装
-            var correct := int(play_data.get("correct_count", 0))
-            var incorrect := int(play_data.get("incorrect_count", 0))
-            return max(0, correct * 100 - incorrect * 50)
+            # docs/ideas/games/ghost-stroop-showdown-spec.md v1.1 §5-1:
+            # stroop.gd の _on_finish() でティア倍率込みのスコアを計算済み。
+            # GameManager は precomputed_score を渡してパススルー (flash_calc と同パターン)。
+            return max(0, int(play_data.get("precomputed_score", 0)))
         "card_match":
-            # TODO: Week 3 で実装
+            # docs/ideas/games/ghost-memory-match-lite-spec.md v1.1 §5-1:
+            #   タップ効率 (= ペア数 × 2 / 総タップ数) × 1000 + 時間ボーナス × ティア倍率
             var pair := int(play_data.get("pair_count", 0))
             var tap := int(play_data.get("total_tap_count", 0))
-            if tap == 0:
+            var clear_sec := float(play_data.get("clear_time_sec", 60.0))
+            var time_limit := float(play_data.get("time_limit_sec", 60.0))
+            var tier_mult := float(play_data.get("tier_multiplier", 1.0))
+            if tap <= 0 or time_limit <= 0.0:
                 return 0
-            var efficiency := float(pair) / float(tap) * 1000.0
-            var bonus := int(play_data.get("time_bonus", 0))
-            return max(0, int(efficiency + max(0, bonus)))
+            var efficiency := float(pair * 2) / float(tap)
+            var efficiency_score: int = int(efficiency * 1000.0)
+            var time_remaining: float = max(0.0, time_limit - clear_sec)
+            var time_bonus: int = int((time_remaining / time_limit) * 500.0)
+            return max(0, int(round(float(efficiency_score + time_bonus) * tier_mult)))
         "number_search":
-            # TODO: Week 2 で実装
-            var clear_sec := int(play_data.get("clear_time_sec", 0))
-            return max(0, 3000 - clear_sec * 100)
+            # docs/ideas/games/ghost-number-search-spec.md v1.1 §5-1:
+            #   未クリア = 0 pts、それ以外は BASE_SCORE × (制限時間 − クリアタイム) / 制限時間 × ティア倍率
+            const NS_BASE_SCORE: int = 1500
+            var is_clear := bool(play_data.get("is_clear", false))
+            if not is_clear:
+                return 0
+            var clear_sec := float(play_data.get("clear_time_sec", 60.0))
+            var time_limit := float(play_data.get("time_limit_sec", 60.0))
+            var tier_mult := float(play_data.get("tier_multiplier", 1.0))
+            if time_limit <= 0.0:
+                return 0
+            var remaining_ratio: float = max(0.0, (time_limit - clear_sec) / time_limit)
+            return max(0, int(round(float(NS_BASE_SCORE) * remaining_ratio * tier_mult)))
         "ghost_7ban_shobu":
             # docs/ideas/games/ghost-7ban-shobu-spec.md §5:
             #   (1000 / 中央5発平均ms) × 300 + 勝利数 × 50

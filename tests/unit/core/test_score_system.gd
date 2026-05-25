@@ -14,28 +14,55 @@ func after_each() -> void:
 
 # --- A-01: スコア計算 ---
 
-func test_score_flash_calc():
-    assert_eq(ss.calculate_score("flash_calc", {"correct_count": 10, "remaining_sec": 5}), 1050)
-    assert_eq(ss.calculate_score("flash_calc", {"correct_count": 0, "remaining_sec": 0}), 0)
+func test_score_flash_calc_precomputed():
+    # スコアは flash_calc.gd 側で計算済み (precomputed_score をパススルー)
+    assert_eq(ss.calculate_score("flash_calc", {"precomputed_score": 1234}), 1234)
+    assert_eq(ss.calculate_score("flash_calc", {"precomputed_score": 0}), 0)
+    assert_eq(ss.calculate_score("flash_calc", {}), 0)
 
-func test_score_reflex_tap_normal():
-    # 平均 300ms → (1000/300)*300 = 1000
-    assert_eq(ss.calculate_score("reflex_tap", {"average_reaction_ms": 300.0}), 1000)
+func test_score_stroop_precomputed():
+    # stroop.gd の _on_finish() でティア倍率込みで計算済み
+    assert_eq(ss.calculate_score("stroop", {"precomputed_score": 1500}), 1500)
+    assert_eq(ss.calculate_score("stroop", {"precomputed_score": -50}), 0, "負値は 0 にクランプ")
 
-func test_score_reflex_tap_capped():
-    # 平均 100ms → (1000/100)*300 = 3000 だが上限 1500
-    assert_eq(ss.calculate_score("reflex_tap", {"average_reaction_ms": 100.0}), 1500)
+func test_score_number_search_clear():
+    # 30s クリア / 60s 制限 / 倍率 1.0 → 1500 * 0.5 = 750
+    var s := ss.calculate_score("number_search", {
+        "is_clear": true,
+        "clear_time_sec": 30.0,
+        "time_limit_sec": 60.0,
+        "tier_multiplier": 1.0,
+    })
+    assert_eq(s, 750)
 
-func test_score_reflex_tap_zero_guard():
-    assert_eq(ss.calculate_score("reflex_tap", {"average_reaction_ms": 0.0}), 0)
+func test_score_number_search_timeout():
+    # is_clear=false なら 0
+    assert_eq(ss.calculate_score("number_search", {
+        "is_clear": false,
+        "clear_time_sec": 60.0,
+        "time_limit_sec": 60.0,
+        "tier_multiplier": 1.0,
+    }), 0)
 
-func test_score_stroop():
-    assert_eq(ss.calculate_score("stroop", {"correct_count": 10, "incorrect_count": 2}), 900)
-    assert_eq(ss.calculate_score("stroop", {"correct_count": 1, "incorrect_count": 10}), 0, "下限 0")
+func test_score_card_match_perfect():
+    # 8 ペア / 16 タップ / 30 秒: 効率 1.0 (1000) + 時間ボーナス (250) = 1250
+    var s := ss.calculate_score("card_match", {
+        "pair_count": 8,
+        "total_tap_count": 16,
+        "clear_time_sec": 30.0,
+        "time_limit_sec": 60.0,
+        "tier_multiplier": 1.0,
+    })
+    assert_eq(s, 1250)
 
-func test_score_number_search():
-    assert_eq(ss.calculate_score("number_search", {"clear_time_sec": 20}), 1000)
-    assert_eq(ss.calculate_score("number_search", {"clear_time_sec": 30}), 0, "30 秒以降は 0")
+func test_score_card_match_zero_taps_guard():
+    assert_eq(ss.calculate_score("card_match", {
+        "pair_count": 0,
+        "total_tap_count": 0,
+        "clear_time_sec": 60.0,
+        "time_limit_sec": 60.0,
+        "tier_multiplier": 1.0,
+    }), 0)
 
 func test_score_unknown_game_returns_zero():
     assert_eq(ss.calculate_score("unknown", {}), 0)
@@ -112,18 +139,18 @@ func test_accuracy_empty():
     assert_eq(ss.calculate_accuracy([]), 0.0)
 
 func test_accuracy_half():
-    # ALL_GAMES = 7 なので 3/7 ≈ 0.4286
-    assert_almost_eq(ss.calculate_accuracy(["reflex_tap", "flash_calc", "stroop"]), 3.0 / 7.0, 0.001)
+    # ALL_GAMES = 6 なので 3/6 = 0.5
+    assert_almost_eq(ss.calculate_accuracy(["flash_calc", "stroop", "card_match"]), 3.0 / 6.0, 0.001)
 
 func test_accuracy_full():
     assert_eq(ss.calculate_accuracy([
-        "reflex_tap", "flash_calc", "number_search",
+        "flash_calc", "number_search",
         "stroop", "sequence_memory", "card_match", "ghost_7ban_shobu"
     ]), 1.0)
 
 func test_accuracy_dedups():
-    # ALL_GAMES = 7 なので 2 種（重複除外後）/ 7
-    assert_almost_eq(ss.calculate_accuracy(["reflex_tap", "reflex_tap", "flash_calc"]), 2.0 / 7.0, 0.001)
+    # ALL_GAMES = 6 なので 2 種（重複除外後）/ 6
+    assert_almost_eq(ss.calculate_accuracy(["flash_calc", "flash_calc", "stroop"]), 2.0 / 6.0, 0.001)
 
 # --- 能力軸 ---
 
@@ -131,7 +158,7 @@ func test_ability_mapping():
     assert_eq(ss.get_ability("flash_calc"), "calculation")
     assert_eq(ss.get_ability("sequence_memory"), "memory")
     assert_eq(ss.get_ability("stroop"), "attention")
-    assert_eq(ss.get_ability("reflex_tap"), "reflex")
+    assert_eq(ss.get_ability("ghost_7ban_shobu"), "reflex")
     assert_eq(ss.get_ability("number_search"), "observation")
     assert_eq(ss.get_ability("card_match"), "judgment")
 

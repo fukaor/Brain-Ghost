@@ -15,7 +15,12 @@ config/description="脳トレ × 自分対戦。毎日2分、昨日の自分に�
 config/version="0.1.0"
 run/main_scene="res://scenes/main/launch.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
-config/icon="res://assets/icons/game_icon.png"
+config/icon="res://assets/branding/brain_ghost_icon.png"
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/image="res://assets/branding/brain_ghost_icon.png"
+boot_splash/fullsize=false
+boot_splash/use_filter=true
+boot_splash/show_image=true
 
 [autoload]
 
@@ -26,6 +31,7 @@ AdService="*res://scripts/autoload/ad_service.gd"
 BillingService="*res://scripts/autoload/billing_service.gd"
 GameManager="*res://scripts/autoload/game_manager.gd"
 GhostData="*res://scripts/autoload/ghost_data.gd"
+FlashCalcGhostStore="*res://scripts/autoload/flash_calc_ghost_store.gd"
 
 [display]
 

@@ -1,0 +1,122 @@
+[gd_scene load_steps=7 format=3 uid="uid://b0flashcalchm01"]
+
+[ext_resource type="Script" path="res://scripts/games/flash_calc/flash_calc_home.gd" id="1_ctrl"]
+[ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="2_stars"]
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSerifJP-Bold.otf" id="3_mcserif"]
+[ext_resource type="PackedScene" uid="uid://b0navlinkbtn001" path="res://scenes/ui/components/nav_link_button.tscn" id="5_navlink"]
+
+[sub_resource type="Gradient" id="Gradient_bg"]
+offsets = PackedFloat32Array(0, 0.45, 1)
+colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bg"]
+gradient = SubResource("Gradient_bg")
+fill = 1
+fill_from = Vector2(0.5, 0.4)
+fill_to = Vector2(1, 1)
+
+[node name="FlashCalcHome" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ctrl")
+
+[node name="VoidBg" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 1)
+mouse_filter = 2
+
+[node name="NebulaBg" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="StarLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_stars")
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 48
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 32
+
+[node name="MainColumn" type="VBoxContainer" parent="SafeArea"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+; -------------------- Header: タイトル (中央) --------------------
+[node name="Header" type="HBoxContainer" parent="SafeArea/MainColumn"]
+layout_mode = 2
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="SafeArea/MainColumn/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.97, 1, 1)
+theme_override_fonts/font = ExtResource("3_mcserif")
+theme_override_font_sizes/font_size = 32
+text = "🥋 フラッシュ暗算"
+horizontal_alignment = 1
+
+; -------------------- 適正ティア表示 --------------------
+[node name="AppropriateLabel" type="Label" parent="SafeArea/MainColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_fonts/font = ExtResource("3_mcserif")
+theme_override_font_sizes/font_size = 24
+text = "🎯 今日の適正ティア: T1"
+horizontal_alignment = 1
+
+; -------------------- ティアグリッド (2 列 × 4 行) --------------------
+[node name="TierGrid" type="GridContainer" parent="SafeArea/MainColumn"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+
+; -------------------- フッターヒント --------------------
+[node name="FooterHint" type="Label" parent="SafeArea/MainColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 0.7)
+theme_override_font_sizes/font_size = 20
+text = "ティアを選んで一本勝負を始めよう。
+直近 5 回中 3 回正解で次ティア解放！"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+; -------------------- スペーサ (戻るボタンを画面下部に押し出す) --------------------
+[node name="BottomSpacer" type="Control" parent="SafeArea/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+; -------------------- 戻るボタン (画面下部、NavLinkButton 流用) --------------------
+[node name="FooterRow" type="HBoxContainer" parent="SafeArea/MainColumn"]
+layout_mode = 2
+alignment = 1
+
+[node name="BackButton" parent="SafeArea/MainColumn/FooterRow" instance=ExtResource("5_navlink")]
+layout_mode = 2
+size_flags_horizontal = 4
+icon_name = "home"
+label_text = "ホーム"
+direction = "back"

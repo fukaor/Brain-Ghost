@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://b0ruleexplandsc01"]
+[gd_scene load_steps=11 format=3 uid="uid://b0ruleexplandsc01"]
 
 [ext_resource type="Script" path="res://scripts/ui/rule_explain_controller.gd" id="1_ctrl"]
 [ext_resource type="Script" path="res://scripts/ui/rule_step_preview.gd" id="2_preview"]
 [ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="3_msym"]
 [ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="4_stars"]
 [ext_resource type="Script" path="res://scripts/ui/effects/glow_cta.gd" id="5_glowcta"]
+[ext_resource type="PackedScene" uid="uid://b0navlinkbtn001" path="res://scenes/ui/components/nav_link_button.tscn" id="6_navlink"]
 
 ; ----- 背景：rule_explain.tscn と完全に同じ Nebula -----
 [sub_resource type="Gradient" id="Gradient_nebula"]
@@ -91,30 +92,12 @@ theme_override_constants/separation = 14
 layout_mode = 2
 alignment = 1
 
-[node name="BackButton" type="Button" parent="SafeArea/MainColumn/Header"]
-custom_minimum_size = Vector2(280, 80)
+[node name="BackButton" parent="SafeArea/MainColumn/Header" instance=ExtResource("6_navlink")]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_type_variation = &"mc_back_btn"
-theme_override_font_sizes/font_size = 30
-text = "           ‹  ホーム"
-icon_alignment = 0
-
-[node name="HeaderIcon" type="Label" parent="SafeArea/MainColumn/Header/BackButton"]
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 24.0
-offset_top = -20.0
-offset_right = 64.0
-offset_bottom = 20.0
-grow_vertical = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.49, 0.827, 0.988, 1)
-theme_override_fonts/font = ExtResource("3_msym")
-theme_override_font_sizes/font_size = 40
-text = "home"
+icon_name = "home"
+label_text = "ホーム"
+direction = "back"
 
 ; -------------------- Title block --------------------
 [node name="TitleBlock" type="VBoxContainer" parent="SafeArea/MainColumn"]

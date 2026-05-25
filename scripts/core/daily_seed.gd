@@ -12,7 +12,7 @@ class_name DailySeed
 extends Node
 
 const ALL_GAMES: Array[String] = [
-    "reflex_tap",
+    "ghost_7ban_shobu",
     "flash_calc",
     "number_search",
     "stroop",

@@ -49,7 +49,7 @@ UX 判断で迷ったら、プライマリーペルソナ（通勤2分で毎日�
 
 | 種別 | 規則 | 例 |
 |---|---|---|
-| GDScript | `snake_case.gd` | `score_system.gd`, `reflex_tap.gd` |
+| GDScript | `snake_case.gd` | `score_system.gd`, `number_search.gd` |
 | シーン | `snake_case.tscn` | `home.tscn` |
 | リソース | `snake_case.tres` | `default_theme.tres` |
 
@@ -163,7 +163,7 @@ extends Node
 
 ## 指定ゲームのスコアを算出する
 ##
-## [param game_type] "flash_calc" / "reflex_tap" など。DailySeed.ALL_GAMES の値
+## [param game_type] "flash_calc" / "ghost_7ban_shobu" など。DailySeed.ALL_GAMES の値
 ## [param play_data] ゲーム固有のフィールド（correct_count, remaining_sec 等）
 ## [return] 0 以上の整数スコア。不正な game_type なら 0
 func calculate_score(game_type: String, play_data: Dictionary) -> int:
@@ -472,7 +472,7 @@ main            ← 常にリリース可能な状態
 
 #### Scope の例（ブレインゴースト 固有）
 
-- `game/reflex_tap`, `game/flash_calc`, etc.
+- `game/flash_calc`, `game/ghost_7ban_shobu`, `game/number_search`, `game/card_match`, `game/stroop`, `game/sequence_memory`
 - `core/score`, `core/ghost`, `core/daily_seed`, `core/streak`
 - `ui/home`, `ui/result`, `ui/onboarding`
 - `platform/web`, `platform/android`
@@ -482,7 +482,7 @@ main            ← 常にリリース可能な状態
 #### 例
 
 ```
-feat(game/reflex_tap): ターゲット出現位置のランダム化を実装
+feat(game/ghost_7ban_shobu): ターゲット出現方向のランダム化を実装
 
 - 20回タップのランダム配置を RandomNumberGenerator で実装
 - フェイクターゲット混入ロジックを追加
@@ -751,7 +751,7 @@ func test_update_streak_8_day_gap_resets():
 **正**: `.steering/YYYYMMDD-タスク名/`
 
 - `YYYYMMDD` 形式の日付 + `-` + タスク名
-- **タスク名は日本語 OK**（CLAUDE.md の指針に従う）。例: `.steering/20260410-反射タップ実装/`
+- **タスク名は日本語 OK**（CLAUDE.md の指針に従う）。例: `.steering/20260521-数字さがしゲーム実装/`
 - 英語表記でも構わないが、プロジェクト内で統一する（個人開発のため一貫性優先）
 - ファイル名（`requirements.md`, `design.md`, `tasklist.md`）は英語で固定
 

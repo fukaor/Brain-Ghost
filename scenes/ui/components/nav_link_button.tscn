@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0navlinkbtn001"]
+
+[ext_resource type="Script" path="res://scripts/ui/components/nav_link_button.gd" id="1_ctrl"]
+[ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="2_msym"]
+
+[node name="NavLinkButton" type="Button"]
+custom_minimum_size = Vector2(280, 80)
+theme_type_variation = &"mc_back_btn"
+theme_override_font_sizes/font_size = 30
+icon_alignment = 0
+text = "           ‹  ホーム"
+script = ExtResource("1_ctrl")
+icon_name = "home"
+label_text = "ホーム"
+direction = "back"
+
+[node name="HeaderIcon" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 24.0
+offset_top = -20.0
+offset_right = 64.0
+offset_bottom = 20.0
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.49, 0.827, 0.988, 1)
+theme_override_fonts/font = ExtResource("2_msym")
+theme_override_font_sizes/font_size = 40
+text = "home"

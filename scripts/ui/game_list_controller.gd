@@ -17,10 +17,10 @@ extends Control
 # ---------------------------------------------------------------------------
 
 const GAME_CARDS: Array[Dictionary] = [
-	{"id": "reflex_tap",       "icon": "touch_app",  "category": "REACTION",    "name": "反射タップ",     "desc": "出現するターゲットを即座にタップ！\n反応速度を測定します。",  "metric_caption": "High Score"},
+	{"id": "ghost_7ban_shobu", "icon": "bolt",       "category": "REACTION",    "name": "ゴースト7番勝負","desc": "ゴーストと反射速度で7番勝負！\n勝率を競い合おう。",        "metric_caption": "High Score"},
 	{"id": "flash_calc",       "icon": "calculate",  "category": "CALCULATION", "name": "フラッシュ暗算", "desc": "次々と表示される数字を暗算。\n計算力を鍛えます。",          "metric_caption": "High Score"},
 	{"id": "sequence_memory",  "icon": "graphic_eq", "category": "MEMORY",      "name": "順番記憶",       "desc": "パネルが光る順番を記憶して再現。\n短期記憶をトレーニング。","metric_caption": "High Score"},
-	{"id": "stroop",           "icon": "palette",    "category": "ATTENTION",   "name": "色文字テスト",   "desc": "文字の内容ではなく「色」を回答。\n注意力を磨きます。",      "metric_caption": "High Score"},
+	{"id": "stroop",           "icon": "palette",    "category": "ATTENTION",   "name": "色文字ストループ", "desc": "文字の内容ではなく「色」を回答。\n注意力を磨きます。",      "metric_caption": "High Score"},
 	{"id": "card_match",       "icon": "layers",     "category": "JUDGMENT",    "name": "神経衰弱",       "desc": "ペアのカードを素早く見つける。\n判断力と記憶力の勝負。",    "metric_caption": "High Score"},
 	{"id": "number_search",    "icon": "visibility",  "category": "OBSERVATION", "name": "数字さがし",     "desc": "1 から順番に数字をタップ。\n周辺視野と集中力を強化。",     "metric_caption": "Best Time"},
 ]
@@ -59,12 +59,8 @@ var _carousel_tween: Tween = null
 @onready var _carousel_area: Control = $SafeAreaMargin/MainColumn/CarouselArea
 @onready var _dot_container: HBoxContainer = $SafeAreaMargin/MainColumn/DotRow/DotIndicators
 
-# ボトムナビ
-@onready var _nav_train: Button = $BottomNavPanel/BottomNavBar/NavTrainActive/NavTrainButton
-@onready var _nav_analytics: Button = $BottomNavPanel/BottomNavBar/NavAnalyticsButton
-@onready var _nav_home: Button = $BottomNavPanel/BottomNavBar/NavHomeButton
-@onready var _nav_award: Button = $BottomNavPanel/BottomNavBar/NavAwardButton
-@onready var _nav_settings: Button = $BottomNavPanel/BottomNavBar/NavSettingsButton
+# 画面下部中央のホームボタン (rule_explain の BackButton と同じパターン)
+@onready var _home_button: Button = $SafeAreaMargin/MainColumn/FooterRow/HomeButton
 
 var _cards: Array[PanelContainer] = []
 
@@ -81,9 +77,14 @@ func _ready() -> void:
 
 
 func _load_implemented_games() -> void:
+	# GameManager.GAME_SCENES は const なので "in" 演算子では検出できない
+	# (Godot 4 の in は property_list のみ参照し、script constants を見ない)。
+	# → 直接アクセスで取得する。
 	var gm := get_node_or_null("/root/GameManager")
-	if gm != null and "GAME_SCENES" in gm:
-		_implemented_games.assign(gm.GAME_SCENES.keys())
+	if gm == null:
+		return
+	var scenes: Dictionary = gm.GAME_SCENES
+	_implemented_games.assign(scenes.keys())
 
 
 func _collect_card_nodes() -> void:
@@ -143,11 +144,7 @@ func _wire_signals() -> void:
 		if play_btn != null:
 			play_btn.pressed.connect(_on_play_pressed)
 
-	_nav_home.pressed.connect(_on_nav_home)
-	_nav_train.pressed.connect(func(): pass)  # 既にこの画面
-	_nav_analytics.pressed.connect(func(): print("[GameList] NavAnalytics (TODO)"))
-	_nav_award.pressed.connect(func(): print("[GameList] NavAward (TODO)"))
-	_nav_settings.pressed.connect(func(): print("[GameList] NavSettings (TODO)"))
+	_home_button.pressed.connect(_on_nav_home)
 
 
 func _on_card_gui_input(event: InputEvent, card_index: int) -> void:

@@ -85,6 +85,78 @@ const RULES: Dictionary = {
             },
         ],
     },
+    "stroop": {
+        "title": "色文字ストループ",
+        "ability_label": "鍛える能力：注意力",
+        "steps": [
+            {
+                "index": "1.",
+                "title": "色を見る",
+                "body": "画面中央に色文字や\n色付き図形が出るよ",
+                "preview_variant": "stroop_show",
+            },
+            {
+                "index": "2.",
+                "title": "色を答える",
+                "body": "文字の意味は無視して\n「色」のボタンをタップ",
+                "preview_variant": "stroop_answer",
+            },
+            {
+                "index": "3.",
+                "title": "30 秒で連続正解",
+                "body": "正解 +100、誤答 −50。\n速く正確に！",
+                "preview_variant": "stroop_combo",
+            },
+        ],
+    },
+    "card_match": {
+        "title": "神経衰弱ライト",
+        "ability_label": "鍛える能力：判断力",
+        "steps": [
+            {
+                "index": "1.",
+                "title": "覚える",
+                "body": "16 枚の裏向きカード。\n2 枚めくって絵柄を覚える",
+                "preview_variant": "card_show",
+            },
+            {
+                "index": "2.",
+                "title": "ペアを揃える",
+                "body": "同じ絵柄が出たら\nそのカードは固定される",
+                "preview_variant": "card_pair",
+            },
+            {
+                "index": "3.",
+                "title": "60 秒で 8 ペア",
+                "body": "タップが少ないほど\nスコアは高くなるよ",
+                "preview_variant": "card_timer",
+            },
+        ],
+    },
+    "number_search": {
+        "title": "数字さがし",
+        "ability_label": "鍛える能力：観察力",
+        "steps": [
+            {
+                "index": "1.",
+                "title": "1 を探す",
+                "body": "5×5 の中から\n1 を見つけよう",
+                "preview_variant": "number_find",
+            },
+            {
+                "index": "2.",
+                "title": "順にタップ",
+                "body": "1, 2, 3 …と\n昇順にタップしよう",
+                "preview_variant": "number_sequence",
+            },
+            {
+                "index": "3.",
+                "title": "60 秒以内に",
+                "body": "25 までクリアでタイムが\nスコアになるよ",
+                "preview_variant": "number_clear",
+            },
+        ],
+    },
 }
 
 # ノード参照 (縦/横シーン共通、find_child でパス非依存に解決) ------------------
@@ -117,7 +189,7 @@ func _ready() -> void:
     _wire_signals()
     var game_type: String = "ghost_7ban_shobu"
     var gm := get_node_or_null("/root/GameManager")
-    if gm != null and "_current_game_type" in gm:
+    if gm != null:
         var gt: String = String(gm._current_game_type)
         if gt != "":
             game_type = gt
@@ -158,6 +230,8 @@ func _on_start_pressed() -> void:
 
 
 func _on_back_pressed() -> void:
+    # 戻り先 (game_list / home) は必ず portrait のため、landscape 版から戻った場合の向きを復元する。
+    OrientationHelper.enter_portrait()
     var gm := get_node_or_null("/root/GameManager")
     if gm != null and gm.has_method("on_rule_explain_cancelled"):
         gm.on_rule_explain_cancelled()

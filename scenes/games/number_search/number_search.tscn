@@ -1,0 +1,188 @@
+[gd_scene load_steps=10 format=3 uid="uid://b0numsrch001"]
+
+[ext_resource type="Script" path="res://scripts/ui/number_search_view.gd" id="1_view"]
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSansJP-Bold.otf" id="2_bold"]
+[ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="3_stars"]
+
+; ----- Midnight Cat 背景 -----
+[sub_resource type="Gradient" id="Gradient_nebula"]
+offsets = PackedFloat32Array(0, 0.4, 1)
+colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_nebula"]
+gradient = SubResource("Gradient_nebula")
+fill = 1
+fill_from = Vector2(0.5, 0.4)
+fill_to = Vector2(1, 1)
+
+; ----- HUD チップ (左: 次の数字) -----
+[sub_resource type="StyleBoxFlat" id="SBF_next_chip"]
+content_margin_left = 18.0
+content_margin_top = 8.0
+content_margin_right = 18.0
+content_margin_bottom = 8.0
+bg_color = Color(0.067, 0.094, 0.153, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.435, 0.706, 1, 0.45)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+; ----- タイマーチップ (右上) -----
+[sub_resource type="StyleBoxFlat" id="SBF_timer_chip"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.067, 0.094, 0.153, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.435, 0.706, 1, 0.3)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+; ----- ベスト pill (下部) -----
+[sub_resource type="StyleBoxFlat" id="SBF_best_pill"]
+content_margin_left = 18.0
+content_margin_top = 6.0
+content_margin_right = 18.0
+content_margin_bottom = 6.0
+bg_color = Color(0.067, 0.094, 0.153, 0.55)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1.0, 0.914, 0.659, 0.5)
+corner_radius_top_left = 9999
+corner_radius_top_right = 9999
+corner_radius_bottom_right = 9999
+corner_radius_bottom_left = 9999
+
+[node name="NumberSearch" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_view")
+
+[node name="VoidBg" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="NebulaBg" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_nebula")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="StarLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_stars")
+
+[node name="SafeAreaMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 56
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 32
+
+[node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+; === 上部 HUD: 左 NextNumber + 右 Timer ===
+
+[node name="HeaderArea" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="NextNumberChip" type="PanelContainer" parent="SafeAreaMargin/MainColumn/HeaderArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("SBF_next_chip")
+
+[node name="NextNumberLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderArea/NextNumberChip"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.957, 0.969, 1, 0.95)
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 28
+text = "次: 1"
+horizontal_alignment = 0
+vertical_alignment = 1
+
+[node name="TimerChip" type="PanelContainer" parent="SafeAreaMargin/MainColumn/HeaderArea"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_timer_chip")
+
+[node name="TimerLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderArea/TimerChip"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 1)
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 28
+text = "60s"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+; === 中央: 5×5 グリッド ===
+
+[node name="GridCenter" type="CenterContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="NumberGrid" type="GridContainer" parent="SafeAreaMargin/MainColumn/GridCenter"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 5
+
+; === 下部: ベスト表示 ===
+
+[node name="FooterArea" type="CenterContainer" parent="SafeAreaMargin/MainColumn"]
+layout_mode = 2
+
+[node name="BestPill" type="PanelContainer" parent="SafeAreaMargin/MainColumn/FooterArea"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_best_pill")
+
+[node name="BestLabel" type="Label" parent="SafeAreaMargin/MainColumn/FooterArea/BestPill"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1.0, 0.914, 0.659, 0.9)
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 20
+text = "★ ベスト: — pts"
+horizontal_alignment = 1
+vertical_alignment = 1

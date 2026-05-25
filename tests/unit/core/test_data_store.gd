@@ -33,7 +33,7 @@ func test_save_load_roundtrip():
 # --- append_play_log ---
 
 func test_append_play_log_empty_state():
-    var log := _make_log("reflex_tap", 1000)
+    var log := _make_log("number_search", 1000)
     var ok: bool = DataStore.append_play_log(log)
     assert_true(ok)
     var logs: Array = DataStore.load_play_logs()
@@ -42,8 +42,8 @@ func test_append_play_log_empty_state():
 
 
 func test_append_play_log_multiple():
-    DataStore.append_play_log(_make_log("reflex_tap", 800))
-    DataStore.append_play_log(_make_log("reflex_tap", 900))
+    DataStore.append_play_log(_make_log("number_search", 800))
+    DataStore.append_play_log(_make_log("number_search", 900))
     DataStore.append_play_log(_make_log("flash_calc", 1500))
     var logs: Array = DataStore.load_play_logs()
     assert_eq(logs.size(), 3, "全件保存")
@@ -56,11 +56,11 @@ func test_append_play_log_multiple():
 # --- load_play_logs ---
 
 func test_load_play_logs_filter_by_game():
-    DataStore.append_play_log(_make_log("reflex_tap", 800))
+    DataStore.append_play_log(_make_log("number_search", 800))
     DataStore.append_play_log(_make_log("flash_calc", 1500))
-    DataStore.append_play_log(_make_log("reflex_tap", 900))
-    var reflex_logs: Array = DataStore.load_play_logs("reflex_tap")
-    assert_eq(reflex_logs.size(), 2)
+    DataStore.append_play_log(_make_log("number_search", 900))
+    var ns_logs: Array = DataStore.load_play_logs("number_search")
+    assert_eq(ns_logs.size(), 2)
     var flash_logs: Array = DataStore.load_play_logs("flash_calc")
     assert_eq(flash_logs.size(), 1)
     var unknown: Array = DataStore.load_play_logs("unknown")
@@ -69,8 +69,8 @@ func test_load_play_logs_filter_by_game():
 
 func test_load_play_logs_with_limit():
     for i in range(5):
-        DataStore.append_play_log(_make_log("reflex_tap", 100 + i))
-    var limited: Array = DataStore.load_play_logs("reflex_tap", 3)
+        DataStore.append_play_log(_make_log("number_search", 100 + i))
+    var limited: Array = DataStore.load_play_logs("number_search", 3)
     assert_eq(limited.size(), 3)
     # limit は末尾 N 件を返す（直近 N 件の意味）
     assert_eq(limited[0].score, 102)
@@ -81,56 +81,56 @@ func test_load_play_logs_with_limit():
 
 func test_count_play_logs():
     assert_eq(DataStore.count_play_logs(), 0, "初期は 0")
-    DataStore.append_play_log(_make_log("reflex_tap", 100))
+    DataStore.append_play_log(_make_log("number_search", 100))
     DataStore.append_play_log(_make_log("flash_calc", 200))
-    DataStore.append_play_log(_make_log("reflex_tap", 300))
+    DataStore.append_play_log(_make_log("number_search", 300))
     assert_eq(DataStore.count_play_logs(), 3)
-    assert_eq(DataStore.count_play_logs("reflex_tap"), 2)
+    assert_eq(DataStore.count_play_logs("number_search"), 2)
     assert_eq(DataStore.count_play_logs("flash_calc"), 1)
 
 
 # --- load_best ---
 
 func test_load_best_when_missing():
-    var best: GameBest = DataStore.load_best("reflex_tap")
+    var best: GameBest = DataStore.load_best("number_search")
     assert_not_null(best)
     assert_eq(best.best_score, 0)
-    assert_eq(best.game_type, "reflex_tap")
+    assert_eq(best.game_type, "number_search")
 
 
 # --- update_best_if_better ---
 
 func test_update_best_if_better_new_record():
-    var log := _make_log("reflex_tap", 1000)
+    var log := _make_log("number_search", 1000)
     log.id = "log-id-1"
     var updated: bool = DataStore.update_best_if_better(log)
     assert_true(updated)
-    var best: GameBest = DataStore.load_best("reflex_tap")
+    var best: GameBest = DataStore.load_best("number_search")
     assert_eq(best.best_score, 1000)
     assert_eq(best.best_play_log_id, "log-id-1")
 
 
 func test_update_best_if_better_same_score():
-    var first := _make_log("reflex_tap", 500)
+    var first := _make_log("number_search", 500)
     DataStore.update_best_if_better(first)
-    var second := _make_log("reflex_tap", 500)
+    var second := _make_log("number_search", 500)
     var updated: bool = DataStore.update_best_if_better(second)
     assert_false(updated, "同スコアでは false")
 
 
 func test_update_best_if_better_lower_score():
-    DataStore.update_best_if_better(_make_log("reflex_tap", 1000))
-    var lower := _make_log("reflex_tap", 800)
+    DataStore.update_best_if_better(_make_log("number_search", 1000))
+    var lower := _make_log("number_search", 800)
     var updated: bool = DataStore.update_best_if_better(lower)
     assert_false(updated)
-    assert_eq(DataStore.load_best("reflex_tap").best_score, 1000, "更新されない")
+    assert_eq(DataStore.load_best("number_search").best_score, 1000, "更新されない")
 
 
 func test_load_best_after_update_per_game():
-    DataStore.update_best_if_better(_make_log("reflex_tap", 1000))
+    DataStore.update_best_if_better(_make_log("number_search", 1000))
     DataStore.update_best_if_better(_make_log("flash_calc", 2000))
-    DataStore.update_best_if_better(_make_log("reflex_tap", 1500))
-    assert_eq(DataStore.load_best("reflex_tap").best_score, 1500)
+    DataStore.update_best_if_better(_make_log("number_search", 1500))
+    assert_eq(DataStore.load_best("number_search").best_score, 1500)
     assert_eq(DataStore.load_best("flash_calc").best_score, 2000)
 
 

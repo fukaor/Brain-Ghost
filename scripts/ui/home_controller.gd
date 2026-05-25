@@ -8,6 +8,8 @@
 ## - 下部: 6軸レーダーチャート + 全ゲーム一覧リンク
 ##
 ## 「今日のチャレンジ」→ GameManager.start_game("ghost_7ban_shobu")。
+##
+## 表示データはすべて永続化されたものを集計（脳年齢 / ポイント / 戦績 / ストリーク / レーダー）。
 extends Control
 
 const ABILITY_KEYS: Array[String] = [
@@ -22,6 +24,18 @@ const ABILITY_TO_GAME: Dictionary = {
 	"observation": "number_search",
 	"judgment": "card_match",
 }
+
+## 年代 → 基準年齢 (GDD §脳年齢チューニング)
+const AGE_GROUP_TO_AGE: Dictionary = {
+	"10s": 15, "20s": 25, "30s": 30, "40s": 45, "50s+": 55,
+}
+const DEFAULT_BASE_AGE: int = 30
+
+## 全ゲーム種別（ポイント合計 / 通算戦績集計に使用）
+const ALL_GAME_TYPES: Array[String] = [
+	"ghost_7ban_shobu", "flash_calc", "sequence_memory",
+	"stroop", "card_match", "number_search",
+]
 
 const FLOAT_AMPLITUDE_PX: float = 4.0
 const FLOAT_SPEED: float = 1.6
@@ -70,55 +84,147 @@ func _wire_signals() -> void:
 
 
 # ---------------------------------------------------------------------------
-# データ反映
+# データ反映（すべて DataStore / GhostData の実データから算出）
 # ---------------------------------------------------------------------------
 func _apply_data() -> void:
-	var ds: Node = get_node_or_null("/root/DataStore")
-	var cfg: Variant = null
-	if ds != null and ds.has_method("load_config"):
-		cfg = ds.load_config()
-	var brain_age: int = 31
-	if cfg != null and "base_age" in cfg:
-		brain_age = int(cfg.base_age)
-	_brain_age_value.text = str(brain_age)
+	_brain_age_value.text = str(_compute_brain_age())
 	_speech_text.text = SPEECH_RETURN
 
-	# ポイント・戦績はモック値（実装は別タスク）
-	_score_value.text = "3,230"
-	_score_delta.text = "+285"
-	_battle_caption.text = "通算"
-	_battle_wins.text = "15勝"
-	_battle_losses.text = "8敗"
+	# ポイント = 全 PlayLog の score 累積（生涯獲得ポイント。今日のデルタは部分集合）
+	var total_pts: int = _compute_total_score()
+	_score_value.text = _format_thousands(total_pts) if total_pts > 0 else "0"
 
-	# ストリーク (DataStore からだが MVP はモック)
-	var streak_days := 5
-	if ds != null and ds.has_method("load_streak"):
-		var s = ds.load_streak()
-		if s != null and "current_streak" in s:
-			streak_days = int(s.current_streak)
+	# デルタ = 今日プレイしたぶんのスコア合計（モチベーション指標）
+	var today_delta: int = _compute_today_score_delta()
+	if today_delta > 0:
+		_score_delta.text = "+%s" % _format_thousands(today_delta)
+		_score_delta.visible = true
+	else:
+		_score_delta.visible = false
+
+	# 通算戦績 = ghost_7ban_shobu の round_win イベントから集計
+	var wl: Dictionary = _compute_battle_wins_losses()
+	_battle_caption.text = "通算"
+	_battle_wins.text = "%d勝" % int(wl.get("wins", 0))
+	_battle_losses.text = "%d敗" % int(wl.get("losses", 0))
+
+	# ストリーク
+	var streak_days: int = _compute_streak()
 	_streak_ribbon.visible = streak_days > 0
 	_streak_label.text = "%d日連続！" % streak_days
 
-	# レーダー値（MVP は固定モック。本番は DataStore.load_play_logs から平均化）
-	var radar_values := _compute_radar_values(ds)
+	# レーダー値
+	var radar_values := _compute_radar_values()
 	if _radar.has_method("set_values"):
 		_radar.set_values(radar_values)
 
 
-func _compute_radar_values(ds: Node) -> Array:
-	var arr: Array = [0.5, 0.6, 0.5, 0.7, 0.45, 0.55]
-	if ds == null:
-		return arr
+# ---------------------------------------------------------------------------
+# データ算出ヘルパ
+# ---------------------------------------------------------------------------
+
+func _load_user_config() -> UserConfig:
+	var dict: Dictionary = DataStore.load_dict(DataStore.StoreKey.USER_CONFIG)
+	if dict.is_empty():
+		return UserConfig.new()
+	return UserConfig.from_dict(dict)
+
+
+## 脳年齢: 年代から基準年齢を引いて、プレイ実績で若返り補正（GDD §脳年齢チューニング）。
+## - 0 プレイ: 基準年齢
+## - 1+ プレイ: 基準年齢 - (3 + plays / 5)、ただし base-15 〜 base+10 でクランプ
+func _compute_brain_age() -> int:
+	var cfg := _load_user_config()
+	var base: int = DEFAULT_BASE_AGE
+	if cfg != null and cfg.age_group != "":
+		base = int(AGE_GROUP_TO_AGE.get(cfg.age_group, DEFAULT_BASE_AGE))
+	var total_plays: int = DataStore.count_play_logs("")
+	var bonus: int = 0
+	if total_plays > 0:
+		bonus = clampi(3 + total_plays / 5, 3, 15)
+	return clampi(base - bonus, base - 15, base + 10)
+
+
+## ポイント = 全 PlayLog の score 累積（生涯獲得ポイント）。
+## 「今日のデルタ」と同じ集計軸（PlayLog.score）にすることで、
+## delta は必ず total の部分集合になる（delta > total という矛盾を防ぐ）。
+func _compute_total_score() -> int:
+	var total: int = 0
+	var logs: Array[PlayLog] = DataStore.load_play_logs("", -1)
+	for log in logs:
+		if log != null:
+			total += log.score
+	return total
+
+
+## デルタ = 今日プレイした PlayLog の score 合計（total の部分集合）。
+func _compute_today_score_delta() -> int:
+	var today := DateUtil.today_jst()
+	var logs: Array[PlayLog] = DataStore.load_play_logs("", -1)
+	var total: int = 0
+	for log in logs:
+		if log != null and log.played_date == today:
+			total += log.score
+	return total
+
+
+## ghost_7ban_shobu の通算勝敗 **セッション単位** で集計。
+## 1 試合 = 7 ラウンド。試合内のラウンド勝ち数が 4 以上なら「勝ち越し」(1 勝)、
+## 3 以下なら「負け越し」(1 敗) として通算カウント。
+## (個別結果画面 _compute_verdict_title の wins >= 4 判定と同じ閾値)
+func _compute_battle_wins_losses() -> Dictionary:
+	var w: int = 0
+	var l: int = 0
+	var logs: Array[PlayLog] = DataStore.load_play_logs("ghost_7ban_shobu", -1)
+	for log in logs:
+		if log == null:
+			continue
+		var session_round_wins: int = 0
+		for evt in log.events:
+			if evt != null and evt.event_type == "round_win" and int(evt.value) == 1:
+				session_round_wins += 1
+		if session_round_wins >= 4:
+			w += 1
+		else:
+			l += 1
+	return {"wins": w, "losses": l}
+
+
+## ストリーク日数を STREAK_STATE から読み込む。未保存なら 0。
+func _compute_streak() -> int:
+	var dict: Dictionary = DataStore.load_dict(DataStore.StoreKey.STREAK_STATE)
+	if dict.is_empty():
+		return 0
+	var state := StreakState.from_dict(dict)
+	return state.current_streak
+
+
+func _compute_radar_values() -> Array:
+	# 各能力軸の best_score を 5000pts 基準で正規化（暫定）。データ無しは 0.05 で底上げ。
+	var arr: Array = [0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
 	for i in ABILITY_KEYS.size():
 		var key: String = ABILITY_KEYS[i]
 		var game: String = String(ABILITY_TO_GAME.get(key, ""))
 		if game == "":
 			continue
-		if ds.has_method("load_best"):
-			var best = ds.load_best(game)
-			if best != null and "best_score" in best and best.best_score > 0:
-				arr[i] = clampf(float(best.best_score) / 5000.0, 0.05, 1.0)
+		var best: GameBest = DataStore.load_best(game)
+		if best != null and best.best_score > 0:
+			arr[i] = clampf(float(best.best_score) / 5000.0, 0.05, 1.0)
 	return arr
+
+
+## 3 桁区切りフォーマット ("1280" -> "1,280")
+static func _format_thousands(n: int) -> String:
+	var negative := n < 0
+	var s := str(absi(n))
+	var result := ""
+	var count := 0
+	for i in range(s.length() - 1, -1, -1):
+		if count > 0 and count % 3 == 0:
+			result = "," + result
+		result = s[i] + result
+		count += 1
+	return ("-" if negative else "") + result
 
 
 # ---------------------------------------------------------------------------

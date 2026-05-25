@@ -3,140 +3,104 @@
 [ext_resource type="Script" path="res://scripts/ui/game_list_controller.gd" id="1_ctrl"]
 [ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="2_msym"]
 [ext_resource type="FontFile" path="res://assets/fonts/NotoSansJP-Bold.otf" id="3_bold"]
+[ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="4_stars"]
+[ext_resource type="PackedScene" uid="uid://b0navlinkbtn001" path="res://scenes/ui/components/nav_link_button.tscn" id="5_navlink"]
 
-[sub_resource type="Gradient" id="Gradient_bg"]
-offsets = PackedFloat32Array(0, 0.5, 1)
-colors = PackedColorArray(0.878, 0.949, 0.996, 1, 0.729, 0.902, 0.992, 1, 0.49, 0.827, 0.988, 1)
+; ----- Midnight Cat 背景 (home / rule_explain / individual_result と共通) -----
+[sub_resource type="Gradient" id="Gradient_nebula"]
+offsets = PackedFloat32Array(0, 0.4, 1)
+colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTex_bg"]
-gradient = SubResource("Gradient_bg")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_nebula"]
+gradient = SubResource("Gradient_nebula")
 fill = 1
-fill_from = Vector2(0.5, 0.5)
+fill_from = Vector2(0.5, 0.35)
 fill_to = Vector2(1, 1)
 
-[sub_resource type="StyleBoxFlat" id="SBF_header"]
-content_margin_left = 24.0
-content_margin_top = 20.0
-content_margin_right = 24.0
-content_margin_bottom = 20.0
-bg_color = Color(1, 1, 1, 0.9)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 0.6)
-corner_radius_top_left = 32
-corner_radius_top_right = 32
-corner_radius_bottom_right = 32
-corner_radius_bottom_left = 32
-shadow_color = Color(0, 0.1, 0.3, 0.08)
-shadow_size = 12
-shadow_offset = Vector2(0, 4)
-
-[sub_resource type="StyleBoxFlat" id="SBF_card"]
+; ----- カード本体: 暗グラス + 細シアン枠 -----
+[sub_resource type="StyleBoxFlat" id="SBF_card_dark"]
 content_margin_left = 20.0
-content_margin_top = 20.0
+content_margin_top = 24.0
 content_margin_right = 20.0
 content_margin_bottom = 20.0
-bg_color = Color(1, 1, 1, 0.98)
+bg_color = Color(0.04, 0.08, 0.16, 0.55)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 53
-corner_radius_top_right = 53
-corner_radius_bottom_right = 53
-corner_radius_bottom_left = 53
-shadow_color = Color(0, 0.2, 0.5, 0.15)
+border_color = Color(0.435, 0.706, 1, 0.45)
+corner_radius_top_left = 28
+corner_radius_top_right = 28
+corner_radius_bottom_right = 28
+corner_radius_bottom_left = 28
+shadow_color = Color(0, 0, 0, 0.45)
 shadow_size = 24
 shadow_offset = Vector2(0, 12)
 
-[sub_resource type="StyleBoxFlat" id="SBF_icon"]
-content_margin_left = 20.0
-content_margin_top = 20.0
-content_margin_right = 20.0
-content_margin_bottom = 20.0
-bg_color = Color(0, 0.484, 1, 0.1)
-corner_radius_top_left = 54
-corner_radius_top_right = 54
-corner_radius_bottom_right = 54
-corner_radius_bottom_left = 54
+; ----- アイコン円: BG_PANEL α=0.85 + シアン縁取り + シアン発光 -----
+[sub_resource type="StyleBoxFlat" id="SBF_icon_dark"]
+content_margin_left = 18.0
+content_margin_top = 18.0
+content_margin_right = 18.0
+content_margin_bottom = 18.0
+bg_color = Color(0.043, 0.071, 0.125, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.435, 0.706, 1, 0.6)
+corner_radius_top_left = 9999
+corner_radius_top_right = 9999
+corner_radius_bottom_right = 9999
+corner_radius_bottom_left = 9999
+shadow_color = Color(0.435, 0.706, 1, 0.35)
+shadow_size = 16
 
-[sub_resource type="StyleBoxFlat" id="SBF_metric"]
+; ----- MetricPanel: BG_ELEV α=0.6 + 薄シアン枠 -----
+[sub_resource type="StyleBoxFlat" id="SBF_metric_dark"]
 content_margin_left = 16.0
 content_margin_top = 12.0
 content_margin_right = 16.0
 content_margin_bottom = 12.0
-bg_color = Color(0.894, 0.906, 1, 1)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
+bg_color = Color(0.067, 0.094, 0.153, 0.6)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.435, 0.706, 1, 0.25)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
 
-[sub_resource type="StyleBoxFlat" id="SBF_start_n"]
-content_margin_left = 20.0
-content_margin_top = 14.0
-content_margin_right = 20.0
-content_margin_bottom = 14.0
-bg_color = Color(0, 0.484, 1, 1)
-corner_radius_top_left = 30
-corner_radius_top_right = 30
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
-shadow_color = Color(0, 0.484, 1, 0.35)
-shadow_size = 8
-shadow_offset = Vector2(0, 4)
-
-[sub_resource type="StyleBoxFlat" id="SBF_start_p"]
-content_margin_left = 20.0
-content_margin_top = 14.0
-content_margin_right = 20.0
-content_margin_bottom = 14.0
-bg_color = Color(0, 0.38, 0.85, 1)
-corner_radius_top_left = 30
-corner_radius_top_right = 30
-corner_radius_bottom_right = 30
-corner_radius_bottom_left = 30
-
+; ----- DotIndicator: CYAN_400 単一塗り (modulate.a で active/inactive を表現) -----
 [sub_resource type="StyleBoxFlat" id="SBF_dot"]
-bg_color = Color(0, 0.484, 1, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+bg_color = Color(0.435, 0.706, 1, 1)
+corner_radius_top_left = 9999
+corner_radius_top_right = 9999
+corner_radius_bottom_right = 9999
+corner_radius_bottom_left = 9999
 
-[sub_resource type="StyleBoxFlat" id="SBF_nav"]
-content_margin_left = 12.0
-content_margin_top = 10.0
-content_margin_right = 12.0
-content_margin_bottom = 24.0
-bg_color = Color(1, 1, 1, 0.95)
-corner_radius_top_left = 40
-corner_radius_top_right = 40
-
-[sub_resource type="StyleBoxFlat" id="SBF_nav_act"]
-content_margin_left = 12.0
-content_margin_top = 6.0
-content_margin_right = 12.0
-content_margin_bottom = 6.0
-bg_color = Color(0, 0.484, 1, 1)
-corner_radius_top_left = 21
-corner_radius_top_right = 21
-corner_radius_bottom_right = 21
-corner_radius_bottom_left = 21
-
-[sub_resource type="StyleBoxFlat" id="SBF_coming"]
+; ----- COMING SOON チップ: BG_ELEV α=0.6 + 薄シアン枠 -----
+[sub_resource type="StyleBoxFlat" id="SBF_coming_dark"]
 content_margin_left = 20.0
 content_margin_top = 10.0
 content_margin_right = 20.0
 content_margin_bottom = 10.0
-bg_color = Color(0.314, 0.353, 0.506, 0.7)
+bg_color = Color(0.067, 0.094, 0.153, 0.6)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.435, 0.706, 1, 0.2)
 corner_radius_top_left = 16
 corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 
+; ====================================================================
+; ルート
+; ====================================================================
 [node name="GameList" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -146,59 +110,86 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ctrl")
 
-[node name="BgTexture" type="TextureRect" parent="."]
+[node name="VoidBg" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("GradientTex_bg")
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="NebulaBg" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_nebula")
+expand_mode = 1
 stretch_mode = 6
+
+[node name="StarLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_stars")
 
 [node name="SafeAreaMargin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = -90.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 56
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 48
 
 [node name="MainColumn" type="VBoxContainer" parent="SafeAreaMargin"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="HeaderGlass" type="PanelContainer" parent="SafeAreaMargin/MainColumn"]
+; -------------------- HeaderBlock: Title + Subtitle (centered) --------------------
+[node name="HeaderBlock" type="VBoxContainer" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("SBF_header")
+theme_override_constants/separation = 4
 
-[node name="SubtitleLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderGlass"]
+[node name="Title" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
-theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 24
-text = "トレーニングを選んで記録を更新しましょう！
-左右にスワイプしてゲームを選択できます。"
+theme_type_variation = &"mc_h1"
+text = "脳トレ"
 horizontal_alignment = 1
-autowrap_mode = 2
+
+[node name="Subtitle" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.533, 0.588, 0.69, 1)
+theme_override_font_sizes/font_size = 20
+text = "今日のメニューを選ぼう"
+horizontal_alignment = 1
 
 [node name="TopSpacer" type="Control" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
 size_flags_vertical = 3
 
+; -------------------- CarouselArea --------------------
 [node name="CarouselArea" type="Control" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 700)
 
+; ----- Card0: ゴースト7番勝負 -----
 [node name="Card0" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
 custom_minimum_size = Vector2(400, 600)
 size = Vector2(400, 600)
-theme_override_styles/panel = SubResource("SBF_card")
+theme_override_styles/panel = SubResource("SBF_card_dark")
 
 [node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0"]
 layout_mode = 2
@@ -209,45 +200,44 @@ theme_override_constants/margin_bottom = 4
 
 [node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
 [node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(108, 108)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_icon")
+theme_override_styles/panel = SubResource("SBF_icon_dark")
 
 [node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox/IconCircle"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 1)
 theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 56
-text = "touch_app"
+theme_override_font_sizes/font_size = 64
+text = "bolt"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.435, 0.706, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 22
 text = "REACTION"
 horizontal_alignment = 1
 
 [node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
-theme_override_fonts/font = ExtResource("3_bold")
+theme_type_variation = &"mc_h2"
 theme_override_font_sizes/font_size = 36
-text = "反射タップ"
+text = "ゴースト7番勝負"
 horizontal_alignment = 1
 
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_type_variation = &"mc_body"
 theme_override_font_sizes/font_size = 24
-text = "出現するターゲットを即座にタップ！
-反応速度を測定します。"
+text = "ゴーストと反射速度で7番勝負！
+勝率を競い合おう。"
 horizontal_alignment = 1
 autowrap_mode = 2
 
@@ -257,7 +247,7 @@ size_flags_vertical = 3
 
 [node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("SBF_metric")
+theme_override_styles/panel = SubResource("SBF_metric_dark")
 
 [node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox/MetricPanel"]
 layout_mode = 2
@@ -266,49 +256,46 @@ alignment = 1
 
 [node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_colors/font_color = Color(0.533, 0.588, 0.69, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "High Score"
 horizontal_alignment = 1
 
 [node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.961, 0.78, 0.416, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 40
 text = "--"
 horizontal_alignment = 1
 
 [node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("SBF_start_n")
-theme_override_styles/hover = SubResource("SBF_start_n")
-theme_override_styles/pressed = SubResource("SBF_start_p")
+theme_type_variation = &"mc_cta_glow"
+theme_override_font_sizes/font_size = 28
 text = "スタート"
 
 [node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_coming")
+theme_override_styles/panel = SubResource("SBF_coming_dark")
 
 [node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card0/CardMargin/CardVBox/CardComingSoon"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 0.7)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "COMING SOON"
 horizontal_alignment = 1
 
+; ----- Card1: フラッシュ暗算 -----
 [node name="Card1" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
 custom_minimum_size = Vector2(400, 600)
 size = Vector2(400, 600)
-theme_override_styles/panel = SubResource("SBF_card")
+theme_override_styles/panel = SubResource("SBF_card_dark")
 
 [node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1"]
 layout_mode = 2
@@ -319,42 +306,41 @@ theme_override_constants/margin_bottom = 4
 
 [node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
 [node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(108, 108)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_icon")
+theme_override_styles/panel = SubResource("SBF_icon_dark")
 
 [node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox/IconCircle"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 1)
 theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 64
 text = "calculate"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.435, 0.706, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 22
 text = "CALCULATION"
 horizontal_alignment = 1
 
 [node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
-theme_override_fonts/font = ExtResource("3_bold")
+theme_type_variation = &"mc_h2"
 theme_override_font_sizes/font_size = 36
 text = "フラッシュ暗算"
 horizontal_alignment = 1
 
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_type_variation = &"mc_body"
 theme_override_font_sizes/font_size = 24
 text = "次々と表示される数字を暗算。
 計算力を鍛えます。"
@@ -367,7 +353,7 @@ size_flags_vertical = 3
 
 [node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("SBF_metric")
+theme_override_styles/panel = SubResource("SBF_metric_dark")
 
 [node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox/MetricPanel"]
 layout_mode = 2
@@ -376,49 +362,46 @@ alignment = 1
 
 [node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_colors/font_color = Color(0.533, 0.588, 0.69, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "High Score"
 horizontal_alignment = 1
 
 [node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.961, 0.78, 0.416, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 40
 text = "--"
 horizontal_alignment = 1
 
 [node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("SBF_start_n")
-theme_override_styles/hover = SubResource("SBF_start_n")
-theme_override_styles/pressed = SubResource("SBF_start_p")
+theme_type_variation = &"mc_cta_glow"
+theme_override_font_sizes/font_size = 28
 text = "スタート"
 
 [node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_coming")
+theme_override_styles/panel = SubResource("SBF_coming_dark")
 
 [node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card1/CardMargin/CardVBox/CardComingSoon"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 0.7)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "COMING SOON"
 horizontal_alignment = 1
 
+; ----- Card2: 順番記憶 -----
 [node name="Card2" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
 custom_minimum_size = Vector2(400, 600)
 size = Vector2(400, 600)
-theme_override_styles/panel = SubResource("SBF_card")
+theme_override_styles/panel = SubResource("SBF_card_dark")
 
 [node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2"]
 layout_mode = 2
@@ -429,42 +412,41 @@ theme_override_constants/margin_bottom = 4
 
 [node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
 [node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(108, 108)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_icon")
+theme_override_styles/panel = SubResource("SBF_icon_dark")
 
 [node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox/IconCircle"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 1)
 theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 64
 text = "graphic_eq"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.435, 0.706, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 22
 text = "MEMORY"
 horizontal_alignment = 1
 
 [node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
-theme_override_fonts/font = ExtResource("3_bold")
+theme_type_variation = &"mc_h2"
 theme_override_font_sizes/font_size = 36
 text = "順番記憶"
 horizontal_alignment = 1
 
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_type_variation = &"mc_body"
 theme_override_font_sizes/font_size = 24
 text = "パネルが光る順番を記憶して再現。
 短期記憶をトレーニング。"
@@ -477,7 +459,7 @@ size_flags_vertical = 3
 
 [node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("SBF_metric")
+theme_override_styles/panel = SubResource("SBF_metric_dark")
 
 [node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox/MetricPanel"]
 layout_mode = 2
@@ -486,49 +468,46 @@ alignment = 1
 
 [node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_colors/font_color = Color(0.533, 0.588, 0.69, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "High Score"
 horizontal_alignment = 1
 
 [node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.961, 0.78, 0.416, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 40
 text = "--"
 horizontal_alignment = 1
 
 [node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("SBF_start_n")
-theme_override_styles/hover = SubResource("SBF_start_n")
-theme_override_styles/pressed = SubResource("SBF_start_p")
+theme_type_variation = &"mc_cta_glow"
+theme_override_font_sizes/font_size = 28
 text = "スタート"
 
 [node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_coming")
+theme_override_styles/panel = SubResource("SBF_coming_dark")
 
 [node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card2/CardMargin/CardVBox/CardComingSoon"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 0.7)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "COMING SOON"
 horizontal_alignment = 1
 
+; ----- Card3: 色文字テスト -----
 [node name="Card3" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
 custom_minimum_size = Vector2(400, 600)
 size = Vector2(400, 600)
-theme_override_styles/panel = SubResource("SBF_card")
+theme_override_styles/panel = SubResource("SBF_card_dark")
 
 [node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3"]
 layout_mode = 2
@@ -539,42 +518,41 @@ theme_override_constants/margin_bottom = 4
 
 [node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
 [node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(108, 108)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_icon")
+theme_override_styles/panel = SubResource("SBF_icon_dark")
 
 [node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox/IconCircle"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 1)
 theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 64
 text = "palette"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.435, 0.706, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 22
 text = "ATTENTION"
 horizontal_alignment = 1
 
 [node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
-theme_override_fonts/font = ExtResource("3_bold")
+theme_type_variation = &"mc_h2"
 theme_override_font_sizes/font_size = 36
 text = "色文字テスト"
 horizontal_alignment = 1
 
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_type_variation = &"mc_body"
 theme_override_font_sizes/font_size = 24
 text = "文字の内容ではなく「色」を回答。
 注意力を磨きます。"
@@ -587,7 +565,7 @@ size_flags_vertical = 3
 
 [node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("SBF_metric")
+theme_override_styles/panel = SubResource("SBF_metric_dark")
 
 [node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox/MetricPanel"]
 layout_mode = 2
@@ -596,49 +574,46 @@ alignment = 1
 
 [node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_colors/font_color = Color(0.533, 0.588, 0.69, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "High Score"
 horizontal_alignment = 1
 
 [node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.961, 0.78, 0.416, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 40
 text = "--"
 horizontal_alignment = 1
 
 [node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("SBF_start_n")
-theme_override_styles/hover = SubResource("SBF_start_n")
-theme_override_styles/pressed = SubResource("SBF_start_p")
+theme_type_variation = &"mc_cta_glow"
+theme_override_font_sizes/font_size = 28
 text = "スタート"
 
 [node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_coming")
+theme_override_styles/panel = SubResource("SBF_coming_dark")
 
 [node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card3/CardMargin/CardVBox/CardComingSoon"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 0.7)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "COMING SOON"
 horizontal_alignment = 1
 
+; ----- Card4: 神経衰弱 -----
 [node name="Card4" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
 custom_minimum_size = Vector2(400, 600)
 size = Vector2(400, 600)
-theme_override_styles/panel = SubResource("SBF_card")
+theme_override_styles/panel = SubResource("SBF_card_dark")
 
 [node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4"]
 layout_mode = 2
@@ -649,42 +624,41 @@ theme_override_constants/margin_bottom = 4
 
 [node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
 [node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(108, 108)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_icon")
+theme_override_styles/panel = SubResource("SBF_icon_dark")
 
 [node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox/IconCircle"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 1)
 theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 64
 text = "layers"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.435, 0.706, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 22
 text = "JUDGMENT"
 horizontal_alignment = 1
 
 [node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
-theme_override_fonts/font = ExtResource("3_bold")
+theme_type_variation = &"mc_h2"
 theme_override_font_sizes/font_size = 36
 text = "神経衰弱"
 horizontal_alignment = 1
 
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_type_variation = &"mc_body"
 theme_override_font_sizes/font_size = 24
 text = "ペアのカードを素早く見つける。
 判断力と記憶力の勝負。"
@@ -697,7 +671,7 @@ size_flags_vertical = 3
 
 [node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("SBF_metric")
+theme_override_styles/panel = SubResource("SBF_metric_dark")
 
 [node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox/MetricPanel"]
 layout_mode = 2
@@ -706,49 +680,46 @@ alignment = 1
 
 [node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_colors/font_color = Color(0.533, 0.588, 0.69, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "High Score"
 horizontal_alignment = 1
 
 [node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.961, 0.78, 0.416, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 40
 text = "--"
 horizontal_alignment = 1
 
 [node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("SBF_start_n")
-theme_override_styles/hover = SubResource("SBF_start_n")
-theme_override_styles/pressed = SubResource("SBF_start_p")
+theme_type_variation = &"mc_cta_glow"
+theme_override_font_sizes/font_size = 28
 text = "スタート"
 
 [node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_coming")
+theme_override_styles/panel = SubResource("SBF_coming_dark")
 
 [node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card4/CardMargin/CardVBox/CardComingSoon"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 0.7)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "COMING SOON"
 horizontal_alignment = 1
 
+; ----- Card5: 数字さがし -----
 [node name="Card5" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea"]
 custom_minimum_size = Vector2(400, 600)
 size = Vector2(400, 600)
-theme_override_styles/panel = SubResource("SBF_card")
+theme_override_styles/panel = SubResource("SBF_card_dark")
 
 [node name="CardMargin" type="MarginContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5"]
 layout_mode = 2
@@ -759,42 +730,41 @@ theme_override_constants/margin_bottom = 4
 
 [node name="CardVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
 [node name="IconCircle" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(108, 108)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_icon")
+theme_override_styles/panel = SubResource("SBF_icon_dark")
 
 [node name="IconLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox/IconCircle"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 1)
 theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 64
 text = "visibility"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="CategoryLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.435, 0.706, 1, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 22
 text = "OBSERVATION"
 horizontal_alignment = 1
 
 [node name="GameNameLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.12, 0.16, 0.3, 1)
-theme_override_fonts/font = ExtResource("3_bold")
+theme_type_variation = &"mc_h2"
 theme_override_font_sizes/font_size = 36
 text = "数字さがし"
 horizontal_alignment = 1
 
 [node name="DescriptionLabel" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.8)
+theme_type_variation = &"mc_body"
 theme_override_font_sizes/font_size = 24
 text = "1 から順番に数字をタップ。
 周辺視野と集中力を強化。"
@@ -807,7 +777,7 @@ size_flags_vertical = 3
 
 [node name="MetricPanel" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("SBF_metric")
+theme_override_styles/panel = SubResource("SBF_metric_dark")
 
 [node name="MetricVBox" type="VBoxContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox/MetricPanel"]
 layout_mode = 2
@@ -816,45 +786,42 @@ alignment = 1
 
 [node name="MetricCaption" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
+theme_override_colors/font_color = Color(0.533, 0.588, 0.69, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "Best Time"
 horizontal_alignment = 1
 
 [node name="MetricValue" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox/MetricPanel/MetricVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.484, 1, 1)
+theme_override_colors/font_color = Color(0.961, 0.78, 0.416, 1)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 40
 text = "--"
 horizontal_alignment = 1
 
 [node name="CardPlayButton" type="Button" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("SBF_start_n")
-theme_override_styles/hover = SubResource("SBF_start_n")
-theme_override_styles/pressed = SubResource("SBF_start_p")
+theme_type_variation = &"mc_cta_glow"
+theme_override_font_sizes/font_size = 28
 text = "スタート"
 
 [node name="CardComingSoon" type="PanelContainer" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("SBF_coming")
+theme_override_styles/panel = SubResource("SBF_coming_dark")
 
 [node name="Label" type="Label" parent="SafeAreaMargin/MainColumn/CarouselArea/Card5/CardMargin/CardVBox/CardComingSoon"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_colors/font_color = Color(0.722, 0.878, 1, 0.7)
 theme_override_fonts/font = ExtResource("3_bold")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "COMING SOON"
 horizontal_alignment = 1
 
+; -------------------- DotRow --------------------
 [node name="DotRow" type="CenterContainer" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
 
@@ -896,190 +863,15 @@ theme_override_styles/panel = SubResource("SBF_dot")
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="BottomNavPanel" type="PanelContainer" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_styles/panel = SubResource("SBF_nav")
-
-[node name="BottomNavBar" type="HBoxContainer" parent="BottomNavPanel"]
-custom_minimum_size = Vector2(0, 80)
+; -------------------- FooterRow: ← ホーム (NavLinkButton コンポーネント) --------------------
+[node name="FooterRow" type="HBoxContainer" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="NavTrainActive" type="PanelContainer" parent="BottomNavPanel/BottomNavBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("SBF_nav_act")
-
-[node name="NavTrainButton" type="Button" parent="BottomNavPanel/BottomNavBar/NavTrainActive"]
-layout_mode = 2
-flat = true
-
-[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavTrainActive/NavTrainButton"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 2
 alignment = 1
 
-[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavTrainActive/NavTrainButton/VBox"]
+[node name="HomeButton" parent="SafeAreaMargin/MainColumn/FooterRow" instance=ExtResource("5_navlink")]
 layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 40
-text = "psychology"
-horizontal_alignment = 1
+size_flags_horizontal = 4
+icon_name = "home"
+label_text = "ホーム"
+direction = "back"
 
-[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavTrainActive/NavTrainButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 22
-text = "脳トレ"
-horizontal_alignment = 1
-
-[node name="NavAnalyticsButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavAnalyticsButton"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavAnalyticsButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 40
-text = "analytics"
-horizontal_alignment = 1
-
-[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavAnalyticsButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 22
-text = "分析"
-horizontal_alignment = 1
-
-[node name="NavHomeButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavHomeButton"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavHomeButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 40
-text = "home"
-horizontal_alignment = 1
-
-[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavHomeButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 22
-text = "ホーム"
-horizontal_alignment = 1
-
-[node name="NavAwardButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavAwardButton"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavAwardButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 40
-text = "emoji_events"
-horizontal_alignment = 1
-
-[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavAwardButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 22
-text = "アワード"
-horizontal_alignment = 1
-
-[node name="NavSettingsButton" type="Button" parent="BottomNavPanel/BottomNavBar"]
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-size_flags_horizontal = 3
-flat = true
-
-[node name="VBox" type="VBoxContainer" parent="BottomNavPanel/BottomNavBar/NavSettingsButton"]
-layout_mode = 2
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="BottomNavPanel/BottomNavBar/NavSettingsButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_fonts/font = ExtResource("2_msym")
-theme_override_font_sizes/font_size = 40
-text = "settings"
-horizontal_alignment = 1
-
-[node name="Text" type="Label" parent="BottomNavPanel/BottomNavBar/NavSettingsButton/VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.314, 0.353, 0.506, 0.6)
-theme_override_font_sizes/font_size = 22
-text = "設定"
-horizontal_alignment = 1

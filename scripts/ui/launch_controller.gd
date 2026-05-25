@@ -3,35 +3,83 @@
 ## 初期ルーター。アプリ起動時の最初のシーン [code]scenes/main/launch.tscn[/code] にアタッチされる。
 ## [code]UserConfig.onboarding_completed[/code] を読み、ホームまたはオンボーディングへ振り分ける。
 ##
-## MVP スタブ: ホーム画面への遷移のみ実装（オンボーディング画面は未作成）。
+## 表示は 2 段階のブランドリビール:
+##   Phase 1: Reigal Labs パブリッシャーロゴ (フェードイン → ホールド → フェードアウト)
+##   Phase 2: Brain Ghost ゲームロゴ (フェードイン → ホールド → ホーム遷移)
+##
+## SkipArea を tap すると残りの演出をスキップして即ホームへ遷移。
 extends Control
 
-@onready var _label: Label = $VBoxContainer/TitleLabel if has_node("VBoxContainer/TitleLabel") else null
+const _REIGAL_FADE_IN_SEC: float = 0.5
+const _REIGAL_HOLD_SEC: float = 0.9
+const _REIGAL_FADE_OUT_SEC: float = 0.4
+const _BG_FADE_IN_SEC: float = 0.6
+const _BG_HOLD_SEC: float = 1.2
+
+@onready var _reigal: TextureRect = $ReigalLogo if has_node("ReigalLogo") else null
+@onready var _bg_logo: TextureRect = $BrainGhostLogo if has_node("BrainGhostLogo") else null
+@onready var _skip_area: Control = $SkipArea if has_node("SkipArea") else null
+
+var _config: UserConfig = null
+var _skipped: bool = false
+
 
 func _ready() -> void:
     print_debug("LaunchController: ready")
 
-    # UserConfig の読込
     var config_dict: Dictionary = DataStore.load_dict(DataStore.StoreKey.USER_CONFIG)
-    var config: UserConfig = UserConfig.from_dict(config_dict) if not config_dict.is_empty() else UserConfig.new()
+    _config = UserConfig.from_dict(config_dict) if not config_dict.is_empty() else UserConfig.new()
 
-    # 簡易スプラッシュ（2秒後に遷移）
-    await get_tree().create_timer(2.0).timeout
-    _route_to_next_scene(config)
+    if _skip_area != null:
+        _skip_area.gui_input.connect(_on_skip_input)
 
-func _route_to_next_scene(config: UserConfig) -> void:
-    if not config.onboarding_completed:
-        # TODO: Week 1-3 で scenes/main/onboarding.tscn 実装後に以下を有効化:
-        #   var err := get_tree().change_scene_to_file("res://scenes/main/onboarding.tscn")
-        #   if err != OK: push_error(...)
-        #   return
-        # 現状はオンボーディングシーンが未作成のため、暫定的にホームへ遷移する
-        print_debug("LaunchController: onboarding scene not implemented yet. Falling back to home.")
-        _go_to_home()
+    _play_intro_sequence()
+
+
+func _play_intro_sequence() -> void:
+    # Phase 1: Reigal Labs
+    if _reigal != null:
+        await _fade_to(_reigal, 1.0, _REIGAL_FADE_IN_SEC)
+        if _skipped: return
+        await get_tree().create_timer(_REIGAL_HOLD_SEC).timeout
+        if _skipped: return
+        await _fade_to(_reigal, 0.0, _REIGAL_FADE_OUT_SEC)
+        if _skipped: return
+
+    # Phase 2: Brain Ghost
+    if _bg_logo != null:
+        await _fade_to(_bg_logo, 1.0, _BG_FADE_IN_SEC)
+        if _skipped: return
+        await get_tree().create_timer(_BG_HOLD_SEC).timeout
+        if _skipped: return
+
+    _go_to_next_scene()
+
+
+func _fade_to(node: CanvasItem, target_alpha: float, duration: float) -> void:
+    var tween := create_tween()
+    tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+    tween.tween_property(node, "modulate:a", target_alpha, duration)
+    await tween.finished
+
+
+func _on_skip_input(event: InputEvent) -> void:
+    if _skipped:
         return
+    if event is InputEventScreenTouch and event.pressed:
+        _skipped = true
+        _go_to_next_scene()
+    elif event is InputEventMouseButton and event.pressed:
+        _skipped = true
+        _go_to_next_scene()
 
-    # onboarding_completed == true の通常パス
+
+func _go_to_next_scene() -> void:
+    if _config != null and not _config.onboarding_completed:
+        # TODO: オンボーディング画面実装後に切替
+        print_debug("LaunchController: onboarding scene not implemented yet. Falling back to home.")
     _go_to_home()
+
 
 func _go_to_home() -> void:
     var err: int = get_tree().change_scene_to_file("res://scenes/main/home.tscn")

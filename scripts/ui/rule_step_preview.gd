@@ -17,6 +17,21 @@
 ##   "grid_show"    — 3×3 グリッドの一部が光って順番表示
 ##   "grid_tap"     — 3×3 グリッド + TAP! ハンド
 ##   "grid_grow"    — Lv1→Lv5 の段階表現 (光るパネルが増える)
+##
+## variants (stroop):
+##   "stroop_show"   — 中央に色文字「青」(実色=赤) を表示
+##   "stroop_answer" — 4 色ボタンの一覧 + タップ指
+##   "stroop_combo"  — 30s タイマ + +100 / −50 バッジ
+##
+## variants (card_match):
+##   "card_show"   — 4×4 裏向きカード、2 枚だけ表向き
+##   "card_pair"   — ペア成立カード 2 枚を強調 + ロック
+##   "card_timer"  — 時計 + "8 PAIRS" 表記
+##
+## variants (number_search):
+##   "number_find"     — 5×5 数字グリッド + 「1」を強調
+##   "number_sequence" — 同グリッド + 1→2→3 の矢印
+##   "number_clear"    — 時計 + チェック + 25/25
 class_name RuleStepPreview
 extends Control
 
@@ -29,10 +44,16 @@ const COLOR_DIM := Color(0.42, 0.467, 0.561, 1.0)
 const COLOR_PANEL_OFF := Color(0.137, 0.169, 0.247, 0.85)
 const COLOR_PANEL_ON := Color(1.0, 0.85, 0.4, 0.95)
 
+# Stroop パレット (docs/ideas/games/ghost-stroop-showdown-spec.md §2-3)
+const STROOP_RED    := Color(0.898, 0.224, 0.208)   # #E53935
+const STROOP_BLUE   := Color(0.118, 0.533, 0.898)   # #1E88E5
+const STROOP_GREEN  := Color(0.263, 0.627, 0.278)   # #43A047
+const STROOP_YELLOW := Color(0.992, 0.847, 0.208)   # #FDD835
+
 const ICON_FONT_PATH: String = "res://assets/fonts/MaterialSymbolsRounded.ttf"
 var _icon_font: Font
 
-@export_enum("ready", "tap", "compare", "flash_number", "calc_sum", "calc_input", "grid_show", "grid_tap", "grid_grow") var variant: String = "ready":
+@export_enum("ready", "tap", "compare", "flash_number", "calc_sum", "calc_input", "grid_show", "grid_tap", "grid_grow", "stroop_show", "stroop_answer", "stroop_combo", "card_show", "card_pair", "card_timer", "number_find", "number_sequence", "number_clear") var variant: String = "ready":
     set(v):
         variant = v
         queue_redraw()
@@ -185,6 +206,95 @@ func _draw() -> void:
             _draw_growth_step(Vector2(w * 0.28, center_y), 3, "Lv 1", f)
             _draw_centered(f, Vector2(w * 0.5, center_y + 4.0), "→", 22, COLOR_DIM)
             _draw_growth_step(Vector2(w * 0.72, center_y), 7, "Lv 5", f)
+        "stroop_show":
+            # 中央に大字の色文字「あお」(実色=あか)。ストループ干渉のひと目見本
+            var center := Vector2(w * 0.5, h * 0.62)
+            _draw_glow(center, 44.0, STROOP_RED * Color(1, 1, 1, 0.35))
+            _draw_centered(f, center + Vector2(0.0, 6.0), "あお", 38, STROOP_RED)
+            _draw_centered(f, Vector2(w * 0.5, 56.0), "色は？", 14, Color(COLOR_GLOW_CYAN.r, COLOR_GLOW_CYAN.g, COLOR_GLOW_CYAN.b, 0.7))
+        "stroop_answer":
+            # 4 色ボタン (●▲■◆) を横一列。中央 2 つの上に TAP ハンド/ハイライト
+            var btn_w := 38.0
+            var btn_h := 30.0
+            var btn_gap := 6.0
+            var total_w := btn_w * 4.0 + btn_gap * 3.0
+            var top_y := h * 0.52
+            var left_x := (w - total_w) * 0.5
+            var palette := [STROOP_RED, STROOP_BLUE, STROOP_GREEN, STROOP_YELLOW]
+            var shapes := ["●", "▲", "■", "◆"]
+            for i in 4:
+                var bx := left_x + float(i) * (btn_w + btn_gap)
+                var brect := Rect2(Vector2(bx, top_y), Vector2(btn_w, btn_h))
+                var col: Color = palette[i]
+                var fill: Color = col
+                fill.a = 0.25
+                draw_rect(brect, fill, true)
+                draw_rect(brect, col, false, 1.4)
+                _draw_centered(f, Vector2(bx + btn_w * 0.5, top_y + btn_h * 0.5 + 5.0), shapes[i], 16, col)
+            # TAP! の指示 (2 番目のボタンを選んでいる風)
+            var tap_x := left_x + btn_w + btn_gap + btn_w * 0.5
+            _draw_glow(Vector2(tap_x, top_y + btn_h + 18.0), 22.0, COLOR_GLOW_GOLD * Color(1, 1, 1, 0.45))
+            _draw_centered(f, Vector2(tap_x, top_y + btn_h + 22.0), "TAP!", 16, COLOR_GLOW_GOLD)
+        "stroop_combo":
+            # タイマアーク + +100 / -50 バッジ
+            var arc_center := Vector2(w * 0.32, h * 0.62)
+            _draw_glow(arc_center, 26.0, COLOR_GLOW_CYAN * Color(1, 1, 1, 0.3))
+            _stroke_ring(arc_center, 22.0, Color(COLOR_GLOW_CYAN.r, COLOR_GLOW_CYAN.g, COLOR_GLOW_CYAN.b, 0.6), 1.6)
+            _draw_centered(f, arc_center + Vector2(0.0, 4.0), "30s", 16, COLOR_GLOW_CYAN)
+            # +100 バッジ (ゴールド)
+            var plus_pos := Vector2(w * 0.6, h * 0.5)
+            var plus_rect := Rect2(plus_pos, Vector2(50.0, 22.0))
+            draw_rect(plus_rect, Color(COLOR_GLOW_GOLD.r, COLOR_GLOW_GOLD.g, COLOR_GLOW_GOLD.b, 0.25), true)
+            draw_rect(plus_rect, COLOR_GLOW_GOLD, false, 1.2)
+            _draw_centered(f, plus_pos + Vector2(25.0, 16.0), "+100", 14, COLOR_GLOW_GOLD)
+            # -50 バッジ (グレー)
+            var minus_pos := Vector2(w * 0.6, h * 0.72)
+            var minus_rect := Rect2(minus_pos, Vector2(50.0, 22.0))
+            draw_rect(minus_rect, Color(COLOR_DIM.r, COLOR_DIM.g, COLOR_DIM.b, 0.3), true)
+            draw_rect(minus_rect, COLOR_DIM, false, 1.2)
+            _draw_centered(f, minus_pos + Vector2(25.0, 16.0), "-50", 14, COLOR_DIM)
+        "card_show":
+            # 4×4 裏向きカード、2 枚だけ表 (絵柄プレースホルダ ★ ▲)
+            _draw_card_grid(w, h, [{"idx": 5, "icon": "★"}, {"idx": 6, "icon": "▲"}], [])
+        "card_pair":
+            # 4×4、ペア成立 2 枚を金縁強調 + ロックアイコン
+            _draw_card_grid(w, h, [{"idx": 5, "icon": "★"}, {"idx": 10, "icon": "★"}], [5, 10])
+        "card_timer":
+            # 時計アイコン + 8 PAIRS テキスト
+            var c2 := Vector2(w * 0.32, h * 0.6)
+            _draw_glow(c2, 28.0, COLOR_GLOW_CYAN * Color(1, 1, 1, 0.3))
+            _stroke_ring(c2, 22.0, Color(COLOR_GLOW_CYAN.r, COLOR_GLOW_CYAN.g, COLOR_GLOW_CYAN.b, 0.7), 1.6)
+            # 時計の針 (12 時と 4 時方向)
+            draw_line(c2, c2 + Vector2(0.0, -16.0), COLOR_GLOW_CYAN, 1.6, true)
+            draw_line(c2, c2 + Vector2(12.0, 6.0), COLOR_GLOW_CYAN, 1.6, true)
+            _draw_centered(f, c2 + Vector2(0.0, 36.0), "60s", 14, COLOR_DIM)
+            # 8 PAIRS バッジ
+            var bx := w * 0.6
+            var brect := Rect2(Vector2(bx, h * 0.54), Vector2(72.0, 30.0))
+            draw_rect(brect, Color(COLOR_GLOW_GOLD.r, COLOR_GLOW_GOLD.g, COLOR_GLOW_GOLD.b, 0.25), true)
+            draw_rect(brect, COLOR_GLOW_GOLD, false, 1.4)
+            _draw_centered(f, Vector2(bx + 36.0, h * 0.54 + 20.0), "8 PAIRS", 14, COLOR_GLOW_GOLD)
+        "number_find":
+            # 5×5 数字グリッド (シャッフル配置) で「1」を金色強調
+            _draw_number_grid(w, h, 1)
+        "number_sequence":
+            # 5×5 数字グリッド + 1→2→3 の矢印経路
+            _draw_number_grid_with_arrows(w, h, [1, 2, 3])
+        "number_clear":
+            # 時計アイコン + チェック + 25/25 表示
+            var c3 := Vector2(w * 0.32, h * 0.6)
+            _draw_glow(c3, 28.0, COLOR_GLOW_CYAN * Color(1, 1, 1, 0.3))
+            _stroke_ring(c3, 22.0, Color(COLOR_GLOW_CYAN.r, COLOR_GLOW_CYAN.g, COLOR_GLOW_CYAN.b, 0.7), 1.6)
+            draw_line(c3, c3 + Vector2(0.0, -16.0), COLOR_GLOW_CYAN, 1.6, true)
+            draw_line(c3, c3 + Vector2(12.0, 6.0), COLOR_GLOW_CYAN, 1.6, true)
+            _draw_centered(f, c3 + Vector2(0.0, 36.0), "60s", 14, COLOR_DIM)
+            # 25/25 ゴールバッジ + チェック
+            var gx := w * 0.6
+            var grect := Rect2(Vector2(gx, h * 0.54), Vector2(78.0, 30.0))
+            draw_rect(grect, Color(COLOR_GLOW_GOLD.r, COLOR_GLOW_GOLD.g, COLOR_GLOW_GOLD.b, 0.25), true)
+            draw_rect(grect, COLOR_GLOW_GOLD, false, 1.4)
+            _draw_centered(f, Vector2(gx + 16.0, h * 0.54 + 20.0), "✓", 16, COLOR_GLOW_GOLD)
+            _draw_centered(f, Vector2(gx + 48.0, h * 0.54 + 20.0), "25/25", 14, COLOR_GLOW_GOLD)
 
 func _draw_simon_grid(w: float, h: float, lit_indices: Array, with_arrows: bool) -> void:
     var cell_size := 28.0
@@ -215,6 +325,90 @@ func _draw_simon_grid(w: float, h: float, lit_indices: Array, with_arrows: bool)
             var p0: Vector2 = lit_centers[lit_indices[i]]
             var p1: Vector2 = lit_centers[lit_indices[i + 1]]
             draw_line(p0, p1, Color(COLOR_PANEL_ON.r, COLOR_PANEL_ON.g, COLOR_PANEL_ON.b, 0.5), 1.6, true)
+
+
+## 4×4 のカード一覧。`face_ups` は [{idx, icon}] のリスト、`locked_indices` はロック装飾を付けるインデックス
+func _draw_card_grid(w: float, h: float, face_ups: Array, locked_indices: Array) -> void:
+    var cell_size := 22.0
+    var gap := 4.0
+    var grid_size := cell_size * 4.0 + gap * 3.0
+    var top_left := Vector2((w - grid_size) * 0.5, (h - grid_size) * 0.5 + 6.0)
+    var f: Font = get_theme_default_font()
+    for i in 16:
+        var row: int = i / 4
+        var col: int = i % 4
+        var pos := top_left + Vector2(float(col) * (cell_size + gap), float(row) * (cell_size + gap))
+        var rect := Rect2(pos, Vector2(cell_size, cell_size))
+        var face_up_entry: Dictionary = {}
+        for fu in face_ups:
+            if int(fu.get("idx", -1)) == i:
+                face_up_entry = fu
+                break
+        var is_locked: bool = i in locked_indices
+        if not face_up_entry.is_empty():
+            var border: Color = COLOR_GLOW_GOLD if is_locked else COLOR_GLOW_CYAN
+            var fill: Color = Color(border.r, border.g, border.b, 0.3)
+            draw_rect(rect, fill, true)
+            draw_rect(rect, border, false, 1.4)
+            _draw_centered(f, pos + rect.size * 0.5 + Vector2(0, 4), String(face_up_entry.get("icon", "")), 13, border)
+        else:
+            draw_rect(rect, COLOR_PANEL_OFF, true)
+            draw_rect(rect, Color(COLOR_GLOW_CYAN.r, COLOR_GLOW_CYAN.g, COLOR_GLOW_CYAN.b, 0.25), false, 1.0)
+
+
+## 5×5 数字グリッド。`highlight_number` を金色強調。
+func _draw_number_grid(w: float, h: float, highlight_number: int) -> void:
+    # シャッフル済みの 1..25 (固定配置、視認性優先)
+    var nums := [17, 4, 21, 9, 13,
+                 2, 18, 7, 24, 11,
+                 19, 14, 1, 6, 22,
+                 8, 25, 16, 3, 20,
+                 12, 5, 23, 10, 15]
+    _draw_number_grid_cells(w, h, nums, highlight_number, [])
+
+
+## 5×5 数字グリッド + 指定数字列の矢印経路 (1→2→3 等)。
+func _draw_number_grid_with_arrows(w: float, h: float, sequence: Array) -> void:
+    var nums := [17, 4, 21, 9, 13,
+                 2, 18, 7, 24, 11,
+                 19, 14, 1, 6, 22,
+                 8, 25, 16, 3, 20,
+                 12, 5, 23, 10, 15]
+    _draw_number_grid_cells(w, h, nums, -1, sequence)
+
+
+func _draw_number_grid_cells(w: float, h: float, nums: Array, highlight: int, arrow_seq: Array) -> void:
+    var cell_size := 22.0
+    var gap := 3.0
+    var grid_size := cell_size * 5.0 + gap * 4.0
+    var top_left := Vector2((w - grid_size) * 0.5, (h - grid_size) * 0.5 + 4.0)
+    var f: Font = get_theme_default_font()
+    var num_to_center: Dictionary = {}
+    for i in 25:
+        var row: int = i / 5
+        var col: int = i % 5
+        var pos := top_left + Vector2(float(col) * (cell_size + gap), float(row) * (cell_size + gap))
+        var rect := Rect2(pos, Vector2(cell_size, cell_size))
+        var n: int = int(nums[i])
+        var in_seq: bool = n in arrow_seq
+        var is_hi: bool = n == highlight
+        if is_hi or in_seq:
+            var border: Color = COLOR_GLOW_GOLD
+            var fill := Color(border.r, border.g, border.b, 0.3)
+            draw_rect(rect, fill, true)
+            draw_rect(rect, border, false, 1.4)
+            _draw_centered(f, pos + rect.size * 0.5 + Vector2(0, 4), str(n), 11, border)
+        else:
+            draw_rect(rect, COLOR_PANEL_OFF, true)
+            draw_rect(rect, Color(COLOR_GLOW_CYAN.r, COLOR_GLOW_CYAN.g, COLOR_GLOW_CYAN.b, 0.25), false, 1.0)
+            _draw_centered(f, pos + rect.size * 0.5 + Vector2(0, 4), str(n), 11, COLOR_DIM)
+        num_to_center[n] = pos + rect.size * 0.5
+    if arrow_seq.size() >= 2:
+        for i in range(arrow_seq.size() - 1):
+            var a: int = int(arrow_seq[i])
+            var b: int = int(arrow_seq[i + 1])
+            if num_to_center.has(a) and num_to_center.has(b):
+                draw_line(num_to_center[a], num_to_center[b], Color(COLOR_GLOW_GOLD.r, COLOR_GLOW_GOLD.g, COLOR_GLOW_GOLD.b, 0.7), 1.8, true)
 
 
 func _draw_growth_step(center: Vector2, lit_count: int, label: String, f: Font) -> void:

@@ -15,7 +15,7 @@ extends Node
 signal game_started
 signal game_finished(play_log: PlayLog)
 
-## サブクラスで必ず上書きする（"reflex_tap" など）
+## サブクラスで必ず上書きする（"flash_calc" など）
 var game_type: String = ""
 
 ## タイム系ならプレイ中にゴーストバーを出す（サブクラスで設定）

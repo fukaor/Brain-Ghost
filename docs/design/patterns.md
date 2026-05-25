@@ -246,7 +246,7 @@ manifest.md §9 では **GDScript 内で `modulate = Color(...)` を書くこと
 
 ## 9. ミニゲーム実装のテンプレ
 
-新しいミニゲームを追加するときは、反射タップ (`scripts/games/reflex_tap.gd` + `scenes/games/reflex_tap.tscn` + `scripts/ui/reflex_tap_view.gd`) を下敷きにする。
+新しいミニゲームを追加するときは、数字さがし (`scripts/games/number_search/number_search.gd` + `scenes/games/number_search/number_search.tscn` + `scripts/ui/number_search_view.gd`) または順番記憶 (`scripts/games/sequence_memory.gd` + `scripts/ui/sequence_memory_view.gd`) を下敷きにする。
 
 ### 9-1. ロジッククラス (`scripts/games/<game>.gd`)
 
@@ -295,9 +295,7 @@ func _on_finish() -> PlayLog:
 
 ### 9-4. GameManager フローへの組み込み
 
-`scripts/autoload/game_manager.gd` に以下のメソッドを追加 (反射タップを参考):
-- `start_<game>(mode)` — シーン遷移開始
-- `on_<game>_finished(log)` — ゲーム終了時のフィルイン + ScoreSystem 呼び出し + DataStore 保存 + 結果画面遷移
+`scripts/autoload/game_manager.gd` の `GAME_SCENES` に新シーンを 1 行追加し、`_build_play_data_for(log)` の match に分岐を追加するだけで OK。ゲーム終了時の遷移は `on_game_finished_handler(log)` が共通で処理する。
 
 ### 9-5. 共有ルール説明データ
 
@@ -305,10 +303,14 @@ func _on_finish() -> PlayLog:
 
 ```gdscript
 const RULES: Dictionary = {
-    "reflex_tap": {...},
+    "ghost_7ban_shobu": {...},
     "<new_game>": {
         "title": "<ゲーム名>",
-        "dialogue": "<ゴーストが説明するルール文>",
+        "ability_label": "鍛える能力：<軸名>",
+        "steps": [
+            {"index": "1.", "title": "...", "body": "...", "preview_variant": "ready"},
+            ...
+        ],
     },
 }
 ```
@@ -323,14 +325,15 @@ const RULES: Dictionary = {
 
 GUT の `before_each` でゲームインスタンスを seed 付きで setup する。
 
-### 9-7. 反射タップを写経するときのチェックリスト
+### 9-7. 既存ゲームを写経するときのチェックリスト
 
 - [ ] BaseGame 継承
 - [ ] `class_name` を新規追加 (Godot 4 ネイティブクラスと衝突しない名前)
 - [ ] `Array.shuffle()` を使っていない (`rng.randi_range` のみ)
 - [ ] `ScoreSystem.calculate_score("<game>", play_data)` の呼び出しが GameManager 側
 - [ ] `RULES` Dictionary に新ゲーム追加
-- [ ] `GameManager.start_<game>` メソッド追加
+- [ ] `GameManager.GAME_SCENES` に新シーンを登録 (`_implemented_games` は自動反映)
+- [ ] `GameManager._build_play_data_for` に game_type 分岐を追加
 - [ ] view スクリプトが ScoreSystem / DataStore を直接呼んでいない (GameManager 経由)
 - [ ] 新規シーンで生 hex / 絶対配置 / theme_override がゼロ
 - [ ] GUT テスト追加

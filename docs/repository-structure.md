@@ -59,12 +59,18 @@ brain-ghost/
 │   │   ├── onboarding.tscn         # 初回オンボーディング
 │   │   └── settings.tscn           # 設定画面
 │   ├── games/                      # 各ミニゲームのシーン
-│   │   ├── reflex_tap.tscn
-│   │   ├── flash_calc.tscn
-│   │   ├── number_search.tscn
-│   │   ├── stroop.tscn
+│   │   ├── flash_calc/
+│   │   │   ├── flash_calc_play.tscn
+│   │   │   └── flash_calc_home.tscn  # ティア選択画面
+│   │   ├── ghost_7ban_shobu/
+│   │   │   └── ghost_7ban_shobu.tscn
 │   │   ├── sequence_memory.tscn
-│   │   └── card_match.tscn
+│   │   ├── number_search/
+│   │   │   └── number_search.tscn
+│   │   ├── card_match/
+│   │   │   └── card_match.tscn
+│   │   └── stroop/
+│   │       └── stroop.tscn
 │   ├── ui/
 │   │   ├── rule_explain.tscn       # ルール説明画面（ゴーストがルールを説明、データドリブン）
 │   │   ├── countdown.tscn          # カウントダウン演出（3-2-1、ゴーストセリフ同期）
@@ -102,12 +108,28 @@ brain-ghost/
 │   │   └── streak_state.gd
 │   ├── games/                      # ゲームコアレイヤー
 │   │   ├── base_game.gd            # 基底クラス
-│   │   ├── reflex_tap.gd
-│   │   ├── flash_calc.gd
-│   │   ├── number_search.gd
-│   │   ├── stroop.gd
 │   │   ├── sequence_memory.gd
-│   │   └── card_match.gd
+│   │   ├── flash_calc/
+│   │   │   ├── flash_calc.gd
+│   │   │   ├── flash_calc_home.gd
+│   │   │   ├── flash_calc_play_view.gd
+│   │   │   ├── problem_generator.gd
+│   │   │   └── tier_config.gd
+│   │   ├── ghost_7ban_shobu/
+│   │   │   ├── ghost_7ban_shobu.gd
+│   │   │   └── ...                  # 詳細は spec / 実ディレクトリ参照
+│   │   ├── number_search/
+│   │   │   ├── number_search.gd
+│   │   │   ├── tier_config.gd
+│   │   │   └── grid_generator.gd
+│   │   ├── card_match/
+│   │   │   ├── card_match.gd
+│   │   │   ├── tier_config.gd
+│   │   │   └── card_generator.gd
+│   │   └── stroop/
+│   │       ├── stroop.gd
+│   │       ├── tier_config.gd
+│   │       └── stimulus_generator.gd
 │   ├── ui/                         # UIコントローラ
 │   │   ├── launch_controller.gd
 │   │   ├── home_controller.gd
@@ -120,8 +142,13 @@ brain-ghost/
 │   │   ├── share_screen_controller.gd
 │   │   ├── ghost_bar_controller.gd
 │   │   ├── ghost_character.gd       # ★ GhostCharacter クラス（FR-14、生霊キャラ再利用コンポ）
-│   │   ├── reflex_tap_view.gd       # ★ 反射タップシーンスクリプト（ReflexTap ロジックを駆動）
-│   │   ├── flash_calc_view.gd       # ★ フラッシュ暗算シーンスクリプト（FlashCalc ロジックを駆動）
+│   │   ├── sequence_memory_view.gd  # ★ 順番記憶シーンスクリプト
+│   │   ├── number_search_view.gd    # ★ 数字さがしシーンスクリプト
+│   │   ├── card_match_view.gd       # ★ 神経衰弱ライトシーンスクリプト
+│   │   ├── stroop_view.gd           # ★ 色文字ストループシーンスクリプト
+│   │   ├── components/              # 共通 UI コンポーネント
+│   │   │   ├── number_cell.gd       # 数字さがしのセル
+│   │   │   └── card.gd              # 神経衰弱のカード
 │   │   ├── radar_chart_controller.gd
 │   │   └── stamp_calendar_controller.gd
 │   └── utils/                      # 汎用ユーティリティ
@@ -221,7 +248,7 @@ docs/design/
 - `scenes/shared/`: オーディオコントローラなどの非表示ユーティリティシーン
 
 **命名規則**:
-- snake_case + `.tscn`（例: `reflex_tap.tscn`）
+- snake_case + `.tscn`（例: `number_search.tscn`）
 - ゲームシーンは `scripts/games/*.gd` とペアで命名
 
 **依存関係**:
@@ -328,7 +355,7 @@ static func from_dict(d: Dictionary) -> PlayLog: ...
 
 **命名規則**:
 - ファイル名: `snake_case.gd`（`scenes/games/*.tscn` とペア）
-- クラス名: `class_name PascalCaseGame`（例: `class_name ReflexTap`）
+- クラス名: `class_name PascalCaseGame`（例: `class_name FlashCalc`、`class_name NumberSearch`）
 
 **依存関係**:
 - **依存可能**: `scripts/models/`, `scripts/core/ScoreSystem`（スコア計算のため）, `scripts/utils/`, 自分のシーン
@@ -391,7 +418,7 @@ static func from_dict(d: Dictionary) -> PlayLog: ...
 
 **命名規則**:
 - snake_case
-- ゲーム別アセットは `assets/images/games/reflex_tap/` のようにゲーム名でサブディレクトリ
+- ゲーム別アセットは `assets/images/games/number_search/` のようにゲーム名でサブディレクトリ
 
 **依存関係**:
 - ソースコードからのみ参照される（逆向きはなし）
@@ -535,14 +562,14 @@ tests/e2e/
 
 | ファイル種別 | 配置先 | 命名規則 | 例 |
 |---|---|---|---|
-| Godot シーン | `scenes/<area>/` | `snake_case.tscn` | `home.tscn`, `reflex_tap.tscn` |
+| Godot シーン | `scenes/<area>/` | `snake_case.tscn` | `home.tscn`, `number_search.tscn` |
 | Autoload スクリプト | `scripts/autoload/` | `snake_case.gd` | `game_manager.gd` |
 | サービスクラス | `scripts/core/` | `snake_case.gd` + `class_name` | `score_system.gd` → `ScoreSystem` |
 | モデル | `scripts/models/` | `snake_case.gd` + `class_name` | `play_log.gd` → `PlayLog` |
-| ミニゲーム | `scripts/games/` | `snake_case.gd` | `reflex_tap.gd` |
+| ミニゲーム | `scripts/games/<game>/` | `snake_case.gd` | `number_search.gd`, `card_match.gd` |
 | UIコントローラ | `scripts/ui/` | `snake_case_controller.gd` | `home_controller.gd` |
 | ユーティリティ | `scripts/utils/` | `snake_case.gd` | `date_util.gd` |
-| 画像 | `assets/images/` または `assets/images/games/<game>/` | snake_case | `reflex_tap_bg.png` |
+| 画像 | `assets/images/` または `assets/images/games/<game>/` | snake_case | `number_search_bg.png` |
 | 音声 | `assets/sounds/bgm/` or `assets/sounds/se/` | snake_case | `bgm_home.ogg`, `se_correct.wav` |
 | フォント | `assets/fonts/` | そのまま | `NotoSansJP-Regular.ttf` |
 | UIテーマ | `assets/themes/` | `snake_case.tres` | `default_theme.tres` |

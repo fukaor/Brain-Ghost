@@ -1,0 +1,324 @@
+[gd_scene load_steps=8 format=3 uid="uid://b0flashcalcply01"]
+
+[ext_resource type="Script" path="res://scripts/games/flash_calc/flash_calc_play_view.gd" id="1_view"]
+[ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="2_stars"]
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSerifJP-Bold.otf" id="3_mcserif"]
+
+; ----- Midnight Cat 背景 -----
+[sub_resource type="Gradient" id="Gradient_bg"]
+offsets = PackedFloat32Array(0, 0.45, 1)
+colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bg"]
+gradient = SubResource("Gradient_bg")
+fill = 1
+fill_from = Vector2(0.5, 0.4)
+fill_to = Vector2(1, 1)
+
+; ----- ProgressBar fill style (cyan dim) -----
+[sub_resource type="StyleBoxFlat" id="SBF_cd_bar_fill"]
+bg_color = Color(0.435, 0.706, 1, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="SBF_cd_bar_bg"]
+bg_color = Color(0.04, 0.08, 0.16, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.435, 0.706, 1, 0.3)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+; ----- ResultPopup panel -----
+[sub_resource type="StyleBoxFlat" id="SBF_result_panel"]
+content_margin_left = 36.0
+content_margin_top = 32.0
+content_margin_right = 36.0
+content_margin_bottom = 32.0
+bg_color = Color(0.04, 0.08, 0.16, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.435, 0.706, 1, 0.55)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(0, 0, 0, 0.55)
+shadow_size = 24
+shadow_offset = Vector2(0, 8)
+
+[node name="FlashCalcPlay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_view")
+
+[node name="VoidBg" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 1)
+mouse_filter = 2
+
+[node name="NebulaBg" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="StarLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_stars")
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 24
+
+[node name="MainColumn" type="VBoxContainer" parent="SafeArea"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+; ===================== HeaderRow =====================
+[node name="HeaderRow" type="HBoxContainer" parent="SafeArea/MainColumn"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 24
+
+[node name="TitleLabel" type="Label" parent="SafeArea/MainColumn/HeaderRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.97, 1, 1)
+theme_override_fonts/font = ExtResource("3_mcserif")
+theme_override_font_sizes/font_size = 28
+text = "🥋 T1 ／ フラッシュ暗算 一本勝負"
+
+[node name="HSpacer" type="Control" parent="SafeArea/MainColumn/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GhostStatsLabel" type="Label" parent="SafeArea/MainColumn/HeaderRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.93, 1, 0.85)
+theme_override_font_sizes/font_size = 22
+text = "👻 練習仲間: 12.0 秒で解答"
+
+; ===================== StageArea (数字フラッシュ + CD バー) =====================
+[node name="StageArea" type="VBoxContainer" parent="SafeArea/MainColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="PhaseLabel" type="Label" parent="SafeArea/MainColumn/StageArea"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_fonts/font = ExtResource("3_mcserif")
+theme_override_font_sizes/font_size = 80
+text = "READY?"
+horizontal_alignment = 1
+
+[node name="NumberFlashLabel" type="Label" parent="SafeArea/MainColumn/StageArea"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.97, 1, 1)
+theme_override_fonts/font = ExtResource("3_mcserif")
+theme_override_font_sizes/font_size = 200
+text = ""
+horizontal_alignment = 1
+
+[node name="GhostCdBar" type="ProgressBar" parent="SafeArea/MainColumn/StageArea"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_styles/background = SubResource("SBF_cd_bar_bg")
+theme_override_styles/fill = SubResource("SBF_cd_bar_fill")
+show_percentage = false
+visible = false
+
+[node name="GhostCdLabel" type="Label" parent="SafeArea/MainColumn/StageArea"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.93, 1, 0.85)
+theme_override_font_sizes/font_size = 22
+text = "👻 残り 0.0 秒"
+horizontal_alignment = 1
+visible = false
+
+; ===================== InputArea (答え + テンキー) =====================
+[node name="InputArea" type="VBoxContainer" parent="SafeArea/MainColumn"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="AnswerLabel" type="Label" parent="SafeArea/MainColumn/InputArea"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_fonts/font = ExtResource("3_mcserif")
+theme_override_font_sizes/font_size = 52
+text = ""
+horizontal_alignment = 1
+
+[node name="Keypad" type="GridContainer" parent="SafeArea/MainColumn/InputArea"]
+layout_mode = 2
+size_flags_horizontal = 4
+columns = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+
+[node name="Btn7" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "7"
+metadata/key = "7"
+
+[node name="Btn8" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "8"
+metadata/key = "8"
+
+[node name="Btn9" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "9"
+metadata/key = "9"
+
+[node name="Btn4" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "4"
+metadata/key = "4"
+
+[node name="Btn5" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "5"
+metadata/key = "5"
+
+[node name="Btn6" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "6"
+metadata/key = "6"
+
+[node name="Btn1" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "1"
+metadata/key = "1"
+
+[node name="Btn2" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "2"
+metadata/key = "2"
+
+[node name="Btn3" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "3"
+metadata/key = "3"
+
+[node name="BtnBack" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 1)
+theme_override_font_sizes/font_size = 36
+text = "⌫"
+metadata/key = "back"
+
+[node name="Btn0" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "0"
+metadata/key = "0"
+
+[node name="BtnSubmit" type="Button" parent="SafeArea/MainColumn/InputArea/Keypad"]
+custom_minimum_size = Vector2(96, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_font_sizes/font_size = 36
+text = "✓"
+metadata/key = "submit"
+
+; ===================== ResultPopup =====================
+[node name="ResultPopup" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+visible = false
+
+[node name="Dim" type="ColorRect" parent="ResultPopup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.55)
+
+[node name="Panel" type="PanelContainer" parent="ResultPopup"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -120.0
+offset_right = 260.0
+offset_bottom = 120.0
+theme_override_styles/panel = SubResource("SBF_result_panel")
+
+[node name="VBox" type="VBoxContainer" parent="ResultPopup/Panel"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="ResultText" type="Label" parent="ResultPopup/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_fonts/font = ExtResource("3_mcserif")
+theme_override_font_sizes/font_size = 64
+text = "WIN"
+horizontal_alignment = 1
+
+[node name="ResultScore" type="Label" parent="ResultPopup/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.97, 1, 0.9)
+theme_override_font_sizes/font_size = 32
+text = "スコア: 0"
+horizontal_alignment = 1
