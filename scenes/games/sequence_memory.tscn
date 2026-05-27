@@ -4,25 +4,13 @@
 [ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="2_msym"]
 [ext_resource type="FontFile" path="res://assets/fonts/NotoSansJP-Bold.otf" id="3_bold"]
 [ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="4_stars"]
-
-; ----- Midnight Cat 背景 -----
-[sub_resource type="Gradient" id="Gradient_nebula"]
-offsets = PackedFloat32Array(0, 0.4, 1)
-colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_nebula"]
-gradient = SubResource("Gradient_nebula")
-fill = 1
-fill_from = Vector2(0.5, 0.4)
-fill_to = Vector2(1, 1)
-
-; ----- ROUND チップ (pill 形状、暗グラス + シアン枠) -----
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/bg_play.png" id="1000_washibg"]
 [sub_resource type="StyleBoxFlat" id="SBF_round_chip"]
 content_margin_left = 20.0
 content_margin_top = 8.0
 content_margin_right = 20.0
 content_margin_bottom = 8.0
-bg_color = Color(0.04, 0.08, 0.16, 0.7)
+bg_color = Color(0.910, 0.863, 0.753, 0.85)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -39,7 +27,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.067, 0.094, 0.153, 0.7)
+bg_color = Color(0.910, 0.863, 0.753, 0.85)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -56,7 +44,7 @@ content_margin_left = 8.0
 content_margin_top = 8.0
 content_margin_right = 8.0
 content_margin_bottom = 8.0
-bg_color = Color(0.067, 0.094, 0.153, 0.45)
+bg_color = Color(0.910, 0.863, 0.753, 0.6)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -76,7 +64,7 @@ content_margin_left = 8.0
 content_margin_top = 8.0
 content_margin_right = 8.0
 content_margin_bottom = 8.0
-bg_color = Color(0.58, 0.639, 0.722, 0.5)
+bg_color = Color(0.420, 0.420, 0.447, 0.5)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -99,29 +87,11 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_view")
 
-[node name="VoidBg" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 1)
 
-[node name="NebulaBg" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("GradientTexture2D_nebula")
+[node name="WashiBackground" type="TextureRect" parent="."]
+texture = ExtResource("1000_washibg")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="StarLayer" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -129,10 +99,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("4_stars")
-
-; === タイマー（右上） ===
-
+z_index = -100
 [node name="TimerRing" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 1
@@ -147,7 +114,7 @@ theme_override_styles/panel = SubResource("SBF_timer_chip")
 
 [node name="TimerLabel" type="Label" parent="TimerRing"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.722, 0.878, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_fonts/font = ExtResource("3_bold")
 theme_override_font_sizes/font_size = 28
 text = "—"
@@ -188,14 +155,14 @@ theme_override_styles/panel = SubResource("SBF_round_chip")
 
 [node name="RoundLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderArea/RoundBadgeCenter/RoundBadge"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.435, 0.706, 1, 1)
+theme_override_colors/font_color = Color(0.239, 0.420, 0.584, 1)
 theme_override_fonts/font = ExtResource("3_bold")
 theme_override_font_sizes/font_size = 22
 text = "ROUND 01"
 
 [node name="InstructionLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderArea"]
 layout_mode = 2
-theme_type_variation = &"mc_h2"
+theme_type_variation = &"h2"
 theme_override_font_sizes/font_size = 36
 text = "覚えてください"
 horizontal_alignment = 1

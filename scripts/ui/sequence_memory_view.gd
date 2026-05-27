@@ -3,7 +3,7 @@
 ## 順番記憶シーンスクリプト。SequenceMemory ロジックを内包し、
 ## パネルの表示アニメーション・入力処理・ラウンド進行を管理する。
 ##
-## Midnight Cat デザイン (2026-05-17):
+## Sumi Ghost (墨絵調) デザイン (2026-05-17):
 ## - 上部: ROUND ピル (CYAN_400 ボーダー) + 指示テキスト (mc_h2 serif, フェーズ別色)
 ## - 中央: 3x3 メモリーグリッド (rule_explain 側のプレビューと整合)
 ##   - showing 中（光中）: CYAN_400 発光 + 番号
@@ -15,7 +15,7 @@
 ## - クリア系のためプレイ中ゴーストバトルバー非表示 (GDD §5c)
 extends Control
 
-# Midnight Cat パレット (color_palette.gd と同期)
+# Sumi Ghost (墨絵調) パレット (color_palette.gd と同期)
 const COLOR_ACTIVE_BG := Color(0.435, 0.706, 1, 0.85)        # CYAN_400 α=0.85
 const COLOR_ACTIVE_BORDER := Color(0.722, 0.878, 1, 1)        # CYAN_300
 const COLOR_ACTIVE_TEXT := Color(0.957, 0.969, 1, 1)          # INK_100

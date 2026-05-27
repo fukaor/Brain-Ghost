@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="2_stars"]
 [ext_resource type="FontFile" path="res://assets/fonts/NotoSerifJP-Bold.otf" id="3_mcserif"]
 [ext_resource type="PackedScene" uid="uid://b0navlinkbtn001" path="res://scenes/ui/components/nav_link_button.tscn" id="5_navlink"]
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/bg_play.png" id="1000_washibg"]
 
 [sub_resource type="Gradient" id="Gradient_bg"]
 offsets = PackedFloat32Array(0, 0.45, 1)
@@ -24,32 +25,19 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ctrl")
 
-[node name="VoidBg" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color(0, 0, 0, 1)
-mouse_filter = 2
 
-[node name="NebulaBg" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-texture = SubResource("GradientTexture2D_bg")
+[node name="WashiBackground" type="TextureRect" parent="."]
+texture = ExtResource("1000_washibg")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="StarLayer" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("2_stars")
-
+z_index = -100
 [node name="SafeArea" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -71,7 +59,7 @@ alignment = 1
 
 [node name="TitleLabel" type="Label" parent="SafeArea/MainColumn/Header"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.97, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
 theme_override_font_sizes/font_size = 32
 text = "🥋 フラッシュ暗算"
@@ -80,7 +68,7 @@ horizontal_alignment = 1
 ; -------------------- 適正ティア表示 --------------------
 [node name="AppropriateLabel" type="Label" parent="SafeArea/MainColumn"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_colors/font_color = Color(0.784, 0.663, 0.318, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
 theme_override_font_sizes/font_size = 24
 text = "🎯 今日の適正ティア: T1"
@@ -97,7 +85,7 @@ theme_override_constants/v_separation = 12
 ; -------------------- フッターヒント --------------------
 [node name="FooterHint" type="Label" parent="SafeArea/MainColumn"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 0.7)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 0.75)
 theme_override_font_sizes/font_size = 20
 text = "ティアを選んで一本勝負を始めよう。
 直近 5 回中 3 回正解で次ティア解放！"

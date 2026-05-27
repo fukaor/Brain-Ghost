@@ -48,7 +48,7 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [gui]
 
-theme/custom="res://assets/themes/default_theme.tres"
+theme/custom="res://assets/themes/sumi_theme.tres"
 
 [input]
 

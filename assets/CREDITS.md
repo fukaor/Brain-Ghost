@@ -9,10 +9,13 @@
 | 名前 | 用途 | ライセンス | 出典 |
 |---|---|---|---|
 | Noto Sans JP Bold | UI テキスト全般（本文・見出し・数値） | SIL Open Font License 1.1 | https://github.com/notofonts/noto-cjk (`Sans/SubsetOTF/JP/NotoSansJP-Bold.otf`) |
+| Noto Serif JP Bold | 墨絵テーマの見出し・ゲーム名・セリフ | SIL Open Font License 1.1 | https://github.com/notofonts/noto-cjk (`Serif/SubsetOTF/JP/NotoSerifJP-Bold.otf`) |
+| Space Grotesk Bold | 墨絵テーマのスコア・脳年齢の数字 | SIL Open Font License 1.1 | https://github.com/floriankarsten/space-grotesk (`SpaceGrotesk-2.0.0/ttf/static/SpaceGrotesk-Bold.ttf`) |
+| JetBrains Mono Regular | 墨絵テーマのタイマー・反応時間 ms 表示 | SIL Open Font License 1.1 | https://github.com/JetBrains/JetBrainsMono (`v2.304/fonts/ttf/JetBrainsMono-Regular.ttf`) |
 | Material Symbols Rounded (variable) | UI アイコン全般（ナビゲーション・ステータス・アクション） | Apache License 2.0 | https://github.com/google/material-design-icons (`variablefont/MaterialSymbolsRounded[FILL,GRAD,opsz,wght].ttf`) |
 
-- 配置: `assets/fonts/NotoSansJP-Bold.otf`、`assets/fonts/MaterialSymbolsRounded.ttf`
-- Noto Sans JP ライセンス本文: `assets/fonts/OFL.txt` に同梱
+- 配置: `assets/fonts/{NotoSansJP-Bold.otf, NotoSerifJP-Bold.otf, SpaceGrotesk-Bold.ttf, JetBrainsMono-Regular.ttf, MaterialSymbolsRounded.ttf}`
+- 各 OFL ライセンス本文: `assets/fonts/OFL.txt` に同梱
 - Material Symbols ライセンス: Apache 2.0 は帰属表示不要だが上記で明記
 
 ## 効果音 (SE)

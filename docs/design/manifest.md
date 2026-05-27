@@ -1,5 +1,9 @@
 # ブレインゴースト デザインマニフェスト
 
+> ⚠️ **2026-05-26 SSOT 移行**: 本ドキュメントは旧 Midnight Cat v3 用の歴史資料。
+> 現在の Single Source of Truth は **`docs/design/sumi_ghost_design_system.md`**（Sumi Ghost v4 / 墨絵調）。
+> 新規実装の参照はすべて新ドキュメントへ。
+
 > 生成日: 2026-04-10
 > モード: Generate（新規プロジェクト、既存 UI なし）
 > 一次情報源:

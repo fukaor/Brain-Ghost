@@ -4,18 +4,7 @@
 [ext_resource type="Texture2D" path="res://assets/branding/reigal_labs_logo.png" id="2_reigal"]
 [ext_resource type="Texture2D" path="res://assets/branding/brain_ghost_logo.png" id="3_bglogo"]
 [ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="4_stars"]
-
-; ----- Midnight Cat 背景 (home / individual_result と共通) -----
-[sub_resource type="Gradient" id="Gradient_nebula"]
-offsets = PackedFloat32Array(0, 0.4, 1)
-colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_nebula"]
-gradient = SubResource("Gradient_nebula")
-fill = 1
-fill_from = Vector2(0.5, 0.4)
-fill_to = Vector2(1, 1)
-
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/bg_washi_base.png" id="1000_washibg"]
 [node name="Launch" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -25,29 +14,11 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_launch")
 
-[node name="VoidBg" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 1)
 
-[node name="NebulaBg" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("GradientTexture2D_nebula")
+[node name="WashiBackground" type="TextureRect" parent="."]
+texture = ExtResource("1000_washibg")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="StarLayer" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,9 +26,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("4_stars")
-
-; -------------------- Phase 1: Reigal Labs publisher logo --------------------
+z_index = -100
 [node name="ReigalLogo" type="TextureRect" parent="."]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 1

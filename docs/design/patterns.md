@@ -1,5 +1,9 @@
 # ブレインゴースト UI パターン集
 
+> ⚠️ **2026-05-26 SSOT 移行**: 本ドキュメントは旧 Midnight Cat v3 用の歴史資料。
+> 現在の Single Source of Truth は **`docs/design/sumi_ghost_design_system.md`**（Sumi Ghost v4 / 墨絵調）。
+> 新規実装の参照はすべて新ドキュメントへ。
+
 > `docs/design/manifest.md` の仕様を実装に落とし込むときの **実装者向けテンプレート集**。新しい画面を作るときはまずこのファイルを開き、該当パターンをコピーして出発点にする。
 >
 > manifest.md は「何を使うか」、patterns.md は「どう組むか」。

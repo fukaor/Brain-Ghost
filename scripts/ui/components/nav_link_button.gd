@@ -11,7 +11,7 @@
 ## - [code]label_text[/code]: 表示文言（例: "ホーム" / "全ゲーム一覧"）
 ## - [code]direction[/code]: "back"（‹ 矢印を text の前に、アイコンは左端）/ "forward"（› 矢印を text の後、アイコンは右端）
 ##
-## スタイルは `theme_type_variation = &"mc_back_btn"` 固定。
+## スタイルは `theme_type_variation = &"btn_secondary"` 固定 (Sumi Ghost v4)。
 ## サイズ・font_size はシーン側で override 可能。
 class_name NavLinkButton
 extends Button

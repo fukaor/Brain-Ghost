@@ -1,33 +1,21 @@
 [gd_scene load_steps=13 format=3 uid="uid://b0indresult001"]
 
 [ext_resource type="Script" path="res://scripts/ui/individual_result_controller.gd" id="1_ctrl"]
-[ext_resource type="Texture2D" path="res://assets/characters/catboy_electric.png" id="2_youavatar"]
+[ext_resource type="Texture2D" path="res://assets/characters/sumineko_normal.png" id="2_youavatar"]
 [ext_resource type="Script" path="res://scripts/ui/speech_bubble.gd" id="4_bubble"]
 [ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="5_msym"]
 [ext_resource type="FontFile" path="res://assets/fonts/NotoSerifJP-Bold.otf" id="6_mcserif"]
 [ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="7_stars"]
 [ext_resource type="Script" path="res://scripts/ui/effects/glow_cta.gd" id="8_glowcta"]
-
-; ----- Midnight Cat 背景 (rule_explain / countdown と共通) -----
-[sub_resource type="Gradient" id="Gradient_nebula"]
-offsets = PackedFloat32Array(0, 0.4, 1)
-colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_nebula"]
-gradient = SubResource("Gradient_nebula")
-fill = 1
-fill_from = Vector2(0.5, 0.35)
-fill_to = Vector2(1, 1)
-
-; ----- Midnight Cat ダークパネル系 (default_theme は明色なので個別オーバーライド) -----
-
-; ScoreCard 用: 薄い透明の暗パネル + 細いシアンボーダー
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/bg_result_win.png" id="1000_washibg"]
+[ext_resource type="Script" path="res://scripts/ui/components/juicy_bounce.gd" id="9001_juicy"]
+[ext_resource type="Script" path="res://scripts/ui/components/mascot_controller.gd" id="9100_mascot"]
 [sub_resource type="StyleBoxFlat" id="SBF_premium_dark"]
 content_margin_left = 24.0
 content_margin_top = 22.0
 content_margin_right = 24.0
 content_margin_bottom = 22.0
-bg_color = Color(0.04, 0.08, 0.16, 0.6)
+bg_color = Color(0.910, 0.863, 0.753, 0.75)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -47,7 +35,7 @@ content_margin_left = 16.0
 content_margin_top = 14.0
 content_margin_right = 16.0
 content_margin_bottom = 14.0
-bg_color = Color(0.04, 0.08, 0.16, 0.55)
+bg_color = Color(0.910, 0.863, 0.753, 0.7)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -64,7 +52,7 @@ content_margin_left = 14.0
 content_margin_top = 14.0
 content_margin_right = 14.0
 content_margin_bottom = 14.0
-bg_color = Color(0.04, 0.08, 0.16, 0.55)
+bg_color = Color(0.910, 0.863, 0.753, 0.7)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -81,7 +69,7 @@ content_margin_left = 14.0
 content_margin_top = 14.0
 content_margin_right = 14.0
 content_margin_bottom = 14.0
-bg_color = Color(0.04, 0.08, 0.16, 0.55)
+bg_color = Color(0.910, 0.863, 0.753, 0.7)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -107,7 +95,7 @@ content_margin_left = 12.0
 content_margin_top = 4.0
 content_margin_right = 12.0
 content_margin_bottom = 4.0
-bg_color = Color(0.435, 0.706, 1, 0.15)
+bg_color = Color(0.478, 0.702, 0.878, 0.15)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -124,7 +112,7 @@ content_margin_left = 18.0
 content_margin_top = 4.0
 content_margin_right = 18.0
 content_margin_bottom = 4.0
-bg_color = Color(1, 0.914, 0.659, 0.15)
+bg_color = Color(0.784, 0.663, 0.318, 0.15)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -144,29 +132,11 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ctrl")
 
-[node name="VoidBg" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-mouse_filter = 2
 
-[node name="NebulaBg" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("GradientTexture2D_nebula")
+[node name="WashiBackground" type="TextureRect" parent="."]
+texture = ExtResource("1000_washibg")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="StarLayer" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -174,8 +144,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("7_stars")
-
+z_index = -100
 [node name="SafeAreaMargin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -205,14 +174,14 @@ theme_override_constants/separation = 14
 [node name="StarLeft" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock/GradeRow"]
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_colors/font_color = Color(0.784, 0.663, 0.318, 1)
 theme_override_fonts/font = ExtResource("5_msym")
 theme_override_font_sizes/font_size = 36
 text = "auto_awesome"
 
 [node name="GradeHeadline" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock/GradeRow"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_colors/font_color = Color(0.784, 0.663, 0.318, 1)
 theme_override_fonts/font = ExtResource("6_mcserif")
 theme_override_font_sizes/font_size = 64
 text = "PERFECT WIN"
@@ -222,14 +191,14 @@ vertical_alignment = 1
 [node name="StarRight" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock/GradeRow"]
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_colors/font_color = Color(0.784, 0.663, 0.318, 1)
 theme_override_fonts/font = ExtResource("5_msym")
 theme_override_font_sizes/font_size = 36
 text = "auto_awesome"
 
 [node name="Subtitle" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 0.7)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 0.75)
 theme_override_font_sizes/font_size = 24
 text = "7ラウンド対決"
 horizontal_alignment = 1
@@ -241,50 +210,50 @@ theme_override_constants/separation = 12
 
 [node name="Dot0" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock/RoundDots"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_font_sizes/font_size = 32
 text = "●"
 
 [node name="Dot1" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock/RoundDots"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_font_sizes/font_size = 32
 text = "●"
 
 [node name="Dot2" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock/RoundDots"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_font_sizes/font_size = 32
 text = "●"
 
 [node name="Dot3" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock/RoundDots"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_font_sizes/font_size = 32
 text = "●"
 
 [node name="Dot4" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock/RoundDots"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_font_sizes/font_size = 32
 text = "●"
 
 [node name="Dot5" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock/RoundDots"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_font_sizes/font_size = 32
 text = "●"
 
 [node name="Dot6" type="Label" parent="SafeAreaMargin/MainColumn/HeaderBlock/RoundDots"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_font_sizes/font_size = 32
 text = "●"
 
 ; ===================== VerdictTitle =====================
 [node name="VerdictTitle" type="Label" parent="SafeAreaMargin/MainColumn"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_colors/font_color = Color(0.784, 0.663, 0.318, 1)
 theme_override_fonts/font = ExtResource("6_mcserif")
 theme_override_font_sizes/font_size = 44
 text = "✧ 勝ち越し！ ✧"
@@ -302,7 +271,7 @@ alignment = 1
 
 [node name="ScoreCaption" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 0.7)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 0.75)
 theme_override_font_sizes/font_size = 28
 text = "スコア"
 horizontal_alignment = 1
@@ -314,14 +283,14 @@ theme_override_constants/separation = 6
 
 [node name="ScoreValue" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox/ScoreRow"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.97, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_font_sizes/font_size = 100
 text = "1,280"
 
 [node name="ScoreUnit" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox/ScoreRow"]
 layout_mode = 2
 size_flags_vertical = 8
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 1)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 1)
 theme_override_font_sizes/font_size = 32
 text = "pts"
 
@@ -332,7 +301,7 @@ theme_override_styles/panel = SubResource("SBF_pill_cyan")
 
 [node name="DeltaText" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox/ScoreRow/DeltaBadge"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.435, 0.706, 1, 1)
+theme_override_colors/font_color = Color(0.239, 0.420, 0.584, 1)
 theme_override_font_sizes/font_size = 24
 text = "↑+180"
 
@@ -344,7 +313,7 @@ visible = false
 
 [node name="BestPillLabel" type="Label" parent="SafeAreaMargin/MainColumn/ScoreCard/ScoreCardVBox/BestPill"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_colors/font_color = Color(0.784, 0.663, 0.318, 1)
 theme_override_font_sizes/font_size = 24
 text = "BEST"
 
@@ -365,7 +334,7 @@ alignment = 1
 
 [node name="YouHeader" type="Label" parent="SafeAreaMargin/MainColumn/CompareCards/YouCard/YouVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.435, 0.706, 1, 1)
+theme_override_colors/font_color = Color(0.239, 0.420, 0.584, 1)
 theme_override_fonts/font = ExtResource("6_mcserif")
 theme_override_font_sizes/font_size = 36
 text = "YOU"
@@ -373,14 +342,14 @@ horizontal_alignment = 1
 
 [node name="YouCaption" type="Label" parent="SafeAreaMargin/MainColumn/CompareCards/YouCard/YouVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 0.6)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 0.65)
 theme_override_font_sizes/font_size = 20
 text = "平均"
 horizontal_alignment = 1
 
 [node name="YouValue" type="Label" parent="SafeAreaMargin/MainColumn/CompareCards/YouCard/YouVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_font_sizes/font_size = 48
 text = "112ms"
 horizontal_alignment = 1
@@ -397,7 +366,7 @@ alignment = 1
 
 [node name="OpponentHeader" type="Label" parent="SafeAreaMargin/MainColumn/CompareCards/OpponentCard/OpponentVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_colors/font_color = Color(0.639, 0.620, 0.580, 1)
 theme_override_fonts/font = ExtResource("6_mcserif")
 theme_override_font_sizes/font_size = 36
 text = "GHOST"
@@ -405,14 +374,14 @@ horizontal_alignment = 1
 
 [node name="OpponentCaption" type="Label" parent="SafeAreaMargin/MainColumn/CompareCards/OpponentCard/OpponentVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 0.6)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 0.6)
 theme_override_font_sizes/font_size = 20
 text = "平均"
 horizontal_alignment = 1
 
 [node name="OpponentValue" type="Label" parent="SafeAreaMargin/MainColumn/CompareCards/OpponentCard/OpponentVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 1)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 1)
 theme_override_font_sizes/font_size = 48
 text = "158ms"
 horizontal_alignment = 1
@@ -422,6 +391,10 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_constants/separation = 8
 
+
+[node name="MascotController" type="Node" parent="SafeAreaMargin/MainColumn/GhostRow"]
+script = ExtResource("9100_mascot")
+mascot_sprite = NodePath("../GhostChibi")
 [node name="GhostChibi" type="TextureRect" parent="SafeAreaMargin/MainColumn/GhostRow"]
 custom_minimum_size = Vector2(140, 140)
 layout_mode = 2
@@ -450,7 +423,7 @@ theme_override_constants/margin_bottom = 16
 
 [node name="SpeechText" type="Label" parent="SafeAreaMargin/MainColumn/GhostRow/SpeechBubble/BubbleMargin"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.93, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_font_sizes/font_size = 30
 text = "今日は一歩近づいた！"
 autowrap_mode = 2
@@ -482,13 +455,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
-theme_type_variation = &"mc_cta_glow"
+theme_type_variation = &"btn_accent"
 theme_override_styles/normal = SubResource("SBE_cta_invisible")
 theme_override_styles/hover = SubResource("SBE_cta_invisible")
 theme_override_styles/pressed = SubResource("SBE_cta_invisible")
 theme_override_styles/focus = SubResource("SBE_cta_invisible")
 text = "もう一度  ↻"
 
+
+[node name="JuicyBounce" type="Node" parent="SafeAreaMargin/MainColumn/ReplayCTAWrap/ReplayButton"]
+script = ExtResource("9001_juicy")
 [node name="HomeButton" type="Button" parent="SafeAreaMargin/MainColumn"]
 custom_minimum_size = Vector2(320, 72)
 layout_mode = 2
@@ -497,9 +473,13 @@ theme_override_styles/normal = SubResource("SBE_home_link")
 theme_override_styles/hover = SubResource("SBE_home_link")
 theme_override_styles/pressed = SubResource("SBE_home_link")
 theme_override_styles/focus = SubResource("SBE_home_link")
-theme_override_colors/font_color = Color(0.682, 0.722, 0.812, 1)
+theme_override_colors/font_color = Color(0.420, 0.420, 0.447, 1)
 theme_override_colors/font_hover_color = Color(0.949, 0.957, 0.98, 1)
 theme_override_colors/font_pressed_color = Color(0.49, 0.827, 0.988, 1)
 theme_override_font_sizes/font_size = 28
 text = "‹  ホームへ戻る"
 flat = false
+
+
+[node name="JuicyBounce" type="Node" parent="SafeAreaMargin/MainColumn/HomeButton"]
+script = ExtResource("9001_juicy")

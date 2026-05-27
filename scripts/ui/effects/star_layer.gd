@@ -36,9 +36,12 @@ var _time: float = 0.0
 
 
 func _ready() -> void:
+    # Sumi Ghost v4: 和紙背景に星空はそぐわないため StarLayer は描画しない。
+    # シーン側で削除予定だが、互換性のため non-rendering で残置。
     mouse_filter = Control.MOUSE_FILTER_IGNORE
-    _ensure_points()
-    set_process(twinkle)
+    visible = false
+    set_process(false)
+    return
 
 
 func _process(delta: float) -> void:

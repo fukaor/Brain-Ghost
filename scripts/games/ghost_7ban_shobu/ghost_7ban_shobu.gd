@@ -37,7 +37,7 @@ const TOTAL_ROUNDS: int = 7
 
 ## CFG_B — 基礎値。ラウンドごとの {move, pre, shape, dir}。
 ##
-## 2026-05-02 仕様変更（Midnight Cat / 1 レーン正面衝突）:
+## 2026-05-02 仕様変更（Sumi Ghost (墨絵調) / 1 レーン正面衝突）:
 ## - YOU 左→右、GHOST 右→左 で固定。`dir` は互換のため残すが view 側では未使用
 ## - `shape` を追加: "line"/"s_curve"/"sine_wave"/"zigzag"/"arc" でラウンドごとローテ
 ##

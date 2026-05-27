@@ -77,7 +77,7 @@
     "sessionCount": 0,
     "campaignCount": 0,
     "level": "novice",
-    "sessions_completed": 25
+    "sessions_completed": 26
   },
   "consent": {
     "externalActions": "always-ask"

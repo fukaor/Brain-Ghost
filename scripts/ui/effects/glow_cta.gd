@@ -8,9 +8,9 @@
 class_name GlowCTA
 extends Control
 
-@export var border_color: Color = Color(0.435, 0.706, 1.0, 1.0)  # CYAN_400
-@export var glow_color: Color = Color(0.435, 0.706, 1.0, 0.55)   # CYAN_GLOW
-@export var fill_color: Color = Color(0.043, 0.071, 0.125, 0.4)  # BG_PANEL with alpha
+@export var border_color: Color = Color(0.478, 0.702, 0.878, 1.0)  # ONIBI_BLUE
+@export var glow_color: Color = Color(0.478, 0.702, 0.878, 0.55)   # ONIBI_GLOW_TRANS
+@export var fill_color: Color = Color(0.910, 0.863, 0.753, 0.4)    # WASHI_PANEL with alpha
 @export var corner_radius: float = 999.0
 @export var border_width: float = 2.0
 @export var pulse: bool = true

@@ -1,7 +1,7 @@
 ## IndividualResultController
 ##
 ## 全ゲーム共通の個別結果画面コントローラ。リザルトイメージ
-## (docs/design/promotion/game_tap_result.png) 準拠の Midnight Cat 暗色レイアウト:
+## (docs/design/promotion/game_tap_result.png) 準拠の Sumi Ghost (墨絵調) 暗色レイアウト:
 ## GradeHeadline (PERFECT WIN 等) + Subtitle + RoundDots (ghost_7ban_shobu のみ) +
 ## VerdictTitle (勝ち越し！等) + ScoreBlock (score + delta + BEST pill) +
 ## CompareCards (YOU vs GHOST or YOU vs 自己ベスト) + SpeechBubble + ボタン。
@@ -26,14 +26,14 @@ const GAME_SUBTITLE: Dictionary = {
     "number_search": "数字さがし",
 }
 
-## Midnight Cat デザイントークン (rule_explain / countdown と統一)
-const COLOR_GOLD := Color(1.0, 0.914, 0.659)
-const COLOR_CYAN300 := Color(0.435, 0.706, 1.0)
-const COLOR_CYAN100 := Color(0.7, 0.93, 1.0)
-const COLOR_INK95 := Color(0.95, 0.97, 1.0)
-const COLOR_INK80 := Color(0.78, 0.824, 0.91)
-const COLOR_INK60 := Color(0.78, 0.824, 0.91, 0.7)
-const COLOR_GRAY_DIM := Color(0.6, 0.65, 0.75)
+## Sumi Ghost v4 デザイントークン (rule_explain / countdown と統一)
+const COLOR_GOLD := Color(0.784, 0.663, 0.318)        # GOLD_AGED 古色金
+const COLOR_CYAN300 := Color(0.478, 0.702, 0.878)     # ONIBI_BLUE 鬼火青
+const COLOR_CYAN100 := Color(0.847, 0.922, 0.969)     # ONIBI_GLOW 鬼火光
+const COLOR_INK95 := Color(0.106, 0.106, 0.122)       # SUMI_INK 墨黒
+const COLOR_INK80 := Color(0.239, 0.239, 0.267)       # SUMI_MID 中墨
+const COLOR_INK60 := Color(0.420, 0.420, 0.447, 0.85) # SUMI_LIGHT 淡墨
+const COLOR_GRAY_DIM := Color(0.639, 0.620, 0.580)    # SUMI_DIM 灰墨
 
 ## ghost_7ban_shobu の MISS 判定閾値 (delta_ms)
 const MISS_THRESHOLD_MS: int = 1000
@@ -278,6 +278,76 @@ func set_result(log: PlayLog, previous_score: int) -> void:
     _apply_score_block(log, cfg, previous_score)
     _apply_compare_cards(log, cfg)
     _apply_speech(log, previous_score)
+    _apply_washi_background(log, previous_score)
+    # Sumi Ghost v4: スコア確定 600ms 後にマスコットリアクション + ハプティック
+    _trigger_mascot_reaction_deferred(log, previous_score)
+
+
+## マスコットリアクションを 600ms 遅延で発火。スコア表示が安定してからの "ご褒美" 演出
+func _trigger_mascot_reaction_deferred(log: PlayLog, previous_score: int) -> void:
+    var mc := get_node_or_null("SafeAreaMargin/MainColumn/GhostRow/MascotController")
+    if mc == null:
+        return
+    var grade_dict := _compute_grade_headline(log, previous_score)
+    var grade_text: String = String(grade_dict.get("text", ""))
+    var tree := get_tree()
+    if tree == null:
+        return
+    var timer := tree.create_timer(0.6)
+    timer.timeout.connect(_on_mascot_reaction_timeout.bind(mc, grade_text))
+
+
+func _on_mascot_reaction_timeout(mc: Node, grade_text: String) -> void:
+    if mc == null:
+        return
+    var platform_node: Node = Engine.get_main_loop().root.get_node_or_null("Platform")
+    var supports_haptic: bool = (
+        platform_node != null
+        and platform_node.has_method("supports_haptics")
+        and platform_node.supports_haptics()
+    )
+    match grade_text:
+        "NEW BEST":
+            if mc.has_method("react_celebrate"): mc.react_celebrate()
+            if supports_haptic:
+                Input.vibrate_handheld(40)
+                await get_tree().create_timer(0.1).timeout
+                Input.vibrate_handheld(40)
+                await get_tree().create_timer(0.1).timeout
+                Input.vibrate_handheld(40)
+        "PERFECT WIN", "GREAT WIN", "WIN":
+            if mc.has_method("react_celebrate"): mc.react_celebrate()
+            if supports_haptic:
+                Input.vibrate_handheld(25)
+                await get_tree().create_timer(0.1).timeout
+                Input.vibrate_handheld(25)
+        "IMPROVED":
+            if mc.has_method("react_think"): mc.react_think()
+            if supports_haptic:
+                Input.vibrate_handheld(15)
+        "NICE START":
+            if mc.has_method("react_celebrate"): mc.react_celebrate()
+            if supports_haptic:
+                Input.vibrate_handheld(15)
+        "NICE TRY":
+            if mc.has_method("react_sad"): mc.react_sad()
+            # ハプティックなし (赤禁止と同じ「罰しない」思想)
+
+
+## グレードに応じて WashiBackground のテクスチャを差替える (Sumi Ghost v4)
+## NICE TRY のみ敗北リザルト、それ以外（NEW BEST / WIN 系 / IMPROVED / NICE START）は勝利リザルト
+func _apply_washi_background(log: PlayLog, previous_score: int) -> void:
+    var wbg := get_node_or_null("WashiBackground")
+    if wbg == null or not (wbg is TextureRect):
+        return
+    var g := _compute_grade_headline(log, previous_score)
+    var grade_text: String = String(g.get("text", ""))
+    var asset_path: String = "res://assets/textures/backgrounds/bg_result_win.png"
+    if grade_text == "NICE TRY":
+        asset_path = "res://assets/textures/backgrounds/bg_result_lose.png"
+    var tex: Resource = load(asset_path)
+    if tex != null:
+        (wbg as TextureRect).texture = tex
 
 
 # ---------------------------------------------------------------------------
@@ -501,7 +571,7 @@ func _apply_compare_cards(log: PlayLog, cfg: Dictionary) -> void:
 ## ghost モード=gray dim, self_best モード=gold で見分ける。
 func _build_card_style(border: Color, alpha: float) -> StyleBoxFlat:
     var sb := StyleBoxFlat.new()
-    sb.bg_color = Color(0.04, 0.08, 0.16, 0.55)
+    sb.bg_color = Color(0.910, 0.863, 0.753, 0.55)
     sb.content_margin_left = 14.0
     sb.content_margin_top = 14.0
     sb.content_margin_right = 14.0

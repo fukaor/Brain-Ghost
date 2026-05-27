@@ -1,7 +1,7 @@
 ## NumberCell
 ##
 ## 数字さがしのグリッドセル。Button をベースに、normal / found の 2 状態を
-## StyleBox で切替する MidnightCat 系コンポーネント。
+## StyleBox で切替する Sumi Ghost 系コンポーネント。
 ##
 ## 親 (NumberSearchView) からは:
 ## - set_number(n) で表示数字を設定
@@ -21,11 +21,11 @@ signal number_cell_pressed(cell_index: int)
 var _number: int = 0
 var _is_found: bool = false
 
-# Midnight Cat パレット
+# Sumi Ghost (墨絵調) パレット
 const COLOR_NORMAL_TEXT := Color(0.957, 0.969, 1, 0.95)              # INK_100
 const COLOR_FOUND_TEXT  := Color(0.957, 0.969, 1, 0.65)              # INK_100 dim
 
-const COLOR_NORMAL_BG := Color(0.067, 0.094, 0.153, 0.55)            # 暗グラス
+const COLOR_NORMAL_BG := Color(0.910, 0.863, 0.753, 0.55)            # 暗グラス
 const COLOR_NORMAL_BORDER := Color(0.435, 0.706, 1, 0.25)            # CYAN_400 dim
 
 const COLOR_FOUND_BG := Color(0.157, 0.514, 0.357, 0.92)             # Emerald 系 (game_search.png 準拠)

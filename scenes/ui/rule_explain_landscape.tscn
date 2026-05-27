@@ -6,18 +6,8 @@
 [ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="4_stars"]
 [ext_resource type="Script" path="res://scripts/ui/effects/glow_cta.gd" id="5_glowcta"]
 [ext_resource type="PackedScene" uid="uid://b0navlinkbtn001" path="res://scenes/ui/components/nav_link_button.tscn" id="6_navlink"]
-
-; ----- 背景：rule_explain.tscn と完全に同じ Nebula -----
-[sub_resource type="Gradient" id="Gradient_nebula"]
-offsets = PackedFloat32Array(0, 0.4, 1)
-colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_nebula"]
-gradient = SubResource("Gradient_nebula")
-fill = 1
-fill_from = Vector2(0.5, 0.35)
-fill_to = Vector2(1, 1)
-
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/bg_onboarding.png" id="1000_washibg"]
+[ext_resource type="Script" path="res://scripts/ui/components/juicy_bounce.gd" id="9001_juicy"]
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_clean"]
 content_margin_left = 12.0
 content_margin_top = 8.0
@@ -39,29 +29,11 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ctrl")
 
-[node name="VoidBg" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-mouse_filter = 2
 
-[node name="NebulaBg" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("GradientTexture2D_nebula")
+[node name="WashiBackground" type="TextureRect" parent="."]
+texture = ExtResource("1000_washibg")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="StarLayer" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -69,8 +41,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("4_stars")
-
+z_index = -100
 [node name="SafeArea" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -107,13 +78,13 @@ alignment = 1
 
 [node name="TitleLabel" type="Label" parent="SafeArea/MainColumn/TitleBlock"]
 layout_mode = 2
-theme_type_variation = &"mc_h1_lg"
+theme_type_variation = &"h1"
 text = "ゴースト7番勝負"
 horizontal_alignment = 1
 
 [node name="AbilityLabel" type="Label" parent="SafeArea/MainColumn/TitleBlock"]
 layout_mode = 2
-theme_type_variation = &"mc_subtitle"
+theme_type_variation = &"text_light"
 text = "鍛える能力：反射速度"
 horizontal_alignment = 1
 
@@ -129,7 +100,7 @@ alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.0
-theme_type_variation = &"mc_step_card"
+theme_type_variation = &"washi_card"
 
 [node name="Row" type="VBoxContainer" parent="SafeArea/MainColumn/StepsColumn/Step1"]
 layout_mode = 2
@@ -154,18 +125,18 @@ theme_override_constants/separation = 6
 
 [node name="Index" type="Label" parent="SafeArea/MainColumn/StepsColumn/Step1/Row/TextBlock/IndexRow"]
 layout_mode = 2
-theme_type_variation = &"mc_step_index"
+theme_type_variation = &"score"
 text = "1."
 
 [node name="Title" type="Label" parent="SafeArea/MainColumn/StepsColumn/Step1/Row/TextBlock/IndexRow"]
 layout_mode = 2
 size_flags_vertical = 4
-theme_type_variation = &"mc_step_title"
+theme_type_variation = &"h2"
 text = "構える"
 
 [node name="Body" type="Label" parent="SafeArea/MainColumn/StepsColumn/Step1/Row/TextBlock"]
 layout_mode = 2
-theme_type_variation = &"mc_step_body"
+theme_type_variation = &"text_light"
 text = "予告を見て、
 構えよう"
 
@@ -174,7 +145,7 @@ text = "予告を見て、
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.0
-theme_type_variation = &"mc_step_card"
+theme_type_variation = &"washi_card"
 
 [node name="Row" type="VBoxContainer" parent="SafeArea/MainColumn/StepsColumn/Step2"]
 layout_mode = 2
@@ -200,18 +171,18 @@ theme_override_constants/separation = 6
 
 [node name="Index" type="Label" parent="SafeArea/MainColumn/StepsColumn/Step2/Row/TextBlock/IndexRow"]
 layout_mode = 2
-theme_type_variation = &"mc_step_index"
+theme_type_variation = &"score"
 text = "2."
 
 [node name="Title" type="Label" parent="SafeArea/MainColumn/StepsColumn/Step2/Row/TextBlock/IndexRow"]
 layout_mode = 2
 size_flags_vertical = 4
-theme_type_variation = &"mc_step_title"
+theme_type_variation = &"h2"
 text = "タップで迎撃"
 
 [node name="Body" type="Label" parent="SafeArea/MainColumn/StepsColumn/Step2/Row/TextBlock"]
 layout_mode = 2
-theme_type_variation = &"mc_step_body"
+theme_type_variation = &"text_light"
 text = "光が中心に来た瞬間、
 タップ！"
 
@@ -220,7 +191,7 @@ text = "光が中心に来た瞬間、
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.0
-theme_type_variation = &"mc_step_card"
+theme_type_variation = &"washi_card"
 
 [node name="Row" type="VBoxContainer" parent="SafeArea/MainColumn/StepsColumn/Step3"]
 layout_mode = 2
@@ -246,18 +217,18 @@ theme_override_constants/separation = 6
 
 [node name="Index" type="Label" parent="SafeArea/MainColumn/StepsColumn/Step3/Row/TextBlock/IndexRow"]
 layout_mode = 2
-theme_type_variation = &"mc_step_index"
+theme_type_variation = &"score"
 text = "3."
 
 [node name="Title" type="Label" parent="SafeArea/MainColumn/StepsColumn/Step3/Row/TextBlock/IndexRow"]
 layout_mode = 2
 size_flags_vertical = 4
-theme_type_variation = &"mc_step_title"
+theme_type_variation = &"h2"
 text = "ゴーストに勝て"
 
 [node name="Body" type="Label" parent="SafeArea/MainColumn/StepsColumn/Step3/Row/TextBlock"]
 layout_mode = 2
-theme_type_variation = &"mc_step_body"
+theme_type_variation = &"text_light"
 text = "中央に近い方が勝ち。
 ゴーストより勝ち越せ"
 
@@ -284,9 +255,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
-theme_type_variation = &"mc_cta_glow"
+theme_type_variation = &"btn_accent"
 theme_override_styles/normal = SubResource("StyleBoxEmpty_cta_invisible")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_cta_invisible")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_cta_invisible")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_cta_invisible")
 text = "スタート"
+
+
+[node name="JuicyBounce" type="Node" parent="SafeArea/MainColumn/StartCTAWrap/StartButton"]
+script = ExtResource("9001_juicy")

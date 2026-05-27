@@ -1,4 +1,4 @@
-## HomeController (Midnight Cat v3)
+## HomeController (Sumi Ghost (墨絵調) v3)
 ##
 ## ホーム画面のコントローラ。docs/design/promotion/home.png 準拠。
 ##
@@ -47,19 +47,22 @@ const SPEECH_RETURN := "おかえり！\n今日もやる？"
 const SPEECH_GO := "よし、いっしょに行こう。"
 
 # ノード参照 -----------------------------------------------------------------
-@onready var _brain_age_value: Label = $SafeArea/MainColumn/TopRow/BrainAgeBlock/Row/Value
+# Sumi Ghost v4: home.tscn 再構築後のパス
+@onready var _brain_age_value: Label = $SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin/Content/Row/Value
+@onready var _brain_age_accuracy: Label = $SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin/Content/CaptionRow/AccuracyHint
+@onready var _brain_age_progress: ProgressBar = $SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin/Content/Progress
 @onready var _settings_btn: Button = $SafeArea/MainColumn/TopRow/SettingsButton
 @onready var _mascot: TextureRect = $SafeArea/MainColumn/HeroRow/MascotImage
 @onready var _speech_text: Label = $SafeArea/MainColumn/HeroRow/SpeechWrap/SpeechBubble/Margin/SpeechText
-@onready var _score_value: Label = $SafeArea/MainColumn/ScoreRow/ScorePill/Row/Value
-@onready var _score_delta: Label = $SafeArea/MainColumn/ScoreRow/ScorePill/Row/Delta
-@onready var _battle_caption: Label = $SafeArea/MainColumn/ScoreRow/BattlePill/Row/Caption
-@onready var _battle_wins: Label = $SafeArea/MainColumn/ScoreRow/BattlePill/Row/Wins
-@onready var _battle_losses: Label = $SafeArea/MainColumn/ScoreRow/BattlePill/Row/Losses
-@onready var _cta_button: Button = $SafeArea/MainColumn/CTAWrap/CTAButton
-@onready var _streak_ribbon: PanelContainer = $SafeArea/MainColumn/StreakRow/StreakRibbon
-@onready var _streak_label: Label = $SafeArea/MainColumn/StreakRow/StreakRibbon/Row/Text
-@onready var _radar: Control = $SafeArea/MainColumn/RadarCard/Radar
+@onready var _score_value: Label = $SafeArea/MainColumn/DailyScoreCard/Margin/Content/Row/Value
+@onready var _score_delta: Label = $SafeArea/MainColumn/DailyScoreCard/Margin/Content/Row/Delta
+@onready var _battle_caption: Label = $SafeArea/MainColumn/StatsAndStreakRow/StatsBlock/Margin/Content/Caption
+@onready var _battle_wins: Label = $SafeArea/MainColumn/StatsAndStreakRow/StatsBlock/Margin/Content/Row/Wins
+@onready var _battle_losses: Label = $SafeArea/MainColumn/StatsAndStreakRow/StatsBlock/Margin/Content/Row/Losses
+@onready var _cta_button: Button = $SafeArea/MainColumn/DailyChallengeStrip/CTAWrap/CTAButton
+@onready var _streak_ribbon: PanelContainer = $SafeArea/MainColumn/StatsAndStreakRow/StreakBlock
+@onready var _streak_label: Label = $SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin/Content/Text
+@onready var _radar: Control = $SafeArea/MainColumn/RadarCard/Margin/Radar
 @onready var _all_games_link: Button = $SafeArea/MainColumn/AllGamesLink
 
 var _anim_time: float = 0.0
@@ -69,6 +72,32 @@ func _ready() -> void:
 	_wire_signals()
 	_apply_data()
 	set_process(true)
+	_setup_mascot_controller()
+
+
+## Sumi Ghost v4: MascotController を取得して精度連動グローを駆動する
+func _setup_mascot_controller() -> void:
+	var mc := get_node_or_null("SafeArea/MainColumn/HeroRow/MascotController")
+	if mc == null:
+		# シーンに未配置の場合は no-op
+		return
+	if mc.has_method("to_idle"):
+		mc.to_idle()
+	if mc.has_method("set_accuracy"):
+		mc.set_accuracy(_compute_accuracy())
+
+
+## 精度 = プレイ済み種目数 / 全種目数 (0.0 .. 1.0)
+func _compute_accuracy() -> float:
+	var ds := get_node_or_null("/root/DataStore")
+	if ds == null:
+		return 0.0
+	var user_config = ds.load_dict(ds.StoreKey.USER_CONFIG) if ds.has_method("load_dict") else {}
+	var played: Array = user_config.get("played_game_types", [])
+	var total: int = ALL_GAME_TYPES.size()
+	if total <= 0:
+		return 0.0
+	return clamp(float(played.size()) / float(total), 0.0, 1.0)
 
 
 func _process(delta: float) -> void:
@@ -81,6 +110,24 @@ func _wire_signals() -> void:
 	_cta_button.pressed.connect(_on_cta_pressed)
 	_all_games_link.pressed.connect(_on_all_games_pressed)
 	_settings_btn.pressed.connect(_on_settings_pressed)
+	# Sumi Ghost v4: レーダー「鍛える →」ボタン → 最弱軸の推奨ゲームを開始
+	if _radar.has_signal("train_pressed"):
+		_radar.train_pressed.connect(_on_train_pressed)
+
+
+## レーダー「鍛える →」: 最弱軸に紐づくゲームを起動。
+## ABILITY_KEYS の並びと RadarChart の軸インデックスは一致 (計算 / 記憶 / 注意 / 反射 / 観察 / 判断)。
+func _on_train_pressed(weakest_axis: int) -> void:
+	if weakest_axis < 0 or weakest_axis >= ABILITY_KEYS.size():
+		_on_all_games_pressed()
+		return
+	var ability: String = ABILITY_KEYS[weakest_axis]
+	var game_type: String = ABILITY_TO_GAME.get(ability, "")
+	var gm := get_node_or_null("/root/GameManager")
+	if gm != null and gm.has_method("start_game") and game_type != "":
+		gm.start_game(game_type)
+	else:
+		_on_all_games_pressed()
 
 
 # ---------------------------------------------------------------------------
@@ -89,6 +136,11 @@ func _wire_signals() -> void:
 func _apply_data() -> void:
 	_brain_age_value.text = str(_compute_brain_age())
 	_speech_text.text = SPEECH_RETURN
+
+	# Sumi Ghost v4: 脳年齢カード内の精度ヒント + プログレスバー
+	var accuracy: float = _compute_accuracy()
+	_brain_age_accuracy.text = "精度 %d%%" % int(round(accuracy * 100.0))
+	_brain_age_progress.value = accuracy
 
 	# ポイント = 全 PlayLog の score 累積（生涯獲得ポイント。今日のデルタは部分集合）
 	var total_pts: int = _compute_total_score()
@@ -108,10 +160,14 @@ func _apply_data() -> void:
 	_battle_wins.text = "%d勝" % int(wl.get("wins", 0))
 	_battle_losses.text = "%d敗" % int(wl.get("losses", 0))
 
-	# ストリーク
+	# ストリーク (テキスト) + 直近 7 日のスタンプ点灯
 	var streak_days: int = _compute_streak()
-	_streak_ribbon.visible = streak_days > 0
-	_streak_label.text = "%d日連続！" % streak_days
+	_streak_ribbon.visible = true
+	if streak_days > 0:
+		_streak_label.text = "%d日連続！" % streak_days
+	else:
+		_streak_label.text = "今日からスタート"
+	_apply_streak_stamps(_compute_recent_7_days_played())
 
 	# レーダー値
 	var radar_values := _compute_radar_values()
@@ -197,6 +253,41 @@ func _compute_streak() -> int:
 		return 0
 	var state := StreakState.from_dict(dict)
 	return state.current_streak
+
+
+## 直近 7 日のプレイ有無を [6日前, ..., 1日前, 今日] の順で返す。
+## PlayLog.played_date ("YYYY-MM-DD" JST) を参照。
+func _compute_recent_7_days_played() -> Array:
+	var logs: Array[PlayLog] = DataStore.load_play_logs("", -1)
+	var played_dates := {}
+	for log in logs:
+		if log.played_date != "":
+			played_dates[log.played_date] = true
+	var today := Time.get_date_dict_from_system()
+	var today_unix: int = Time.get_unix_time_from_datetime_dict({
+		"year": today.year, "month": today.month, "day": today.day,
+		"hour": 0, "minute": 0, "second": 0
+	})
+	var result: Array = []
+	for offset in range(6, -1, -1):
+		var t := today_unix - offset * 86400
+		var d := Time.get_datetime_dict_from_unix_time(t)
+		var key := "%04d-%02d-%02d" % [d.year, d.month, d.day]
+		result.append(played_dates.has(key))
+	return result
+
+
+## 7 個のスタンプ TextureRect に直近 7 日のプレイ状況を反映 (modulate.a で点灯/減衰)
+func _apply_streak_stamps(played_flags: Array) -> void:
+	var row := get_node_or_null("SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin/Content/Row")
+	if row == null:
+		return
+	for i in 7:
+		var stamp := row.get_node_or_null("Stamp%d" % i) as TextureRect
+		if stamp == null:
+			continue
+		var played: bool = i < played_flags.size() and bool(played_flags[i])
+		stamp.modulate = Color(1, 1, 1, 1.0 if played else 0.18)
 
 
 func _compute_radar_values() -> Array:

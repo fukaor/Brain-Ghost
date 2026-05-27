@@ -23,11 +23,18 @@
 #   - export_presets.cfg に "Android" runnable preset が存在
 #   - Godot 4.6.x の Android export template がインストール済み
 #
+# タイムアウト (環境変数で上書き可):
+#   DEPLOY_EXPORT_TIMEOUT       Godot APK export 秒数 (default 600)
+#   DEPLOY_IMPORT_TIMEOUT       asset import 秒数 (default 360)
+#   DEPLOY_ADB_PING_TIMEOUT     端末到達確認の秒数 (default 10)
+#   DEPLOY_ADB_CMD_TIMEOUT      単発 adb コマンドの秒数 (default 30)
+#   DEPLOY_ADB_INSTALL_TIMEOUT  adb install -r の秒数 (default 180)
+#
 # 終了コード:
 #   - 0: 全工程成功
-#   - 1: 端末未接続
-#   - 2: ビルド失敗 / 設定不整合
-#   - 3: インストール失敗
+#   - 1: 端末未接続 / 到達不能
+#   - 2: ビルド失敗 / 設定不整合 / エクスポート タイムアウト
+#   - 3: インストール失敗 / インストール タイムアウト
 #   - 4: 起動失敗
 # ============================================================
 set -euo pipefail
@@ -41,6 +48,14 @@ ADB="${ADB:-/opt/android-sdk/platform-tools/adb}"
 GODOT="${GODOT:-godot}"
 PRESET_NAME="Android"
 APK_PATH="build/android/brain-ghost.apk"
+
+# ----- タイムアウト (環境変数で上書き可) -----
+# 主犯対策: ステップ [4] エクスポートはどれだけ重くても必ず時間制限する
+DEPLOY_EXPORT_TIMEOUT="${DEPLOY_EXPORT_TIMEOUT:-600}"   # Godot APK export (秒)
+DEPLOY_IMPORT_TIMEOUT="${DEPLOY_IMPORT_TIMEOUT:-360}"   # godot --import
+DEPLOY_ADB_PING_TIMEOUT="${DEPLOY_ADB_PING_TIMEOUT:-10}" # adb shell true 到達確認
+DEPLOY_ADB_CMD_TIMEOUT="${DEPLOY_ADB_CMD_TIMEOUT:-30}"  # 単発 adb コール
+DEPLOY_ADB_INSTALL_TIMEOUT="${DEPLOY_ADB_INSTALL_TIMEOUT:-180}" # APK install
 
 # ----- 引数パース -----
 
@@ -111,6 +126,16 @@ fi
 DEVICE=$("$ADB" devices | awk '$2=="device" {print $1; exit}')
 echo "   device = $DEVICE"
 
+# 到達確認: リスト上に居ても No route to host で実通信できないケースを早期検出
+# (前回コンテナクラッシュの遠因 = adb 再接続ループ放置)
+if ! timeout "${DEPLOY_ADB_PING_TIMEOUT}s" "$ADB" -s "$DEVICE" shell true >/dev/null 2>&1; then
+  echo "   ❌ 端末 $DEVICE はリストに居ますが到達不能 (${DEPLOY_ADB_PING_TIMEOUT}s 以内に応答なし)" >&2
+  echo "      → adb デーモンを停止して再接続ループを断つ" >&2
+  "$ADB" kill-server >/dev/null 2>&1 || true
+  echo "      → 端末側 Wi-Fi / USB を確認後 connect_android.sh で再接続してください" >&2
+  exit 1
+fi
+
 # ----- ステップ [3/7]: キャッシュ & Android build template 確認 -----
 
 CURRENT_STEP="[3/7] ensure caches & android build template"
@@ -118,11 +143,18 @@ echo "==> $CURRENT_STEP"
 
 # .godot/ キャッシュ
 if [[ ! -d .godot ]] || [[ -z "$(ls -A .godot 2>/dev/null)" ]]; then
-  echo "   .godot キャッシュなし、import を実行 (数分かかる場合あり)"
-  "$GODOT" --headless --import --quit-after 300 || {
-    echo "   ❌ asset import に失敗。Godot バージョン・プロジェクト構成を確認してください" >&2
+  echo "   .godot キャッシュなし、import を実行 (上限 ${DEPLOY_IMPORT_TIMEOUT}s)"
+  if ! timeout --kill-after=15s "${DEPLOY_IMPORT_TIMEOUT}s" \
+       "$GODOT" --headless --import --quit-after 300; then
+    rc=$?
+    if [[ $rc -eq 124 || $rc -eq 137 ]]; then
+      echo "   ❌ asset import が ${DEPLOY_IMPORT_TIMEOUT}s でタイムアウト" >&2
+      echo "      → DEPLOY_IMPORT_TIMEOUT=600 等で延長可能" >&2
+    else
+      echo "   ❌ asset import に失敗 (rc=$rc)。Godot バージョン・プロジェクト構成を確認してください" >&2
+    fi
     exit 2
-  }
+  fi
 else
   echo "   .godot キャッシュあり (skip import)"
 fi
@@ -157,8 +189,16 @@ fi
 mkdir -p build/android
 
 EXPORT_LOG=$(mktemp)
-if ! "$GODOT" --headless --export-debug "$PRESET_NAME" "$APK_PATH" > "$EXPORT_LOG" 2>&1; then
-  echo "   ❌ Godot export に失敗 (末尾 20 行):" >&2
+echo "   timeout = ${DEPLOY_EXPORT_TIMEOUT}s (DEPLOY_EXPORT_TIMEOUT で上書き可)"
+if ! timeout --kill-after=30s "${DEPLOY_EXPORT_TIMEOUT}s" \
+     "$GODOT" --headless --export-debug "$PRESET_NAME" "$APK_PATH" > "$EXPORT_LOG" 2>&1; then
+  rc=$?
+  if [[ $rc -eq 124 || $rc -eq 137 ]]; then
+    echo "   ❌ Godot export が ${DEPLOY_EXPORT_TIMEOUT}s でタイムアウト (rc=$rc)" >&2
+    echo "      → DEPLOY_EXPORT_TIMEOUT=900 等で延長可能" >&2
+  else
+    echo "   ❌ Godot export に失敗 (rc=$rc, 末尾 20 行):" >&2
+  fi
   tail -20 "$EXPORT_LOG" >&2
   rm -f "$EXPORT_LOG"
   exit 2
@@ -193,7 +233,7 @@ if ! "$ADB" devices 2>/dev/null | awk 'NR>1 && $2=="device" {found=1} END {exit 
   echo "   ✅ 再接続成功"
 fi
 
-"$ADB" shell am force-stop "$PACKAGE_NAME"
+timeout "${DEPLOY_ADB_CMD_TIMEOUT}s" "$ADB" shell am force-stop "$PACKAGE_NAME"
 echo "   stopped $PACKAGE_NAME"
 
 # ----- ステップ [6/7]: インストール -----
@@ -202,8 +242,14 @@ CURRENT_STEP="[6/7] install APK"
 echo "==> $CURRENT_STEP"
 
 INSTALL_LOG=$(mktemp)
-if ! "$ADB" install -r "$APK_PATH" > "$INSTALL_LOG" 2>&1; then
-  echo "   ❌ adb install に失敗:" >&2
+if ! timeout --kill-after=15s "${DEPLOY_ADB_INSTALL_TIMEOUT}s" \
+     "$ADB" install -r "$APK_PATH" > "$INSTALL_LOG" 2>&1; then
+  rc=$?
+  if [[ $rc -eq 124 || $rc -eq 137 ]]; then
+    echo "   ❌ adb install が ${DEPLOY_ADB_INSTALL_TIMEOUT}s でタイムアウト (rc=$rc)" >&2
+  else
+    echo "   ❌ adb install に失敗 (rc=$rc):" >&2
+  fi
   cat "$INSTALL_LOG" >&2
   rm -f "$INSTALL_LOG"
   echo "   → ストレージ空き容量・署名整合性を確認 (--clean を試す)" >&2
@@ -220,7 +266,7 @@ if [[ "$OPT_NO_LAUNCH" -eq 1 ]]; then
 else
   echo "==> $CURRENT_STEP"
   LAUNCH_LOG=$(mktemp)
-  if ! "$ADB" shell monkey -p "$PACKAGE_NAME" \
+  if ! timeout "${DEPLOY_ADB_CMD_TIMEOUT}s" "$ADB" shell monkey -p "$PACKAGE_NAME" \
        -c android.intent.category.LAUNCHER 1 > "$LAUNCH_LOG" 2>&1; then
     echo "   ❌ アプリ起動に失敗:" >&2
     cat "$LAUNCH_LOG" >&2

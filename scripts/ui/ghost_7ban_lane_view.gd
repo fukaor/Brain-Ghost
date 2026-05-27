@@ -1,4 +1,4 @@
-## Ghost7BanLaneView (Midnight Cat — promo `game_tap_touch.png` 準拠)
+## Ghost7BanLaneView (Sumi Ghost (墨絵調) — promo `game_tap_touch.png` 準拠)
 ##
 ## レーン描画＆オーブアニメ Control。promo の星明かりトーンを Godot に落とし込む：
 ## - レーン: 細く繊細な水平光線（端で減衰）

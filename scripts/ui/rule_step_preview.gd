@@ -35,14 +35,15 @@
 class_name RuleStepPreview
 extends Control
 
-const COLOR_RAIL := Color(0.49, 0.827, 0.988, 0.32)
-const COLOR_GATE := Color(0.49, 0.827, 0.988, 0.85)
-const COLOR_GLOW_GOLD := Color(1.0, 0.85, 0.4, 0.95)
-const COLOR_GLOW_CYAN := Color(0.49, 0.827, 0.988, 0.95)
-const COLOR_TEXT := Color(0.949, 0.957, 0.98, 1.0)
-const COLOR_DIM := Color(0.42, 0.467, 0.561, 1.0)
-const COLOR_PANEL_OFF := Color(0.137, 0.169, 0.247, 0.85)
-const COLOR_PANEL_ON := Color(1.0, 0.85, 0.4, 0.95)
+# Sumi Ghost v4 (墨絵調)
+const COLOR_RAIL := Color(0.420, 0.420, 0.447, 0.4)        # SUMI_LIGHT 薄墨ライン
+const COLOR_GATE := Color(0.478, 0.702, 0.878, 0.95)       # ONIBI_BLUE 鬼火青
+const COLOR_GLOW_GOLD := Color(0.784, 0.663, 0.318, 0.95)  # GOLD_AGED 古色金
+const COLOR_GLOW_CYAN := Color(0.478, 0.702, 0.878, 0.95)  # ONIBI_BLUE
+const COLOR_TEXT := Color(0.106, 0.106, 0.122, 1.0)        # SUMI_INK 墨黒
+const COLOR_DIM := Color(0.639, 0.620, 0.580, 1.0)         # SUMI_DIM 灰墨
+const COLOR_PANEL_OFF := Color(0.910, 0.863, 0.753, 0.9)   # WASHI_PANEL 和紙
+const COLOR_PANEL_ON := Color(0.784, 0.663, 0.318, 0.95)   # GOLD_AGED
 
 # Stroop パレット (docs/ideas/games/ghost-stroop-showdown-spec.md §2-3)
 const STROOP_RED    := Color(0.898, 0.224, 0.208)   # #E53935

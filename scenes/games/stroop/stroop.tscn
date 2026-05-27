@@ -4,25 +4,13 @@
 [ext_resource type="FontFile" path="res://assets/fonts/NotoSansJP-Bold.otf" id="2_bold"]
 [ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="3_msym"]
 [ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="4_stars"]
-
-; ----- Midnight Cat 背景 -----
-[sub_resource type="Gradient" id="Gradient_nebula"]
-offsets = PackedFloat32Array(0, 0.4, 1)
-colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_nebula"]
-gradient = SubResource("Gradient_nebula")
-fill = 1
-fill_from = Vector2(0.5, 0.4)
-fill_to = Vector2(1, 1)
-
-; ----- タイトルチップ (左) -----
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/bg_play.png" id="1000_washibg"]
 [sub_resource type="StyleBoxFlat" id="SBF_title_chip"]
 content_margin_left = 18.0
 content_margin_top = 8.0
 content_margin_right = 18.0
 content_margin_bottom = 8.0
-bg_color = Color(0.067, 0.094, 0.153, 0.7)
+bg_color = Color(0.910, 0.863, 0.753, 0.85)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -39,7 +27,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.067, 0.094, 0.153, 0.7)
+bg_color = Color(0.910, 0.863, 0.753, 0.85)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -56,7 +44,7 @@ content_margin_left = 18.0
 content_margin_top = 6.0
 content_margin_right = 18.0
 content_margin_bottom = 6.0
-bg_color = Color(0.067, 0.094, 0.153, 0.55)
+bg_color = Color(0.910, 0.863, 0.753, 0.7)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -73,7 +61,7 @@ content_margin_left = 32.0
 content_margin_top = 32.0
 content_margin_right = 32.0
 content_margin_bottom = 32.0
-bg_color = Color(0.118, 0.533, 0.898, 1.0)
+bg_color = Color(0.239, 0.420, 0.584, 1.0)
 corner_radius_top_left = 18
 corner_radius_top_right = 18
 corner_radius_bottom_right = 18
@@ -88,29 +76,11 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_view")
 
-[node name="VoidBg" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 1)
 
-[node name="NebulaBg" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("GradientTexture2D_nebula")
+[node name="WashiBackground" type="TextureRect" parent="."]
+texture = ExtResource("1000_washibg")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="StarLayer" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -118,8 +88,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("4_stars")
-
+z_index = -100
 [node name="SafeAreaMargin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -150,7 +119,7 @@ theme_override_styles/panel = SubResource("SBF_title_chip")
 
 [node name="TitleLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderArea/TitleChip"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.957, 0.969, 1, 0.95)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 0.95)
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 20
 text = "色文字ストループ"
@@ -163,7 +132,7 @@ theme_override_styles/panel = SubResource("SBF_timer_chip")
 
 [node name="TimerLabel" type="Label" parent="SafeAreaMargin/MainColumn/HeaderArea/TimerChip"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.722, 0.878, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 28
 text = "30s"
@@ -183,7 +152,7 @@ theme_override_constants/separation = 8
 [node name="PlayerCaption" type="Label" parent="SafeAreaMargin/MainColumn/GhostArea/PlayerRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(120, 0)
-theme_override_colors/font_color = Color(0.722, 0.878, 1, 0.95)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 0.95)
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 16
 text = "今日"
@@ -199,7 +168,7 @@ show_percentage = false
 [node name="PlayerValue" type="Label" parent="SafeAreaMargin/MainColumn/GhostArea/PlayerRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(70, 0)
-theme_override_colors/font_color = Color(0.722, 0.878, 1, 0.95)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 0.95)
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 16
 text = "0問"
@@ -213,7 +182,7 @@ theme_override_constants/separation = 8
 [node name="GhostCaption" type="Label" parent="SafeAreaMargin/MainColumn/GhostArea/GhostRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(120, 0)
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 0.75)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 0.85)
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 16
 text = "いつもの自分"
@@ -229,7 +198,7 @@ show_percentage = false
 [node name="GhostValue" type="Label" parent="SafeAreaMargin/MainColumn/GhostArea/GhostRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(70, 0)
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 0.75)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 0.85)
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 16
 text = "0問"
@@ -244,7 +213,7 @@ size_flags_vertical = 3
 
 [node name="StimulusLabel" type="Label" parent="SafeAreaMargin/MainColumn/StimulusArea"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.118, 0.533, 0.898, 1)
+theme_override_colors/font_color = Color(0.239, 0.420, 0.584, 1)
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 120
 text = "あか"
@@ -262,7 +231,7 @@ theme_override_styles/panel = SubResource("SBF_shape_default")
 
 [node name="InnerLabel" type="Label" parent="SafeAreaMargin/MainColumn/StimulusArea/ShapeContainer/ShapePanel"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.957, 0.969, 1, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 56
 text = "あか"
@@ -271,7 +240,7 @@ vertical_alignment = 1
 
 [node name="FeedbackLabel" type="Label" parent="SafeAreaMargin/MainColumn/StimulusArea"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.435, 0.847, 0.624, 1)
+theme_override_colors/font_color = Color(0.353, 0.541, 0.431, 1)
 theme_override_fonts/font = ExtResource("3_msym")
 theme_override_font_sizes/font_size = 160
 text = ""
@@ -294,7 +263,7 @@ theme_override_constants/separation = 8
 
 [node name="ScoreLabel" type="Label" parent="SafeAreaMargin/MainColumn/FooterArea"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 0.95)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 1)
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 18
 text = "正解: 0  誤答: 0"
@@ -309,7 +278,7 @@ theme_override_styles/panel = SubResource("SBF_best_pill")
 
 [node name="BestLabel" type="Label" parent="SafeAreaMargin/MainColumn/FooterArea/BestRow/BestPill"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1.0, 0.914, 0.659, 0.9)
+theme_override_colors/font_color = Color(0.784, 0.663, 0.318, 0.9)
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 18
 text = "★ ベスト: — pts"

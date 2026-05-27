@@ -3,7 +3,7 @@
 ## 色文字ストループのシーンスクリプト。Stroop ロジックを内包し、刺激表示・回答ボタン・
 ## 3 秒タイムアウト・30 秒ゲームタイマー・正誤フィードバック・ゴーストバーを管理する。
 ##
-## Midnight Cat デザイン:
+## Sumi Ghost (墨絵調) デザイン:
 ## - 上部: タイトル + タイマー
 ## - ゴーストバー (タイム系プログレス): PlayerBar / GhostBar (max=20)
 ## - 中央: StimulusLabel (色付きひらがな) または ShapeContainer (T3 Shape)
@@ -127,7 +127,7 @@ func _build_answer_button(color: String) -> Button:
     btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
     var sb := StyleBoxFlat.new()
-    sb.bg_color = Color(0.067, 0.094, 0.153, 0.7)
+    sb.bg_color = Color(0.910, 0.863, 0.753, 0.7)
     sb.border_width_left = 1
     sb.border_width_top = 1
     sb.border_width_right = 1

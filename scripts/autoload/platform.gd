@@ -42,3 +42,7 @@ func is_android() -> bool:
 
 func is_desktop_debug() -> bool:
     return current() == Target.DESKTOP_DEBUG
+
+## ハプティック振動がサポートされているか（Android のみ）
+func supports_haptics() -> bool:
+    return current() == Target.ANDROID

@@ -1,4 +1,4 @@
-## RuleExplainController (Midnight Cat v3)
+## RuleExplainController (Sumi Ghost v4)
 ##
 ## ゲーム開始前のルール説明画面。docs/design/promotion/game_tap_rule.png 準拠。
 ##

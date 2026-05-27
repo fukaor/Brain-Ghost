@@ -19,21 +19,21 @@ signal card_pressed(cell_index: int)
 const _TierConfig = preload("res://scripts/games/card_match/tier_config.gd")
 const _MSYM_FONT = preload("res://assets/fonts/MaterialSymbolsRounded.ttf")
 
-# Midnight Cat パレット
-const COLOR_BACK_BG := Color(0.04, 0.08, 0.16, 0.85)              # 暗グラス
-const COLOR_BACK_BORDER := Color(0.435, 0.706, 1, 0.45)           # CYAN_400 dim
+# Sumi Ghost パレット v4 (墨絵調)
+const COLOR_BACK_BG := Color(0.910, 0.863, 0.753, 1.0)            # WASHI_PANEL 和紙カード
+const COLOR_BACK_BORDER := Color(0.420, 0.420, 0.447, 0.6)        # SUMI_LIGHT
 
-const COLOR_FRONT_BG := Color(0.067, 0.094, 0.153, 0.92)          # 表面背景
-const COLOR_FRONT_BORDER := Color(0.722, 0.878, 1, 0.85)          # CYAN_300
+const COLOR_FRONT_BG := Color(0.949, 0.914, 0.835, 1.0)           # WASHI_BASE 表面（より明るい）
+const COLOR_FRONT_BORDER := Color(0.478, 0.702, 0.878, 0.95)      # ONIBI_BLUE 鬼火青枠
 
-const COLOR_MATCH_FLASH_BG := Color(0.157, 0.514, 0.357, 0.95)    # Emerald flash
-const COLOR_MATCH_FLASH_BORDER := Color(0.435, 0.847, 0.624, 1)
+const COLOR_MATCH_FLASH_BG := Color(0.353, 0.541, 0.431, 0.3)     # JADE_INK 翠墨フラッシュ
+const COLOR_MATCH_FLASH_BORDER := Color(0.353, 0.541, 0.431, 1)
 
-const COLOR_MISMATCH_FLASH_BG := Color(0.4, 0.42, 0.48, 0.85)     # グレー flash (赤禁止)
-const COLOR_MISMATCH_FLASH_BORDER := Color(0.78, 0.824, 0.91, 0.85)
+const COLOR_MISMATCH_FLASH_BG := Color(0.639, 0.620, 0.580, 0.3)  # SUMI_DIM 灰墨フラッシュ (赤禁止)
+const COLOR_MISMATCH_FLASH_BORDER := Color(0.420, 0.420, 0.447, 0.85)
 
-const COLOR_MATCHED_BG := Color(0.067, 0.094, 0.153, 0.4)         # 彩度ダウン
-const COLOR_MATCHED_BORDER := Color(0.435, 0.706, 1, 0.18)
+const COLOR_MATCHED_BG := Color(0.910, 0.863, 0.753, 0.5)         # WASHI_PANEL 彩度ダウン
+const COLOR_MATCHED_BORDER := Color(0.478, 0.702, 0.878, 0.3)     # ONIBI_BLUE dim
 
 const FRONT_ICON_SIZE: int = 56
 
@@ -128,7 +128,10 @@ func _on_pressed() -> void:
 func _apply_back() -> void:
     _apply_style(COLOR_BACK_BG, COLOR_BACK_BORDER, 1)
     if _icon_label != null:
-        _icon_label.visible = false
+        # Sumi Ghost v4: 裏面に肉球シルエットを薄 ONIBI_BLUE で透かし表示
+        _icon_label.text = "pets"
+        _icon_label.add_theme_color_override("font_color", Color(0.478, 0.702, 0.878, 0.25))
+        _icon_label.visible = true
 
 
 func _apply_front() -> void:

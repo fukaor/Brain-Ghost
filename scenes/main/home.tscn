@@ -1,23 +1,19 @@
-[gd_scene load_steps=13 format=3 uid="uid://b0home0000001"]
+[gd_scene load_steps=18 format=3 uid="uid://b0home0000001"]
 
 [ext_resource type="Script" path="res://scripts/ui/home_controller.gd" id="1_home"]
 [ext_resource type="Script" path="res://scripts/ui/radar_chart.gd" id="2_radar"]
-[ext_resource type="Texture2D" path="res://assets/characters/catboy_electric.png" id="3_mascot"]
+[ext_resource type="Texture2D" path="res://assets/characters/sumineko_normal.png" id="3_mascot"]
 [ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="4_msym"]
-[ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="5_stars"]
 [ext_resource type="Script" path="res://scripts/ui/effects/glow_cta.gd" id="6_glowcta"]
 [ext_resource type="PackedScene" uid="uid://b0navlinkbtn001" path="res://scenes/ui/components/nav_link_button.tscn" id="7_navlink"]
-
-; ----- 背景：漆黒 + 中央付近に微シアンの放射 -----
-[sub_resource type="Gradient" id="Gradient_nebula"]
-offsets = PackedFloat32Array(0, 0.4, 1)
-colors = PackedColorArray(0.04, 0.08, 0.16, 1, 0.01, 0.02, 0.04, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_nebula"]
-gradient = SubResource("Gradient_nebula")
-fill = 1
-fill_from = Vector2(0.5, 0.35)
-fill_to = Vector2(1, 1)
+[ext_resource type="Script" path="res://scripts/ui/components/mascot_controller.gd" id="9100_mascot"]
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/bg_home.png" id="1000_washibg"]
+[ext_resource type="Texture2D" path="res://assets/textures/frames/frame_ink_border.png" id="1100_frame"]
+[ext_resource type="Texture2D" path="res://assets/textures/decorations/divider_thin.png" id="1200_div"]
+[ext_resource type="Texture2D" path="res://assets/textures/badges/stamp_shuin.png" id="1300_stamp"]
+[ext_resource type="Texture2D" path="res://assets/textures/game_icons/game_icon_ippon.png" id="1400_ic_ippon"]
+[ext_resource type="Texture2D" path="res://assets/textures/game_icons/game_icon_sequence.png" id="1401_ic_seq"]
+[ext_resource type="Texture2D" path="res://assets/textures/game_icons/game_icon_search.png" id="1402_ic_search"]
 
 ; ----- 設定ボタンの非ホバー時 styleBox（透明） -----
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_settings"]
@@ -31,12 +27,13 @@ content_margin_left = 8.0
 content_margin_top = 8.0
 content_margin_right = 8.0
 content_margin_bottom = 8.0
-bg_color = Color(0.063, 0.075, 0.118, 0.6)
+bg_color = Color(0.839, 0.812, 0.745, 0.7)
 corner_radius_top_left = 9999
 corner_radius_top_right = 9999
 corner_radius_bottom_right = 9999
 corner_radius_bottom_left = 9999
 
+; ----- CTA 透明 styleBox（btn_accent.png のホバー演出を活かすため枠なし） -----
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cta_invisible"]
 
 ; ====================================================================
@@ -51,29 +48,10 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_home")
 
-[node name="VoidBg" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-mouse_filter = 2
-
-[node name="NebulaBg" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("GradientTexture2D_nebula")
+[node name="WashiBackground" type="TextureRect" parent="."]
+texture = ExtResource("1000_washibg")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="StarLayer" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -81,7 +59,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("5_stars")
+z_index = -100
 
 [node name="SafeArea" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -99,39 +77,76 @@ theme_override_constants/margin_bottom = 48
 layout_mode = 2
 theme_override_constants/separation = 16
 
-; -------------------- TopRow: 脳年齢 + 設定 --------------------
+; ====================================================================
+; TopRow: 脳年齢カード + 設定ボタン
+; ====================================================================
 [node name="TopRow" type="HBoxContainer" parent="SafeArea/MainColumn"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="BrainAgeBlock" type="HBoxContainer" parent="SafeArea/MainColumn/TopRow"]
+[node name="BrainAgeBlock" type="PanelContainer" parent="SafeArea/MainColumn/TopRow"]
 layout_mode = 2
-theme_override_constants/separation = 8
+size_flags_horizontal = 3
+theme_type_variation = &"washi_card"
 
-[node name="Caption" type="Label" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock"]
+[node name="Margin" type="MarginContainer" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock"]
 layout_mode = 2
-size_flags_vertical = 8
-theme_type_variation = &"mc_brain_age_label"
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="CaptionRow" type="HBoxContainer" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Caption" type="Label" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin/Content/CaptionRow"]
+layout_mode = 2
+theme_type_variation = &"caption"
 text = "脳年齢"
 
-[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock"]
+[node name="AccuracyHint" type="Label" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin/Content/CaptionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_type_variation = &"text_light"
+text = "精度 100%"
+horizontal_alignment = 2
+
+[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin/Content"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="Value" type="Label" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Row"]
+[node name="Value" type="Label" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin/Content/Row"]
 layout_mode = 2
-theme_type_variation = &"mc_brain_age"
+theme_type_variation = &"score_big"
 text = "31"
 
-[node name="Unit" type="Label" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Row"]
+[node name="Unit" type="Label" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin/Content/Row"]
 layout_mode = 2
 size_flags_vertical = 8
-theme_type_variation = &"mc_brain_age_label"
+theme_type_variation = &"caption"
 text = "歳"
 
-[node name="Spacer" type="Control" parent="SafeArea/MainColumn/TopRow"]
+[node name="Underline" type="Line2D" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin/Content"]
+points = PackedVector2Array(0, 0, 56, -1, 112, 2, 168, -1)
+width = 2.5
+default_color = Color(0.173, 0.173, 0.173, 0.55)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="Progress" type="ProgressBar" parent="SafeArea/MainColumn/TopRow/BrainAgeBlock/Margin/Content"]
+custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
-size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+value = 1.0
+show_percentage = false
 
 [node name="SettingsButton" type="Button" parent="SafeArea/MainColumn/TopRow"]
 custom_minimum_size = Vector2(64, 64)
@@ -140,18 +155,24 @@ size_flags_vertical = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_settings")
 theme_override_styles/hover = SubResource("StyleBoxFlat_settings_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_settings_hover")
-theme_override_colors/font_color = Color(0.682, 0.722, 0.812, 1)
+theme_override_colors/font_color = Color(0.420, 0.420, 0.447, 1)
 theme_override_fonts/font = ExtResource("4_msym")
 theme_override_font_sizes/font_size = 44
 text = "settings"
 flat = false
 
-; -------------------- HeroRow: マスコット + 隣接吹き出し --------------------
+; ====================================================================
+; HeroRow: マスコット + 吹き出し (既存維持)
+; ====================================================================
 [node name="HeroRow" type="HBoxContainer" parent="SafeArea/MainColumn"]
 custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 alignment = 1
 theme_override_constants/separation = 8
+
+[node name="MascotController" type="Node" parent="SafeArea/MainColumn/HeroRow"]
+script = ExtResource("9100_mascot")
+mascot_sprite = NodePath("../MascotImage")
 
 [node name="SpeechWrap" type="Control" parent="SafeArea/MainColumn/HeroRow"]
 custom_minimum_size = Vector2(180, 80)
@@ -173,7 +194,7 @@ offset_right = 0.0
 offset_bottom = 28.0
 grow_horizontal = 0
 grow_vertical = 2
-theme_type_variation = &"mc_speech"
+theme_type_variation = &"pill_chip"
 
 [node name="Margin" type="MarginContainer" parent="SafeArea/MainColumn/HeroRow/SpeechWrap/SpeechBubble"]
 layout_mode = 2
@@ -184,8 +205,7 @@ theme_override_constants/margin_bottom = 8
 
 [node name="SpeechText" type="Label" parent="SafeArea/MainColumn/HeroRow/SpeechWrap/SpeechBubble/Margin"]
 layout_mode = 2
-theme_type_variation = &"mc_body_strong"
-theme_override_font_sizes/font_size = 24
+theme_type_variation = &"h2"
 text = "おかえり！
 今日もやる？"
 horizontal_alignment = 1
@@ -198,72 +218,266 @@ texture = ExtResource("3_mascot")
 expand_mode = 1
 stretch_mode = 5
 
-; -------------------- ScoreRow: ポイントピル + 戦績ピル --------------------
-[node name="ScoreRow" type="HBoxContainer" parent="SafeArea/MainColumn"]
+; ====================================================================
+; DailyScoreCard: 今日のスコア (PanelContainer washi_card + NinePatchRect 装飾枠)
+; ====================================================================
+[node name="DailyScoreCard" type="PanelContainer" parent="SafeArea/MainColumn"]
+custom_minimum_size = Vector2(0, 96)
+layout_mode = 2
+theme_type_variation = &"washi_card"
+
+[node name="FrameDeco" type="NinePatchRect" parent="SafeArea/MainColumn/DailyScoreCard"]
+show_behind_parent = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1100_frame")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+
+[node name="Margin" type="MarginContainer" parent="SafeArea/MainColumn/DailyScoreCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="SafeArea/MainColumn/DailyScoreCard/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Caption" type="Label" parent="SafeArea/MainColumn/DailyScoreCard/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"caption"
+text = "今日のスコア"
+
+[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/DailyScoreCard/Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 0
+
+[node name="Value" type="Label" parent="SafeArea/MainColumn/DailyScoreCard/Margin/Content/Row"]
+layout_mode = 2
+theme_type_variation = &"score_big"
+text = "3,230"
+
+[node name="Unit" type="Label" parent="SafeArea/MainColumn/DailyScoreCard/Margin/Content/Row"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_type_variation = &"caption"
+text = "pts"
+
+[node name="Delta" type="Label" parent="SafeArea/MainColumn/DailyScoreCard/Margin/Content/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_type_variation = &"text_accent"
+text = "+285"
+horizontal_alignment = 2
+
+[node name="Meta" type="Label" parent="SafeArea/MainColumn/DailyScoreCard/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"text_light"
+text = "昨日のあなたを超えた！"
+
+; ====================================================================
+; StatsAndStreakRow: 戦績 + ストリーク (HBox 左右分割)
+; ====================================================================
+[node name="StatsAndStreakRow" type="HBoxContainer" parent="SafeArea/MainColumn"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="ScorePill" type="PanelContainer" parent="SafeArea/MainColumn/ScoreRow"]
+; --- 左半分: StatsBlock (通算 戦績) ---
+[node name="StatsBlock" type="PanelContainer" parent="SafeArea/MainColumn/StatsAndStreakRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 3.0
-theme_type_variation = &"mc_score_pill"
+theme_type_variation = &"pill_chip"
 
-[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/ScoreRow/ScorePill"]
+[node name="Margin" type="MarginContainer" parent="SafeArea/MainColumn/StatsAndStreakRow/StatsBlock"]
 layout_mode = 2
-theme_override_constants/separation = 4
-alignment = 1
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
 
-[node name="Value" type="Label" parent="SafeArea/MainColumn/ScoreRow/ScorePill/Row"]
+[node name="Content" type="VBoxContainer" parent="SafeArea/MainColumn/StatsAndStreakRow/StatsBlock/Margin"]
 layout_mode = 2
-theme_type_variation = &"mc_score_value"
-text = "3,230"
+theme_override_constants/separation = 2
 
-[node name="Unit" type="Label" parent="SafeArea/MainColumn/ScoreRow/ScorePill/Row"]
+[node name="Caption" type="Label" parent="SafeArea/MainColumn/StatsAndStreakRow/StatsBlock/Margin/Content"]
 layout_mode = 2
-size_flags_vertical = 8
-theme_type_variation = &"mc_score_unit"
-text = "pts"
-
-[node name="Delta" type="Label" parent="SafeArea/MainColumn/ScoreRow/ScorePill/Row"]
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"mc_score_delta"
-text = "+285"
-
-[node name="BattlePill" type="PanelContainer" parent="SafeArea/MainColumn/ScoreRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.0
-theme_type_variation = &"mc_score_pill"
-
-[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/ScoreRow/BattlePill"]
-layout_mode = 2
-theme_override_constants/separation = 4
-alignment = 1
-
-[node name="Caption" type="Label" parent="SafeArea/MainColumn/ScoreRow/BattlePill/Row"]
-layout_mode = 2
-size_flags_vertical = 4
-theme_type_variation = &"mc_caption"
+theme_type_variation = &"caption"
 text = "通算"
 
-[node name="Wins" type="Label" parent="SafeArea/MainColumn/ScoreRow/BattlePill/Row"]
+[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/StatsAndStreakRow/StatsBlock/Margin/Content"]
 layout_mode = 2
-theme_type_variation = &"mc_score_unit"
+theme_override_constants/separation = 8
+
+[node name="Wins" type="Label" parent="SafeArea/MainColumn/StatsAndStreakRow/StatsBlock/Margin/Content/Row"]
+layout_mode = 2
+theme_type_variation = &"text_win"
 text = "15勝"
 
-[node name="Losses" type="Label" parent="SafeArea/MainColumn/ScoreRow/BattlePill/Row"]
+[node name="Losses" type="Label" parent="SafeArea/MainColumn/StatsAndStreakRow/StatsBlock/Margin/Content/Row"]
 layout_mode = 2
-theme_type_variation = &"mc_caption"
+theme_type_variation = &"text_light"
 text = "8敗"
 
-; -------------------- CTA (GlowCTA wrapper + Button) --------------------
-[node name="CTAWrap" type="Control" parent="SafeArea/MainColumn"]
-custom_minimum_size = Vector2(0, 88)
+; --- 右半分: StreakBlock (ストリーク) ---
+[node name="StreakBlock" type="PanelContainer" parent="SafeArea/MainColumn/StatsAndStreakRow"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"pill_chip"
 
-[node name="GlowFx" type="Control" parent="SafeArea/MainColumn/CTAWrap"]
+[node name="Margin" type="MarginContainer" parent="SafeArea/MainColumn/StatsAndStreakRow/StreakBlock"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Stamp0" type="TextureRect" parent="SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(22, 28)
+layout_mode = 2
+texture = ExtResource("1300_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp1" type="TextureRect" parent="SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(22, 28)
+layout_mode = 2
+texture = ExtResource("1300_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp2" type="TextureRect" parent="SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(22, 28)
+layout_mode = 2
+texture = ExtResource("1300_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp3" type="TextureRect" parent="SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(22, 28)
+layout_mode = 2
+texture = ExtResource("1300_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp4" type="TextureRect" parent="SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(22, 28)
+layout_mode = 2
+texture = ExtResource("1300_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp5" type="TextureRect" parent="SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(22, 28)
+layout_mode = 2
+modulate = Color(1, 1, 1, 0.25)
+texture = ExtResource("1300_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp6" type="TextureRect" parent="SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(22, 28)
+layout_mode = 2
+modulate = Color(1, 1, 1, 0.25)
+texture = ExtResource("1300_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Text" type="Label" parent="SafeArea/MainColumn/StatsAndStreakRow/StreakBlock/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"text_accent"
+text = "5日連続！"
+horizontal_alignment = 1
+
+; ====================================================================
+; DividerThin: 墨セクション区切り
+; ====================================================================
+[node name="DividerThin" type="TextureRect" parent="SafeArea/MainColumn"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+texture = ExtResource("1200_div")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+; ====================================================================
+; RadarCard: 6 軸レーダー (washi_card variation)
+; ====================================================================
+[node name="RadarCard" type="PanelContainer" parent="SafeArea/MainColumn"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"washi_card"
+
+[node name="Margin" type="MarginContainer" parent="SafeArea/MainColumn/RadarCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Radar" type="Control" parent="SafeArea/MainColumn/RadarCard/Margin"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_radar")
+
+; ====================================================================
+; DailyChallengeStrip: 3 ゲームアイコン + AccentButton
+; ====================================================================
+[node name="DailyChallengeStrip" type="HBoxContainer" parent="SafeArea/MainColumn"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Icon1" type="TextureRect" parent="SafeArea/MainColumn/DailyChallengeStrip"]
+custom_minimum_size = Vector2(96, 42)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("1400_ic_ippon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon2" type="TextureRect" parent="SafeArea/MainColumn/DailyChallengeStrip"]
+custom_minimum_size = Vector2(96, 42)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("1401_ic_seq")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon3" type="TextureRect" parent="SafeArea/MainColumn/DailyChallengeStrip"]
+custom_minimum_size = Vector2(96, 42)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("1402_ic_search")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CTAWrap" type="Control" parent="SafeArea/MainColumn/DailyChallengeStrip"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="GlowFx" type="Control" parent="SafeArea/MainColumn/DailyChallengeStrip/CTAWrap"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -273,59 +487,19 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("6_glowcta")
 
-[node name="CTAButton" type="Button" parent="SafeArea/MainColumn/CTAWrap"]
+[node name="CTAButton" type="Button" parent="SafeArea/MainColumn/DailyChallengeStrip/CTAWrap"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_type_variation = &"mc_cta_glow"
-theme_override_styles/normal = SubResource("StyleBoxEmpty_cta_invisible")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_cta_invisible")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_cta_invisible")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_cta_invisible")
+theme_type_variation = &"btn_accent"
 text = "今日のチャレンジ  ›"
 
-; -------------------- Streak ribbon (centered) --------------------
-[node name="StreakRow" type="HBoxContainer" parent="SafeArea/MainColumn"]
-layout_mode = 2
-alignment = 1
-
-[node name="StreakRibbon" type="PanelContainer" parent="SafeArea/MainColumn/StreakRow"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_type_variation = &"mc_streak_ribbon"
-
-[node name="Row" type="HBoxContainer" parent="SafeArea/MainColumn/StreakRow/StreakRibbon"]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="Text" type="Label" parent="SafeArea/MainColumn/StreakRow/StreakRibbon/Row"]
-layout_mode = 2
-theme_type_variation = &"mc_streak_text"
-text = "5日連続！"
-
-; -------------------- Radar Chart (やや小さめ) --------------------
-[node name="RadarCard" type="PanelContainer" parent="SafeArea/MainColumn"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"mc_card"
-
-[node name="Radar" type="Control" parent="SafeArea/MainColumn/RadarCard"]
-custom_minimum_size = Vector2(0, 300)
-layout_mode = 2
-size_flags_horizontal = 3
-script = ExtResource("2_radar")
-
-; -------------------- FlexSpacer --------------------
-[node name="FlexSpacer" type="Control" parent="SafeArea/MainColumn"]
-custom_minimum_size = Vector2(0, 4)
-layout_mode = 2
-size_flags_vertical = 3
-
-; -------------------- 全ゲーム一覧リンク (NavLinkButton コンポーネント) --------------------
+; ====================================================================
+; AllGamesButton: 全ゲーム一覧
+; ====================================================================
 [node name="AllGamesLink" parent="SafeArea/MainColumn" instance=ExtResource("7_navlink")]
 layout_mode = 2
 size_flags_horizontal = 4

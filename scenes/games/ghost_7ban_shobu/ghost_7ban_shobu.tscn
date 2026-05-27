@@ -4,11 +4,12 @@
 [ext_resource type="Script" path="res://scripts/ui/ghost_7ban_lane_view.gd" id="2_lane"]
 [ext_resource type="FontFile" path="res://assets/fonts/NotoSerifJP-Bold.otf" id="3_mcserif"]
 [ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="4_msym"]
-[ext_resource type="Texture2D" path="res://assets/characters/catboy_confident.png" id="5_ghostcat"]
+[ext_resource type="Texture2D" path="res://assets/characters/sumineko_fight.png" id="5_ghostcat"]
 [ext_resource type="Script" path="res://scripts/ui/effects/star_layer.gd" id="6_stars"]
 [ext_resource type="Script" path="res://scripts/ui/effects/progress_dots.gd" id="7_dots"]
 [ext_resource type="Script" path="res://scripts/ui/effects/headline_serif.gd" id="8_headline"]
 [ext_resource type="Script" path="res://scripts/ui/effects/glow_cta.gd" id="9_glowcta"]
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/bg_play.png" id="1000_washibg"]
 
 [sub_resource type="Gradient" id="Gradient_bg"]
 offsets = PackedFloat32Array(0, 0.45, 1)
@@ -30,29 +31,11 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_view")
 
-[node name="VoidBg" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-mouse_filter = 2
 
-[node name="NebulaBg" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("GradientTexture2D_bg")
+[node name="WashiBackground" type="TextureRect" parent="."]
+texture = ExtResource("1000_washibg")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="StarLayer" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -60,8 +43,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("6_stars")
-
+z_index = -100
 [node name="TapArea" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -89,7 +71,7 @@ theme_override_constants/separation = 14
 [node name="RoundLabel" type="Label" parent="Hud"]
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 1)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
 theme_override_font_sizes/font_size = 24
 text = "第 1 戦 ／ 7"
@@ -124,13 +106,13 @@ alignment = 2
 [node name="YouLabel" type="Label" parent="ScoreHud"]
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_colors/font_color = Color(0.98, 0.8, 0.082, 1)
+theme_override_colors/font_color = Color(0.784, 0.663, 0.318, 1)
 theme_override_font_sizes/font_size = 20
 text = "YOU"
 
 [node name="YouWins" type="Label" parent="ScoreHud"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1.0, 0.914, 0.659, 1)
+theme_override_colors/font_color = Color(0.784, 0.663, 0.318, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
 theme_override_font_sizes/font_size = 26
 text = "0"
@@ -138,13 +120,13 @@ text = "0"
 [node name="Divider" type="Label" parent="ScoreHud"]
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_colors/font_color = Color(0.29, 0.333, 0.439, 1)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 1)
 theme_override_font_sizes/font_size = 26
 text = "—"
 
 [node name="GhostWins" type="Label" parent="ScoreHud"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 1)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
 theme_override_font_sizes/font_size = 26
 text = "0"
@@ -152,7 +134,7 @@ text = "0"
 [node name="GhostLabel" type="Label" parent="ScoreHud"]
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_colors/font_color = Color(0.435, 0.706, 1.0, 1)
+theme_override_colors/font_color = Color(0.239, 0.420, 0.584, 1)
 theme_override_font_sizes/font_size = 20
 text = "GHOST"
 
@@ -203,7 +185,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.722, 0.878, 1.0, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
 theme_override_font_sizes/font_size = 140
 text = "READY"
@@ -259,7 +241,7 @@ offset_right = 280.0
 offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_colors/font_color = Color(1, 0.914, 0.659, 1)
+theme_override_colors/font_color = Color(0.784, 0.663, 0.318, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
 theme_override_font_sizes/font_size = 64
 text = "WIN"
@@ -285,7 +267,7 @@ theme_override_constants/separation = 4
 
 [node name="Icon" type="Label" parent="YouMarker"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.949, 0.957, 0.98, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_fonts/font = ExtResource("4_msym")
 theme_override_font_sizes/font_size = 38
 text = "person"
@@ -293,7 +275,7 @@ horizontal_alignment = 1
 
 [node name="Label" type="Label" parent="YouMarker"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 1)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 1)
 theme_override_font_sizes/font_size = 22
 text = "YOU"
 horizontal_alignment = 1
@@ -327,7 +309,7 @@ modulate = Color(1.4, 1.4, 1.5, 1)
 
 [node name="Label" type="Label" parent="GhostMarker"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.435, 0.706, 1.0, 1)
+theme_override_colors/font_color = Color(0.239, 0.420, 0.584, 1)
 theme_override_font_sizes/font_size = 22
 text = "GHOST"
 horizontal_alignment = 1
@@ -369,20 +351,20 @@ theme_override_constants/separation = 8
 
 [node name="Eyebrow" type="Label" parent="ReadyOverlay/LeftText"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.435, 0.706, 1.0, 1)
+theme_override_colors/font_color = Color(0.239, 0.420, 0.584, 1)
 theme_override_font_sizes/font_size = 22
 text = "GHOST · 7-BAN"
 
 [node name="Title" type="Label" parent="ReadyOverlay/LeftText"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.957, 0.969, 1.0, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
 theme_override_font_sizes/font_size = 76
 text = "7 番勝負"
 
 [node name="Description" type="Label" parent="ReadyOverlay/LeftText"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.824, 0.91, 1)
+theme_override_colors/font_color = Color(0.239, 0.239, 0.267, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
 theme_override_font_sizes/font_size = 22
 text = "昨日の自分が、
@@ -409,7 +391,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.722, 0.878, 1.0, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_font_sizes/font_size = 28
 text = "TAP で 開始"
 horizontal_alignment = 1
@@ -471,20 +453,20 @@ theme_override_constants/separation = 8
 
 [node name="Eyebrow" type="Label" parent="DoneOverlay/DoneBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.435, 0.706, 1.0, 1)
+theme_override_colors/font_color = Color(0.239, 0.420, 0.584, 1)
 theme_override_font_sizes/font_size = 22
 text = "決 着"
 
 [node name="Score" type="Label" parent="DoneOverlay/DoneBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1.0, 0.914, 0.659, 1)
+theme_override_colors/font_color = Color(0.784, 0.663, 0.318, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
 theme_override_font_sizes/font_size = 110
 text = "0 — 0"
 
 [node name="Verdict" type="Label" parent="DoneOverlay/DoneBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.957, 0.969, 1.0, 1)
+theme_override_colors/font_color = Color(0.106, 0.106, 0.122, 1)
 theme_override_fonts/font = ExtResource("3_mcserif")
 theme_override_font_sizes/font_size = 22
 text = "昨日の自分を、超えた。"

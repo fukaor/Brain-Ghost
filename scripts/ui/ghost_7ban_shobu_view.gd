@@ -1,4 +1,4 @@
-## Ghost7BanShobuView (1-lane head-on collision, Midnight Cat v3)
+## Ghost7BanShobuView (1-lane head-on collision, Sumi Ghost (墨絵調) v3)
 ##
 ## promo `docs/design/promotion/game_tap_touch.png` 準拠：
 ## - 1 本のレーンを YOU 左→右 / GHOST 右→左 で同時に走り、中央 GATE で正面衝突
