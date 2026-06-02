@@ -9,40 +9,44 @@
 extends Control
 
 ## カードデータ (データ駆動)
+##
+## 注: 旧 game_icon_*.png は cut_sumi_sheets.py がサンプルカード全体を抽出した
+## 不可用アセットだった。本ファイルでは右側のアート部分のみを切り出した
+## game_icon_*_art.png を参照する (Python で再クロップ済み)。
 const GAME_CARDS: Array[Dictionary] = [
 	{
 		"id": "ghost_7ban_shobu",
-		"icon": preload("res://assets/textures/game_icons/game_icon_7ban.png"),
+		"icon": preload("res://assets/textures/game_icons/game_icon_7ban_art.png"),
 		"name": "ゴースト7番勝負",
 		"skill": "反射力",
 	},
 	{
 		"id": "flash_calc",
-		"icon": preload("res://assets/textures/game_icons/game_icon_ippon.png"),
+		"icon": preload("res://assets/textures/game_icons/game_icon_ippon_art.png"),
 		"name": "フラッシュ暗算",
 		"skill": "計算力",
 	},
 	{
 		"id": "sequence_memory",
-		"icon": preload("res://assets/textures/game_icons/game_icon_sequence.png"),
+		"icon": preload("res://assets/textures/game_icons/game_icon_sequence_art.png"),
 		"name": "順番記憶",
 		"skill": "記憶力",
 	},
 	{
 		"id": "stroop",
-		"icon": preload("res://assets/textures/game_icons/game_icon_stroop.png"),
+		"icon": preload("res://assets/textures/game_icons/game_icon_stroop_art.png"),
 		"name": "色文字ストループ",
 		"skill": "注意力",
 	},
 	{
 		"id": "card_match",
-		"icon": preload("res://assets/textures/game_icons/game_icon_memory.png"),
+		"icon": preload("res://assets/textures/game_icons/game_icon_memory_art.png"),
 		"name": "神経衰弱",
 		"skill": "判断力",
 	},
 	{
 		"id": "number_search",
-		"icon": preload("res://assets/textures/game_icons/game_icon_search.png"),
+		"icon": preload("res://assets/textures/game_icons/game_icon_search_art.png"),
 		"name": "数字さがし",
 		"skill": "観察力",
 	},

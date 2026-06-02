@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://b0home0000001"]
+[gd_scene load_steps=13 format=3 uid="uid://b0home0000001"]
 
 [ext_resource type="Script" path="res://scripts/ui/home_controller.gd" id="1_home"]
 [ext_resource type="Script" path="res://scripts/ui/radar_chart.gd" id="2_radar"]
@@ -8,12 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://b0navlinkbtn001" path="res://scenes/ui/components/nav_link_button.tscn" id="7_navlink"]
 [ext_resource type="Script" path="res://scripts/ui/components/mascot_controller.gd" id="9100_mascot"]
 [ext_resource type="Texture2D" path="res://assets/textures/backgrounds/bg_home.png" id="1000_washibg"]
-[ext_resource type="Texture2D" path="res://assets/textures/frames/frame_ink_border.png" id="1100_frame"]
-[ext_resource type="Texture2D" path="res://assets/textures/decorations/divider_thin.png" id="1200_div"]
 [ext_resource type="Texture2D" path="res://assets/textures/badges/stamp_shuin.png" id="1300_stamp"]
-[ext_resource type="Texture2D" path="res://assets/textures/game_icons/game_icon_ippon.png" id="1400_ic_ippon"]
-[ext_resource type="Texture2D" path="res://assets/textures/game_icons/game_icon_sequence.png" id="1401_ic_seq"]
-[ext_resource type="Texture2D" path="res://assets/textures/game_icons/game_icon_search.png" id="1402_ic_search"]
 
 ; ----- 設定ボタンの非ホバー時 styleBox（透明） -----
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_settings"]
@@ -219,27 +214,15 @@ expand_mode = 1
 stretch_mode = 5
 
 ; ====================================================================
-; DailyScoreCard: 今日のスコア (PanelContainer washi_card + NinePatchRect 装飾枠)
+; DailyScoreCard: 今日のスコア (washi_card variation 単体。
+; 注: 旧 frame_ink_border.png NinePatchRect は撤去済み。
+; cut_sumi_sheets.py の切り出し範囲不備により、サンプルカード
+; (「数字さがし / 観察力 / ベスト:22秒」) がフレームに焼き込まれていた)
 ; ====================================================================
 [node name="DailyScoreCard" type="PanelContainer" parent="SafeArea/MainColumn"]
 custom_minimum_size = Vector2(0, 96)
 layout_mode = 2
 theme_type_variation = &"washi_card"
-
-[node name="FrameDeco" type="NinePatchRect" parent="SafeArea/MainColumn/DailyScoreCard"]
-show_behind_parent = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("1100_frame")
-patch_margin_left = 12
-patch_margin_top = 12
-patch_margin_right = 12
-patch_margin_bottom = 12
 
 [node name="Margin" type="MarginContainer" parent="SafeArea/MainColumn/DailyScoreCard"]
 layout_mode = 2
@@ -409,14 +392,13 @@ text = "5日連続！"
 horizontal_alignment = 1
 
 ; ====================================================================
-; DividerThin: 墨セクション区切り
+; DividerThin: 墨セクション区切り (ColorRect で代替。
+; 元の divider_thin.png はシート切り出し時に空白を抜いてしまい不可用)
 ; ====================================================================
-[node name="DividerThin" type="TextureRect" parent="SafeArea/MainColumn"]
-custom_minimum_size = Vector2(0, 10)
+[node name="DividerThin" type="ColorRect" parent="SafeArea/MainColumn"]
+custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
-texture = ExtResource("1200_div")
-expand_mode = 1
-stretch_mode = 5
+color = Color(0.173, 0.173, 0.173, 0.22)
 mouse_filter = 2
 
 ; ====================================================================
@@ -441,35 +423,20 @@ size_flags_horizontal = 3
 script = ExtResource("2_radar")
 
 ; ====================================================================
-; DailyChallengeStrip: 3 ゲームアイコン + AccentButton
+; DailyChallengeStrip: キャプション + AccentButton。
+; 注: 旧 game_icon_*.png アイコン (cut_sumi_sheets.py で
+; サンプルカード丸ごとが抽出されていた) は撤去し、
+; 純粋な CTA 帯に再構成。3 種ゲームの紹介は ABテスト後に再設計予定。
 ; ====================================================================
 [node name="DailyChallengeStrip" type="HBoxContainer" parent="SafeArea/MainColumn"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 12
 
-[node name="Icon1" type="TextureRect" parent="SafeArea/MainColumn/DailyChallengeStrip"]
-custom_minimum_size = Vector2(96, 42)
+[node name="Caption" type="Label" parent="SafeArea/MainColumn/DailyChallengeStrip"]
 layout_mode = 2
 size_flags_vertical = 4
-texture = ExtResource("1400_ic_ippon")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Icon2" type="TextureRect" parent="SafeArea/MainColumn/DailyChallengeStrip"]
-custom_minimum_size = Vector2(96, 42)
-layout_mode = 2
-size_flags_vertical = 4
-texture = ExtResource("1401_ic_seq")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Icon3" type="TextureRect" parent="SafeArea/MainColumn/DailyChallengeStrip"]
-custom_minimum_size = Vector2(96, 42)
-layout_mode = 2
-size_flags_vertical = 4
-texture = ExtResource("1402_ic_search")
-expand_mode = 1
-stretch_mode = 5
+theme_type_variation = &"caption"
+text = "今日のチャレンジ"
 
 [node name="CTAWrap" type="Control" parent="SafeArea/MainColumn/DailyChallengeStrip"]
 custom_minimum_size = Vector2(0, 56)

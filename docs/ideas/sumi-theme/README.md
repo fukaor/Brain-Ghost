@@ -5,6 +5,50 @@
 本ドキュメントは Claude Code への実装指示書。
 `docs/ideas/sumi-theme/` 配下に背景PNG・シート画像・キャラリファレンスが配置済みの前提で、以下を全て実行すること。
 
+## ⚠️ パーツ切り出しに関する重大な注意 (2026-05-27 追記)
+
+`docs/ideas/sumi-theme/parts/` 配下の PNG は `scripts_build/cut_sumi_sheets.py` で
+シート画像から切り出したものだが、**現行の切り出し範囲はサンプルカード全体を含む不可用状態**。
+具体的に確認済みの汚染:
+
+| 期待されるもの | 実際の中身 |
+|---|---|
+| `frames/frame_ink_border.png` | 「数字さがし / 観察力 / ベスト:22秒」 + 竹のイラストが焼き込まれた完成カード |
+| `frames/frame_ink_border_new.png` / `_locked.png` / `_selected.png` | 同上 (状態違いだが内容は共通) |
+| `game_icons/game_icon_*.png` | 「ゴースト一本勝負 計算力 37 2」等のサンプルカード全体 (アイコン部分の切り出しに失敗) |
+| `badges/badge_new_corner.png` | 竹のイラスト (NEWバッジではない) |
+| `badges/icon_lock.png` | 鍵 + 竹 + 数字 8/3 が混入 |
+| `decorations/divider_thin.png` | ほぼ空白 (切り出し位置がズレている) |
+| `decorations/divider_thick.png` | 「③ 区切り線・装飾ライン」という見出しテキストが入っている |
+| `decorations/hitodama.png` | 人魂 + 余白の文字「0」が入っている |
+| `decorations/arrow_up_brush.png` | 矢印 + サンプル「+285」テキストが焼き込まれている |
+| `decorations/score_value_ref.png` | スコア「3,230」のレタリングサンプル (参照用、実行時に使ってはいけない) |
+| `decorations/timer_value_ref.png` | タイマー値レタリングサンプル (同上) |
+
+**クリーンで使用可能なパーツ** (確認済み):
+
+- `backgrounds/bg_*.png` — 全て可用
+- `badges/badge_new.png` (赤い NEW フラッグ) ✓
+- `badges/badge_best.png` (金の BEST 円相) ✓
+- `badges/stamp_shuin.png` (朱印スタンプ) ✓
+- `badges/badge_tier_frame.png` (要確認)
+- `badges/mark_win.png` / `mark_lose.png` (要確認)
+- `assets/characters/sumineko_*.png` — マスコット ✓
+
+**ランタイム側の対処** (2026-05-27 時点):
+
+- `scenes/main/home.tscn` の DailyScoreCard 装飾 NinePatchRect (frame_ink_border) を撤去
+- `scenes/main/home.tscn` の DailyChallengeStrip ゲームアイコン (game_icon_*) を撤去
+- `scenes/main/home.tscn` の DividerThin TextureRect を ColorRect 細線に置換
+- `scenes/ui/components/game_list_card.tscn` を NinePatchRect (frame_ink_border) → PanelContainer (washi_card) に再構成、Material Symbols アイコンで能力を表現
+- `scripts/ui/game_list_controller.gd` の `game_icon_*` preload を削除
+
+将来パーツを差し替える際は `cut_sumi_sheets.py` の crop 座標を見直すか、
+個別アセットを別途用意してから `assets/textures/` 配下に配置する。
+**現状のパーツ群を NinePatchRect / TextureRect の texture として使うのは禁止**。
+
+---
+
 ## 現在の配置状況
 
 ```
