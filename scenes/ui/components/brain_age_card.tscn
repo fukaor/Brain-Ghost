@@ -1,0 +1,69 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0brainagecard1"]
+
+[ext_resource type="Script" path="res://scripts/ui/brain_age_card.gd" id="1_bac"]
+
+[node name="BrainAgeCard" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 150)
+theme_type_variation = &"washi_card"
+script = ExtResource("1_bac")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Caption" type="Label" parent="Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"caption"
+theme_override_font_sizes/font_size = 14
+text = "脳年齢"
+horizontal_alignment = 1
+
+[node name="AgeRow" type="HBoxContainer" parent="Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Value" type="Label" parent="Margin/Content/AgeRow"]
+layout_mode = 2
+theme_type_variation = &"score_big"
+theme_override_font_sizes/font_size = 64
+text = "31"
+
+[node name="Unit" type="Label" parent="Margin/Content/AgeRow"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 24
+text = "歳"
+
+[node name="Underline" type="ColorRect" parent="Margin/Content"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0.173, 0.173, 0.173, 0.7)
+mouse_filter = 2
+
+[node name="MeterRow" type="HBoxContainer" parent="Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Progress" type="ProgressBar" parent="Margin/Content/MeterRow"]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+value = 1.0
+show_percentage = false
+
+[node name="Accuracy" type="Label" parent="Margin/Content/MeterRow"]
+layout_mode = 2
+theme_type_variation = &"text_light"
+theme_override_font_sizes/font_size = 10
+text = "精度: 100%"

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0sumidivider1"]
+
+[ext_resource type="Script" path="res://scripts/ui/sumi_divider.gd" id="1_div"]
+
+[node name="SumiDivider" type="ColorRect"]
+custom_minimum_size = Vector2(0, 2)
+color = Color(0.549, 0.549, 0.549, 0.3)
+mouse_filter = 2
+script = ExtResource("1_div")

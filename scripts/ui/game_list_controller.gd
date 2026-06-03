@@ -10,43 +10,43 @@ extends Control
 
 ## カードデータ (データ駆動)
 ##
-## 注: 旧 game_icon_*.png は cut_sumi_sheets.py がサンプルカード全体を抽出した
-## 不可用アセットだった。本ファイルでは右側のアート部分のみを切り出した
-## game_icon_*_art.png を参照する (Python で再クロップ済み)。
+## アイコンは Material Symbols グリフ（ligature）。汚染パーツ game_icon_* の
+## texture 直貼りは README 方針で禁止のため使わない。将来クリーンな
+## game_icon_*.png が用意できたら GameListCard.texture_icon へ差し替える。
 const GAME_CARDS: Array[Dictionary] = [
 	{
 		"id": "ghost_7ban_shobu",
-		"icon": preload("res://assets/textures/game_icons/game_icon_7ban_art.png"),
+		"icon": "bolt",
 		"name": "ゴースト7番勝負",
 		"skill": "反射力",
 	},
 	{
 		"id": "flash_calc",
-		"icon": preload("res://assets/textures/game_icons/game_icon_ippon_art.png"),
+		"icon": "calculate",
 		"name": "フラッシュ暗算",
 		"skill": "計算力",
 	},
 	{
 		"id": "sequence_memory",
-		"icon": preload("res://assets/textures/game_icons/game_icon_sequence_art.png"),
+		"icon": "format_list_numbered",
 		"name": "順番記憶",
 		"skill": "記憶力",
 	},
 	{
 		"id": "stroop",
-		"icon": preload("res://assets/textures/game_icons/game_icon_stroop_art.png"),
+		"icon": "palette",
 		"name": "色文字ストループ",
 		"skill": "注意力",
 	},
 	{
 		"id": "card_match",
-		"icon": preload("res://assets/textures/game_icons/game_icon_memory_art.png"),
+		"icon": "style",
 		"name": "神経衰弱",
 		"skill": "判断力",
 	},
 	{
 		"id": "number_search",
-		"icon": preload("res://assets/textures/game_icons/game_icon_search_art.png"),
+		"icon": "search",
 		"name": "数字さがし",
 		"skill": "観察力",
 	},
@@ -86,16 +86,18 @@ func _populate_cards() -> void:
 		var data: Dictionary = GAME_CARDS[i]
 		var game_id: String = data["id"]
 		var best_text: String = _load_best_score_text(game_id)
-		card_node.set_card(game_id, data["icon"], data["name"], data["skill"], best_text)
-		# 状態判定: 未実装 → LOCKED、ベスト未登録 → NEW、それ以外 → NORMAL
-		var state: int = card_node.State.NORMAL
-		if not _implemented_games.has(game_id):
-			state = card_node.State.LOCKED
-		elif best_text == "ベスト --":
-			state = card_node.State.NEW
-		card_node.set_state(state)
-		if card_node.has_signal("tapped"):
-			card_node.tapped.connect(_on_card_tapped)
+		# 新 GameListCard API（@export プロパティ + card_pressed signal）でバインド。
+		card_node.game_id = game_id
+		card_node.game_name = data["name"]
+		card_node.ability_label = data["skill"]
+		card_node.icon_text = data["icon"]
+		card_node.best_score = best_text
+		# 状態判定: 未実装 → ロック、ベスト未登録 → NEW、それ以外 → 通常。
+		var locked: bool = not _implemented_games.has(game_id)
+		card_node.is_locked = locked
+		card_node.is_new = (not locked) and best_text == "ベスト --"
+		if card_node.has_signal("card_pressed") and not card_node.card_pressed.is_connected(_on_card_tapped):
+			card_node.card_pressed.connect(_on_card_tapped)
 
 
 func _load_best_score_text(game_type: String) -> String:

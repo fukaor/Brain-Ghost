@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0sumibutton01"]
+
+[ext_resource type="Script" path="res://scripts/ui/sumi_button.gd" id="1_btn"]
+
+[node name="SumiButton" type="Button"]
+custom_minimum_size = Vector2(280, 48)
+text = "ボタン"
+script = ExtResource("1_btn")
+label_text = "ボタン"

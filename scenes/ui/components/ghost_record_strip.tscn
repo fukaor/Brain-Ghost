@@ -1,0 +1,129 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0ghostrecstrip"]
+
+[ext_resource type="Script" path="res://scripts/ui/ghost_record_strip.gd" id="1_grs"]
+[ext_resource type="Texture2D" path="res://assets/textures/badges/stamp_shuin.png" id="2_stamp"]
+
+[node name="GhostRecordStrip" type="HBoxContainer"]
+theme_override_constants/separation = 10
+script = ExtResource("1_grs")
+
+[node name="StatsBlock" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"pill_chip"
+
+[node name="Margin" type="MarginContainer" parent="StatsBlock"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="StatsBlock/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Caption" type="Label" parent="StatsBlock/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"caption"
+text = "通算"
+
+[node name="Row" type="HBoxContainer" parent="StatsBlock/Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Wins" type="Label" parent="StatsBlock/Margin/Content/Row"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "15勝"
+
+[node name="Losses" type="Label" parent="StatsBlock/Margin/Content/Row"]
+layout_mode = 2
+theme_type_variation = &"text_light"
+theme_override_font_sizes/font_size = 28
+text = "8敗"
+
+[node name="Sep" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.549, 0.549, 0.549, 0.3)
+mouse_filter = 2
+
+[node name="StreakBlock" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"pill_chip"
+
+[node name="Margin" type="MarginContainer" parent="StreakBlock"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="StreakBlock/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Row" type="HBoxContainer" parent="StreakBlock/Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Stamp0" type="TextureRect" parent="StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(24, 30)
+layout_mode = 2
+texture = ExtResource("2_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp1" type="TextureRect" parent="StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(24, 30)
+layout_mode = 2
+texture = ExtResource("2_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp2" type="TextureRect" parent="StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(24, 30)
+layout_mode = 2
+texture = ExtResource("2_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp3" type="TextureRect" parent="StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(24, 30)
+layout_mode = 2
+texture = ExtResource("2_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp4" type="TextureRect" parent="StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(24, 30)
+layout_mode = 2
+texture = ExtResource("2_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp5" type="TextureRect" parent="StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(24, 30)
+layout_mode = 2
+modulate = Color(1, 1, 1, 0.18)
+texture = ExtResource("2_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Stamp6" type="TextureRect" parent="StreakBlock/Margin/Content/Row"]
+custom_minimum_size = Vector2(24, 30)
+layout_mode = 2
+modulate = Color(1, 1, 1, 0.18)
+texture = ExtResource("2_stamp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Text" type="Label" parent="StreakBlock/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"text_accent"
+text = "5日連続！"
+horizontal_alignment = 1

@@ -1,12 +1,12 @@
-[gd_resource type="Theme" format=3]
+[gd_resource type="Theme" format=3 uid="uid://bmvdgnitlwmdf"]
 
-[ext_resource type="Texture2D" path="res://assets/textures/buttons/btn_primary.png" id="1_gx6av"]
-[ext_resource type="Texture2D" path="res://assets/textures/buttons/btn_accent.png" id="2_ojpxg"]
-[ext_resource type="Texture2D" path="res://assets/textures/buttons/btn_secondary.png" id="3_nc7go"]
-[ext_resource type="FontFile" path="res://assets/fonts/NotoSerifJP-Bold.otf" id="4_ykeuy"]
-[ext_resource type="FontFile" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="5_18144"]
-[ext_resource type="FontFile" path="res://assets/fonts/SpaceGrotesk-Bold.ttf" id="6_arvws"]
-[ext_resource type="FontFile" path="res://assets/fonts/JetBrainsMono-Regular.ttf" id="7_r375l"]
+[ext_resource type="Texture2D" uid="uid://d2q5x23sk6neo" path="res://assets/textures/buttons/btn_primary.png" id="1_gx6av"]
+[ext_resource type="Texture2D" uid="uid://bjsa372y74nhu" path="res://assets/textures/buttons/btn_accent.png" id="2_ojpxg"]
+[ext_resource type="Texture2D" uid="uid://grlsb1se0oby" path="res://assets/textures/buttons/btn_secondary.png" id="3_nc7go"]
+[ext_resource type="FontFile" uid="uid://yhe00yhadp2x" path="res://assets/fonts/NotoSerifJP-Bold.otf" id="4_ykeuy"]
+[ext_resource type="FontFile" uid="uid://cjhsvtybeqanb" path="res://assets/fonts/MaterialSymbolsRounded.ttf" id="5_18144"]
+[ext_resource type="FontFile" uid="uid://dera3hc3wrl2l" path="res://assets/fonts/SpaceGrotesk-Bold.ttf" id="6_arvws"]
+[ext_resource type="FontFile" uid="uid://fdvq7b65lxrr" path="res://assets/fonts/JetBrainsMono-Regular.ttf" id="7_r375l"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lul6q"]
 content_margin_left = 28.0
