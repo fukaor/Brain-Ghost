@@ -39,7 +39,10 @@
 - [x] `assets/CREDITS.md`: 削除アセットへの言及なし（フォント/プラグイン中心）→ 更新不要を確認
 - [x] `docs/repository-structure.md`: assets セクション全面更新（doc承認済）。fonts5種/characters sumineko_*/textures backgrounds・buttons・badges/sumi_theme.tres/branding を現状反映。default_theme・gradients・icons・build_theme/gradients.gd の記載を除去。残存乖離0確認
 - [x] 追加対応（doc承認済）: 孤立生成スクリプト `scripts_build/build_gradients.gd`・`build_theme.gd`（削除済アセットの生成元）も削除
-- [ ] 独立コミット化（例: `chore: 墨絵以外の死蔵アセット削除（旧テーマ/グラデ/旧キャラ/汚染パーツ/重複docツリー）`）
+- [x] 独立コミット化 → `fa298e2`（185 files changed, 13642 deletions。無関係な既存変更38件はstageせず除外）
+
+## T7. 振り返り
+- [x] 削除総量・残アセット数・想定外（.import未追跡）・次回教訓を下記「実装後の振り返り」に記録
 
 ## T7. 振り返り
 - [ ] 削除総量・残アセット数を記録／想定外の参照が無かったか／次回への教訓
