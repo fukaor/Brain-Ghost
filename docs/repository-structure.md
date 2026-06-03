@@ -158,22 +158,38 @@ brain-ghost/
 │       └── color_palette.gd        # 色定数（ポジティブ/グレー等）
 │
 ├── assets/                         # アート・音・フォント
-│   ├── fonts/
-│   │   ├── NotoSansJP-Bold.otf         # 本文フォント（SIL OFL 1.1）
+│   ├── fonts/                      # 墨絵テーマ準拠フォント一式（全 LIVE）
+│   │   ├── NotoSerifJP-Bold.otf        # 見出し・本文セリフ（SIL OFL 1.1）
+│   │   ├── NotoSansJP-Bold.otf         # 本文サンセリフ（SIL OFL 1.1）
+│   │   ├── SpaceGrotesk-Bold.ttf       # 数値・スコア表示（SIL OFL 1.1）
+│   │   ├── JetBrainsMono-Regular.ttf   # 等幅（タイマー等）（SIL OFL 1.1）
 │   │   ├── MaterialSymbolsRounded.ttf  # 汎用アイコンフォント（Apache 2.0）
-│   │   └── OFL.txt                     # Noto Sans JP ライセンス本文
+│   │   └── OFL.txt                     # OFL ライセンス本文
 │   ├── sounds/
 │   │   ├── bgm/
 │   │   └── se/
-│   ├── icons/
 │   ├── images/
 │   │   └── games/                  # 各ゲーム用画像
-│   ├── characters/                 # ★ キャラクタアセット
-│   │   └── ghost_placeholder.svg   # ★ ゴースト生霊のダミー SVG（v1.1 で本番差し替え）
+│   ├── characters/                 # ★ マスコット「墨猫」一式
+│   │   ├── sumineko_normal.png         # 通常
+│   │   ├── sumineko_fight.png          # 対戦
+│   │   ├── sumineko_double.png         # 二体（ゴースト演出）
+│   │   ├── sumineko_running.png        # 走行
+│   │   ├── sumineko_sleep.png          # 睡眠
+│   │   ├── sumineko_touch.png          # タッチ
+│   │   └── ghost_placeholder.svg       # ★ ゴーストのダミー SVG（v1.1 で本番差し替え）
 │   ├── textures/
-│   │   └── gradients/              # ★ StyleBoxTexture 用の事前生成グラデ PNG
+│   │   ├── backgrounds/            # 墨絵背景（bg_home/onboarding/play/rule/result_win/result_lose/washi_base）
+│   │   ├── buttons/               # ボタン背景（btn_primary/secondary/accent。sumi_theme が参照）
+│   │   └── badges/                # stamp_shuin.png（朱印スタンプ。ghost_record_strip が使用）
 │   ├── themes/                     # Godot UI テーマリソース
-│   │   └── default_theme.tres      # build_theme.gd で生成、ext_resource 参照
+│   │   └── sumi_theme.tres         # 現行テーマ（project.godot の theme/custom）
+│   ├── branding/                   # アプリアイコン・ロゴ（ブランド資産）
+│   │   ├── brain_ghost_icon.png
+│   │   ├── brain_ghost_icon_adaptive_bg.png
+│   │   ├── brain_ghost_icon_adaptive_fg.png
+│   │   ├── brain_ghost_logo.png
+│   │   └── reigal_labs_logo.png
 │   └── CREDITS.md                  # フリー素材ライセンス表記
 │
 ├── addons/                         # Godot プラグイン
@@ -214,8 +230,6 @@ brain-ghost/
 │
 └── scripts_build/                  # ビルド・デプロイ補助スクリプト（ルート汚染回避）
     ├── run_unit_tests.sh           # GUT 実行ラッパー
-    ├── build_theme.gd              # ★ default_theme.tres 生成（Godot --script で実行）
-    ├── build_gradients.gd          # ★ グラデテクスチャ PNG 生成
     ├── export_web.sh               # Godot CLI で Web Export → web/dist/
     ├── export_android.sh           # Godot CLI で Android Export
     └── deploy_web.sh               # Cloudflare Pages へのデプロイ手順
@@ -408,12 +422,14 @@ static func from_dict(d: Dictionary) -> PlayLog: ...
 **役割**: バイナリアセット
 
 **配置ファイル**:
-- `fonts/`: `.ttf` / `.otf`
+- `fonts/`: `.ttf` / `.otf`（墨絵テーマ準拠 5 種＋ `OFL.txt`）
 - `sounds/bgm/`: BGM の `.ogg`
 - `sounds/se/`: 効果音の `.ogg` / `.wav`
-- `icons/`: アプリアイコン、UI アイコン
+- `characters/`: マスコット「墨猫」`sumineko_*.png` 一式＋ `ghost_placeholder.svg`
 - `images/games/`: ゲームごとの静止画（ルール説明用、背景など）
-- `themes/default_theme.tres`: Godot UI テーマ
+- `textures/backgrounds/`・`textures/buttons/`・`textures/badges/`: 墨絵テーマの背景・ボタン・朱印スタンプ
+- `themes/sumi_theme.tres`: Godot UI テーマ（現行）
+- `branding/`: アプリアイコン・ロゴ
 - `CREDITS.md`: フリー素材のライセンス表記（**必須**）
 
 **命名規則**:
@@ -572,7 +588,7 @@ tests/e2e/
 | 画像 | `assets/images/` または `assets/images/games/<game>/` | snake_case | `number_search_bg.png` |
 | 音声 | `assets/sounds/bgm/` or `assets/sounds/se/` | snake_case | `bgm_home.ogg`, `se_correct.wav` |
 | フォント | `assets/fonts/` | そのまま | `NotoSansJP-Regular.ttf` |
-| UIテーマ | `assets/themes/` | `snake_case.tres` | `default_theme.tres` |
+| UIテーマ | `assets/themes/` | `snake_case.tres` | `sumi_theme.tres` |
 
 ### テストファイル
 
