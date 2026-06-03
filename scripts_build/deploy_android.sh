@@ -161,11 +161,11 @@ fi
 
 # android/build/ テンプレート (gradle_build=true 用)
 ANDROID_BUILD_DIR="android/build"
-ANDROID_TEMPLATE_ZIP="$HOME/.local/share/godot/export_templates/4.6.2.stable/android_source.zip"
+ANDROID_TEMPLATE_ZIP="$HOME/.local/share/godot/export_templates/4.6.3.stable/android_source.zip"
 if [[ ! -f "$ANDROID_BUILD_DIR/build.gradle" ]]; then
   if [[ ! -f "$ANDROID_TEMPLATE_ZIP" ]]; then
     echo "   ❌ Android source template が見つかりません: $ANDROID_TEMPLATE_ZIP" >&2
-    echo "   → Godot 4.6.2 の export templates を再インストールしてください" >&2
+    echo "   → Godot 4.6.3 の export templates を再インストールしてください" >&2
     exit 2
   fi
   echo "   android/build/ テンプレートなし、$ANDROID_TEMPLATE_ZIP を展開"

@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # Godot headless dependencies
     libfontconfig1 \
     libgl1 \
+    libgl1-mesa-dri \
     libxkbcommon0 \
     libx11-6 \
     libxcursor1 \
@@ -28,6 +29,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxrandr2 \
     libxinerama1 \
     libvulkan1 \
+    # Virtual framebuffer — required to render screens to PNG for visual
+    # verification (godot --rendering-driver opengl3 via xvfb-run + Mesa swrast).
+    # Headless alone cannot create a GL context; UI capture needs this.
+    xvfb \
     # Android SDK dependencies
     openjdk-17-jdk-headless \
     && rm -rf /var/lib/apt/lists/*
@@ -57,9 +62,9 @@ RUN npm install -g @anthropic-ai/claude-code
 RUN npm install -g firecrawl
 
 # ============================================================
-# Godot 4.6.2 (headless)
+# Godot 4.6.3 (headless)
 # ============================================================
-ENV GODOT_VERSION="4.6.2"
+ENV GODOT_VERSION="4.6.3"
 ENV GODOT_RELEASE="stable"
 
 # Download Godot editor (headless)

@@ -69,7 +69,7 @@ fi
 # 3. Godot export templates check
 # ============================================================
 TEMPLATES_DIR="/home/godot/.local/share/godot/export_templates"
-GODOT_VERSION="4.6.2"
+GODOT_VERSION="4.6.3"
 
 if [ -d "${TEMPLATES_DIR}/${GODOT_VERSION}.stable" ]; then
   TEMPLATE_COUNT=$(ls "${TEMPLATES_DIR}/${GODOT_VERSION}.stable/" 2>/dev/null | wc -l)
@@ -86,6 +86,46 @@ else
       "${TEMPLATES_DIR}/${GODOT_VERSION}.stable/"
     sudo chown -R godot:godot "${TEMPLATES_DIR}"
     echo "   ✅ Templates copied successfully"
+  fi
+fi
+
+# ============================================================
+# 3.5 Godot project import (prevents Japanese font mojibake)
+# ------------------------------------------------------------
+# .godot/ と *.import は .gitignore 対象のため、クリーンコンテナでは
+# 未インポート状態。さらに volume マウントで .godot が root 所有になると
+# godot ユーザーがインポート結果を書けず、フォントが valid=false でスタックし
+# 日本語が豆腐(□)・Material Symbols が生テキスト化する（文字化け）。
+# → 所有権を godot に直し、ヘッドレスインポートを実行して未然に防ぐ。
+# ============================================================
+GODOT_PROJECT_DIR="/workspace"
+if [ -f "${GODOT_PROJECT_DIR}/project.godot" ]; then
+  # .godot が root 所有なら godot:godot に修正（書き込み可能にする）
+  if [ -d "${GODOT_PROJECT_DIR}/.godot" ] && [ "$(stat -c '%U' "${GODOT_PROJECT_DIR}/.godot")" != "godot" ]; then
+    echo "  → Fixing .godot ownership (was $(stat -c '%U' "${GODOT_PROJECT_DIR}/.godot"))..."
+    sudo chown -R godot:godot "${GODOT_PROJECT_DIR}/.godot" || true
+  fi
+
+  # フォント等がインポート済みか確認（未インポートなら import を実行）
+  if ! ls "${GODOT_PROJECT_DIR}/.godot/imported/"*.fontdata >/dev/null 2>&1; then
+    echo "  → Importing Godot assets (first run — prevents font mojibake)..."
+    (cd "${GODOT_PROJECT_DIR}" && godot --headless --import >/dev/null 2>&1) || true
+
+    # 過去の失敗インポートが残した valid=false の *.import でスタックした場合、
+    # フォントの .import を破棄して1回だけ再インポート（豆腐化の再発防止）。
+    if ! ls "${GODOT_PROJECT_DIR}/.godot/imported/"*.fontdata >/dev/null 2>&1; then
+      echo "  → Font import stuck; clearing stale .import and retrying once..."
+      rm -f "${GODOT_PROJECT_DIR}"/assets/fonts/*.import
+      (cd "${GODOT_PROJECT_DIR}" && godot --headless --import >/dev/null 2>&1) || true
+    fi
+
+    if ls "${GODOT_PROJECT_DIR}/.godot/imported/"*.fontdata >/dev/null 2>&1; then
+      echo "  ✅ Godot assets imported (fonts ready)"
+    else
+      echo "  ⚠️  Font import did not complete — run manually: godot --headless --import"
+    fi
+  else
+    echo "✅ Godot assets already imported (fonts ready)"
   fi
 fi
 
